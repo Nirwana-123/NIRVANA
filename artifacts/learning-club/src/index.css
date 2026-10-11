@@ -10,6 +10,7 @@
   --color-foreground: hsl(var(--foreground));
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
+  
   --color-ring: hsl(var(--ring));
 
   --color-card: hsl(var(--card));
@@ -352,6 +353,95 @@ a { color: inherit; }
 .page-heading { font: clamp(42px,6vw,75px)/.98 'Patrick Hand', cursive; color:var(--chalk); margin:20px 0 14px; }
 .page-intro { max-width:630px; color:#d4ddcf; font-size:14px; line-height:1.8; margin:0; }
 .home-hero { text-align:center; padding: 48px 12px 42px; position:relative; }
+.chalk-filter { position:absolute; width:0; height:0; overflow:hidden; }
+.chalk-hero {
+  --chalk-board: #22302b;
+  --chalk-board-shadow: #1a2622;
+  --chalk-white: #f4f1e4;
+  --chalk-yellow: #f3d56b;
+  --chalk-pink: #e79ab8;
+  position:relative;
+  width:min(760px,100%);
+  box-sizing:border-box;
+  margin:10px auto 42px;
+  padding:38px 28px 32px;
+  overflow:visible;
+  border:10px solid #8a5a34;
+  border-radius:10px;
+  background:radial-gradient(ellipse at 30% 20%,rgba(255,255,255,.07),transparent 60%),linear-gradient(160deg,var(--chalk-board),var(--chalk-board-shadow));
+  box-shadow:inset 0 0 40px rgba(0,0,0,.6),0 18px 40px rgba(0,0,0,.35);
+  font-family:'Gaegu','Comic Sans MS',cursive;
+}
+.chalk-hero::after {
+  content:'';
+  position:absolute;
+  left:8%;
+  right:8%;
+  bottom:-19px;
+  height:9px;
+  border-radius:0 0 6px 6px;
+  background:#6e4626;
+}
+.chalk-hero-tag {
+  min-height:1.3em;
+  margin:0 0 4px;
+  color:var(--chalk-yellow);
+  font-size:clamp(18px,3vw,24px);
+  filter:url(#chalk-rough);
+}
+.chalk-hero-line {
+  margin:0;
+  color:var(--chalk-white);
+  font:clamp(64px,13vw,128px)/1 'Gaegu','Comic Sans MS',cursive;
+  filter:url(#chalk-rough);
+  text-shadow:0 0 6px rgba(244,241,228,.25);
+}
+.chalk-hero-line.chalk-yellow { color:var(--chalk-yellow); text-shadow:0 0 6px rgba(243,213,107,.3); }
+.chalk-letter { display:inline-block; white-space:pre; }
+.chalk-hero.animation-ready .chalk-letter { clip-path:inset(-10% 100% -10% 0); }
+.chalk-hero.animation-ready .chalk-letter.is-writing { animation:chalk-write var(--write-duration,.28s) ease-out forwards; }
+@keyframes chalk-write { to { clip-path:inset(-10% -10% -10% 0); } }
+.chalk-underline { display:block; width:min(420px,70%); height:20px; margin:6px auto 0; overflow:visible; filter:url(#chalk-rough); }
+.chalk-underline path { fill:none; stroke:var(--chalk-pink); stroke-width:3; stroke-linecap:round; }
+.chalk-hero.animation-ready .chalk-underline path { stroke-dasharray:420; stroke-dashoffset:420; }
+.chalk-hero.animation-ready .chalk-underline.is-writing path { animation:chalk-draw .8s ease-out forwards; }
+@keyframes chalk-draw { to { stroke-dashoffset:0; } }
+.chalk-hero-copy {
+  max-width:560px;
+  min-height:3em;
+  margin:18px auto 0;
+  color:var(--chalk-white);
+  opacity:.85;
+  font-size:clamp(17px,2.4vw,22px);
+  filter:url(#chalk-rough);
+}
+.chalk-stick {
+  position:absolute;
+  z-index:2;
+  width:34px;
+  height:9px;
+  border-radius:3px;
+  background:linear-gradient(#fff,#d9d5c4);
+  box-shadow:0 2px 4px rgba(0,0,0,.5);
+  transform:rotate(-35deg);
+  transform-origin:left center;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .2s;
+}
+.chalk-actions { display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:10px; margin-top:24px; }
+.chalk-actions .chalk-replay {
+  padding:8px 16px;
+  border:2px solid var(--chalk-white);
+  border-radius:4px;
+  background:transparent;
+  color:var(--chalk-white);
+  font:18px 'Gaegu','Comic Sans MS',cursive;
+  cursor:pointer;
+  transition:background .2s,color .2s;
+}
+.chalk-actions .chalk-replay:hover { background:var(--chalk-white); color:var(--chalk-board-shadow); }
+.chalk-actions .chalk-replay:focus-visible { outline:2px solid var(--chalk-yellow); outline-offset:3px; }
 .hero-kicker { color:var(--sun); font:17px 'Patrick Hand', cursive; transform:rotate(-2deg); display:inline-block; }
 .hero-title { max-width:780px; margin: 9px auto 15px; font:clamp(49px,8vw,100px)/.91 'Patrick Hand', cursive; color:var(--chalk); }
 .hero-title span { color:var(--sun); }
@@ -466,6 +556,9 @@ a { color: inherit; }
   .topline { padding-bottom:11px; }
   .topline-note { font-size:13px; }
   .home-hero { padding:43px 2px 32px; }
+  .chalk-hero { margin:0 auto 38px; padding:28px 15px 24px; border-width:8px; }
+  .chalk-hero-line { font-size:clamp(56px,15vw,92px); }
+  .chalk-actions { gap:8px; }
   .doodle-one { left:1%; top:20px; font-size:27px; }
   .doodle-two { right:2%; top:15px; font-size:31px; }
   .lesson-grid { grid-template-columns:1fr 1fr; gap:9px; }
@@ -488,6 +581,8 @@ a { color: inherit; }
 }
 @media (prefers-reduced-motion: reduce) {
   *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+  .chalk-hero.animation-ready .chalk-letter { clip-path:none !important; animation:none !important; }
+  .chalk-hero.animation-ready .chalk-underline path { stroke-dashoffset:0 !important; animation:none !important; }
 }
 
 /**

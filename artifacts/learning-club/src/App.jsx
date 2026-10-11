@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ArrowRight, BookOpen, Mail } from 'lucide-react';
 import { ErrorBoundary } from '@/components/error-boundary';
@@ -26,7 +26,7 @@ function SiteFrame({ children }) {
       <aside className="side-rail" aria-label="Main navigation">
         <Link href="/" className="brand-mark" aria-label="NIRVANA home">
           <div className="brand-name">NIRVANA</div>
-          <div className="brand-note">A little room to grow</div>
+          <div className="brand-note">A Reason To Smile</div>
         </Link>
         <div className="rail-rule" />
         <p className="nav-label">FIND YOUR WAY</p>
@@ -104,25 +104,130 @@ function PageMeta({ title, description }) {
   return null;
 }
 
+function ChalkboardHero() {
+  const boardRef = useRef(null);
+  const stickRef = useRef(null);
+  const underlineRef = useRef(null);
+  const runRef = useRef(0);
+
+  useEffect(() => {
+    const board = boardRef.current;
+    const stick = stickRef.current;
+    const underline = underlineRef.current;
+    if (!board || !stick || !underline) return undefined;
+
+    board.classList.add('animation-ready');
+    const elements = Array.from(board.querySelectorAll('[data-write]'));
+    const texts = elements.map((element) => element.textContent ?? '');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const wait = (milliseconds) => new Promise((resolve) => window.setTimeout(resolve, milliseconds));
+
+    const split = (element, text) => {
+      element.replaceChildren();
+      return Array.from(text, (character) => {
+        const span = document.createElement('span');
+        span.className = 'chalk-letter';
+        span.textContent = character;
+        element.appendChild(span);
+        return span;
+      });
+    };
+
+    const moveStick = (span) => {
+      const boardBounds = board.getBoundingClientRect();
+      const letterBounds = span.getBoundingClientRect();
+      stick.style.left = `${letterBounds.right - boardBounds.left - 14}px`;
+      stick.style.top = `${letterBounds.top - boardBounds.top + letterBounds.height * 0.62}px`;
+    };
+
+    const play = async () => {
+      const run = ++runRef.current;
+      underline.classList.remove('is-writing');
+      stick.style.opacity = '0';
+      const letters = elements.map((element, index) => split(element, texts[index]));
+
+      if (reduceMotion) {
+        letters.flat().forEach((letter) => letter.classList.add('is-writing'));
+        underline.classList.add('is-writing');
+        return;
+      }
+
+      await wait(300);
+      if (run !== runRef.current) return;
+      stick.style.opacity = '1';
+
+      for (let index = 0; index < letters.length; index += 1) {
+        const isHeading = elements[index].classList.contains('chalk-hero-line');
+        const step = isHeading ? 170 : (index === 0 ? 55 : 28);
+        const duration = isHeading ? 0.3 : 0.14;
+
+        for (const letter of letters[index]) {
+          if (run !== runRef.current) return;
+          letter.style.setProperty('--write-duration', `${duration}s`);
+          letter.classList.add('is-writing');
+          moveStick(letter);
+          await wait(letter.textContent === ' ' ? step / 2 : step);
+        }
+
+        if (elements[index].classList.contains('chalk-hero-line') && elements[index].textContent.startsWith('Shine')) {
+          await wait(200);
+          if (run !== runRef.current) return;
+          underline.classList.add('is-writing');
+          await wait(800);
+        }
+        await wait(250);
+      }
+      if (run === runRef.current) stick.style.opacity = '0';
+    };
+
+    const replay = board.querySelector('.chalk-replay');
+    replay?.addEventListener('click', play);
+    const fontReady = document.fonts?.ready ?? Promise.resolve();
+    fontReady.then(() => {
+      if (board.isConnected) void play();
+    });
+
+    return () => {
+      runRef.current += 1;
+      replay?.removeEventListener('click', play);
+    };
+  }, []);
+
+  return (
+    <>
+      <svg className="chalk-filter" aria-hidden="true" focusable="false">
+        <filter id="chalk-rough" x="-5%" y="-5%" width="110%" height="110%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" />
+        </filter>
+      </svg>
+      <section className="home-hero chalk-hero" ref={boardRef} aria-label="Learn. Grow. Shine.">
+        {/* <p className="chalk-hero-tag" data-write>pull up a chair, there's room to grow</p> */}
+        <h1 className="chalk-hero-line" data-write>NIRVANA</h1>
+        {/* <h1 className="chalk-hero-line" data-write>Grow.</h1> */}
+        <h6 className="chalk-hero-line chalk-yellow" style={{fontSize:'50px'}} data-write>A Reason to Smile</h6>
+        <svg className="chalk-underline" ref={underlineRef} viewBox="0 0 420 20" aria-hidden="true">
+          <path d="M4 12 C110 4 300 4 416 9" />
+        </svg>
+        <p className="chalk-hero-copy" data-write>
+          A caring learning club for underprivileged children, where every child feels valued and inspired to learn and grow.
+        </p>
+        <div className="chalk-stick" ref={stickRef} aria-hidden="true" />
+        <div className="chalk-actions">
+          <Link href="/events" className="chalk-button">See what we do <ArrowRight size={14} /></Link>
+          <Link href="/about" className="chalk-button outline">Our little story</Link>
+          <button type="button" className="chalk-replay">Write again</button>
+        </div>
+      </section>
+    </>
+  );
+}
+
 function HomePage() {
   return (
     <>
       <PageMeta title="Home" description="A joyful community club where volunteer mentors help children learn, grow in confidence, and feel they belong." />
-      <section className="home-hero">
-        <span className="doodle doodle-one" aria-hidden="true">✧</span>
-        <span className="doodle doodle-two" aria-hidden="true">☆</span>
-        <span className="hero-kicker">pull up a chair, there’s room to grow</span>
-        <h1 className="hero-title">Learn. Grow.<br /><span>Shine.</span></h1>
-        <div className="scribble-line" aria-hidden="true" />
-        <p className="hero-copy">
-          A friendly learning club where children find patient help with schoolwork,
-          courage to try something new, and people who are glad they came.
-        </p>
-        <div className="hero-actions">
-          <Link href="/events" className="chalk-button">See what we do <ArrowRight size={14} /></Link>
-          <Link href="/about" className="chalk-button outline">Our little story</Link>
-        </div>
-      </section>
+      <ChalkboardHero />
 
       <section className="learning-section" aria-labelledby="lesson-heading">
         <h2 className="section-heading center-heading" id="lesson-heading">A place for every kind of growing</h2>
