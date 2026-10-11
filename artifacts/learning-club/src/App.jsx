@@ -9,10 +9,15 @@ import { ArrowRight, ArrowUp, BookOpen, Facebook, Heart, Instagram, Lightbulb, M
 import anime from 'animejs/lib/anime.es.js';
 import { stepAvatars } from './step-avatars';
 import './about-heavy.css';
+import Valuesgarden from '@/components/Valuesgarden';
+import Diyaboard from '@/components/Diyaboard';
+import LocationMap from '@/components/Location';
+import ContactForm from '@/components/LetterForm'
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
   { label: 'ABOUT', href: '/about', title: 'About' },
+  { label: 'TEAM', href: '/team', title: 'Team' },
   { label: 'EVENTS', href: '/events', title: 'Events' },
   { label: 'GALLERY', href: '/gallery', title: 'Gallery' },
   { label: 'CONTACT', href: '/contact', title: 'Contact' },
@@ -308,7 +313,6 @@ const aboutSteps = [
 function ChalkboardHero() {
   const boardRef = useRef(null);
   const stickRef = useRef(null);
-  const bannerRef = useRef(null);
   const underlineRef = useRef(null);
   const runRef = useRef(0);
 
@@ -396,49 +400,10 @@ function ChalkboardHero() {
     };
   }, []);
 
-  useEffect(() => {
-    const banner = bannerRef.current;
-    if (!banner) return undefined;
-
-    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let frame = 0;
-    const updatePosition = () => {
-      if (motionPreference.matches || frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        const offset = Math.round(-banner.getBoundingClientRect().top * 0.12);
-        banner.style.setProperty('--hero-scroll-offset', `${offset}px`);
-      });
-    };
-    const handleMotionPreferenceChange = () => {
-      if (motionPreference.matches) {
-        if (frame) window.cancelAnimationFrame(frame);
-        frame = 0;
-        banner.style.removeProperty('--hero-scroll-offset');
-      } else {
-        updatePosition();
-      }
-    };
-
-    updatePosition();
-    window.addEventListener('scroll', updatePosition, { passive: true });
-    window.addEventListener('resize', updatePosition);
-    motionPreference.addEventListener('change', handleMotionPreferenceChange);
-
-    return () => {
-      window.removeEventListener('scroll', updatePosition);
-      window.removeEventListener('resize', updatePosition);
-      motionPreference.removeEventListener('change', handleMotionPreferenceChange);
-      if (frame) window.cancelAnimationFrame(frame);
-      banner.style.removeProperty('--hero-scroll-offset');
-    };
-  }, []);
-
   return (
     <>
     <section
-    className="hero-banner"  
-    ref={bannerRef}
+    className="hero-banner"
     style={{ '--hero-image': `url(${import.meta.env.BASE_URL}hero.png)` }}
   >
       <svg className="chalk-filter" aria-hidden="true" focusable="false">
@@ -477,32 +442,11 @@ function HomePage() {
       <PageMeta title="Home" description="A joyful community club where volunteer mentors help children learn, grow in confidence, and feel they belong." />
       <ChalkboardHero />
 
-      <section className="learning-section" aria-labelledby="lesson-heading">
-        <h2 className="section-heading center-heading" id="lesson-heading">A place for every kind of growing</h2>
-        <p className="section-lede">Small steps count. Our sessions make space for school skills, brave questions, and being part of a team.</p>
-        <div className="lesson-grid">
-          <article className="lesson-card" style={{ '--card-color': 'var(--sun)' }}>
-            <h3>Schoolwork, together</h3><p>Reading, writing, maths, and homework help—at a pace that feels right.</p>
-          </article>
-          <article className="lesson-card" style={{ '--card-color': 'var(--sky)' }}>
-            <h3>Confidence to try</h3><p>Room to make mistakes, ask again, and discover “I can do this.”</p>
-          </article>
-          <article className="lesson-card" style={{ '--card-color': 'var(--rose)' }}>
-            <h3>Creative curiosity</h3><p>Hands-on projects and playful ideas that make learning feel alive.</p>
-          </article>
-          <article className="lesson-card wide" style={{ '--card-color': 'var(--sage)' }}>
-            <BookOpen size={23} color="var(--sage)" aria-hidden="true" />
-            <div><h3>A circle of belonging</h3><p>Kind mentors and friendly faces help each child feel welcome, noticed, and included.</p></div>
-          </article>
-        </div>
-      </section>
-      <section className="home-note">
-        <div>
-          <h2>Learning is better side by side.</h2>
-          <p>Whether you’re looking for a welcoming place for a young learner or hoping to share your time as a mentor, we’d love to meet you.</p>
-        </div>
-        <Link className="chalk-button outline" href="/contact">Find your way in <ArrowRight size={14} /></Link>
-      </section>
+      <div className="home-rest">
+        <Valuesgarden />
+        <Diyaboard/>
+      </div>
+      
     </>
   );
 }
@@ -949,6 +893,50 @@ function AboutPage() {
   );
 }
 
+function TeamPage() {
+  return (
+    <>
+      <PageMeta title="Team" description="Meet the mentors, organizers, and volunteers who make The Learning Nook a welcoming place to learn and grow." />
+      <header className="subpage-head">
+        <p className="eyebrow">THE PEOPLE BEHIND THE NOOK</p>
+        <h1 className="page-heading">A little help<br />goes a long way.</h1>
+        <p className="page-intro">The Learning Nook is made possible by people who share their time, care, and curiosity. Together, they make room for every child to feel welcome and keep growing.</p>
+      </header>
+      <section className="content-section">
+        <h2 className="section-heading">Many hands, one welcoming place</h2>
+        <p className="section-lede team-intro">Everyone brings something different. These are some of the ways people help make the club feel like a community.</p>
+        <div className="team-grid">
+          <article className="team-card" style={{ '--team-color': 'var(--rose)' }}>
+            <span className="team-mark" aria-hidden="true">01</span>
+            <p className="eyebrow">LEARNING &amp; ENCOURAGEMENT</p>
+            <h3>Volunteer mentors</h3>
+            <p>Offer patient one-to-one support, share a love of learning, and celebrate each child’s progress along the way.</p>
+          </article>
+          <article className="team-card" style={{ '--team-color': 'var(--sky)' }}>
+            <span className="team-mark" aria-hidden="true">02</span>
+            <p className="eyebrow">CARE &amp; COORDINATION</p>
+            <h3>Club organizers</h3>
+            <p>Help sessions run smoothly and make sure children, families, and volunteers know they have a place here.</p>
+          </article>
+          <article className="team-card" style={{ '--team-color': 'var(--sun)' }}>
+            <span className="team-mark" aria-hidden="true">03</span>
+            <p className="eyebrow">COMMUNITY &amp; CONNECTION</p>
+            <h3>Community supporters</h3>
+            <p>Contribute ideas, resources, and encouragement that help the club keep showing up for children.</p>
+          </article>
+        </div>
+      </section>
+      <section className="content-section two-col">
+        <div>
+          <h2 className="section-heading">There’s room for you, too</h2>
+          <p className="chalk-copy">You don’t need to have everything figured out to get involved. If you’d like to share your time or learn more about the team, we’d be glad to hear from you.</p>
+        </div>
+        <Link href="/contact" className="chalk-button">Say hello <ArrowRight size={14} /></Link>
+      </section>
+    </>
+  );
+}
+
 function EventsPage() {
   return (
     <>
@@ -1032,6 +1020,15 @@ function GalleryPage() {
 }
 
 function ContactPage() {
+
+  function sendLetter(form) {
+    const subject = encodeURIComponent(`A note from ${String(form.get('name') || 'a visitor')}`);
+    const body = encodeURIComponent(
+      `Name: ${String(form.get('name') || '')}\nReply email: ${String(form.get('email') || '')}\n\n${String(form.get('message') || '')}`,
+    );
+    window.location.href = `mailto:?subject=${subject}&body=${body}`;
+  }
+
   const [status, setStatus] = useState('');
   function handleSubmit(event) {
     event.preventDefault();
@@ -1046,23 +1043,17 @@ function ContactPage() {
 
   return (
     <>
-      <PageMeta title="Contact" description="Get in touch with The Learning Nook to ask about joining, volunteering, or learning more." />
+       <PageMeta title="Contact" description="Get in touch with The Learning Nook to ask about joining, volunteering, or learning more." />
       <header className="subpage-head">
         <p className="eyebrow">WE’RE GLAD YOU’RE HERE</p>
-        <h1 className="page-heading">Let’s start<br />with a hello.</h1>
+        <h1 className="page-heading">Get In Touch.</h1>
         <p className="page-intro">Curious about the club, thinking of volunteering, or helping a young person find support? Send a note and we’ll take it from there.</p>
       </header>
       <section className="content-section contact-layout">
         <div>
           <h2 className="section-heading">Write us a little note</h2>
-          <p className="section-lede" style={{ margin: '0 0 18px' }}>This demo opens your email app with the message filled in. Add the club’s email address before you send.</p>
-          <form className="contact-form" onSubmit={handleSubmit}>
-            <div className="field"><label htmlFor="name">Your name</label><input id="name" name="name" autoComplete="name" placeholder="What should we call you?" required /></div>
-            <div className="field"><label htmlFor="email">Your email</label><input id="email" name="email" type="email" autoComplete="email" placeholder="So we can write back" required /></div>
-            <div className="field"><label htmlFor="message">What’s on your mind?</label><textarea id="message" name="message" placeholder="Tell us a little about what brings you here…" required /></div>
-            <button type="submit" className="chalk-button">Open a message <Mail size={14} /></button>
-            {status && <p className="form-status" role="status">{status}</p>}
-          </form>
+          <p className="section-lede" style={{ margin: '0 0 18px' }}>Write your letter, press the wax seal, and a pigeon will carry it away. Add the club’s email address to the mail link before you send.</p>
+          <ContactForm onSend={sendLetter} />
         </div>
         <aside className="contact-aside">
           <h2>There are lots of ways to say hello.</h2>
@@ -1075,6 +1066,13 @@ function ContactPage() {
           <div className="note-strip">This website uses an email-app link rather than collecting or storing your message.</div>
         </aside>
       </section>
+
+      <LocationMap
+        query="Sardar Vallabhbhai National Institute of Technology, Surat, Gujarat 395007"
+        label="Find us here"
+        note="SVNIT campus, Ichchhanath, Surat-Dumas Road, Athwa, Surat, Gujarat 395007. Please message us before visiting to confirm session times."
+      />
+
       <section className="content-section">
         <h2 className="section-heading">Before you visit</h2>
         <p className="chalk-copy">The club’s meeting place, session times, and ways to join should be confirmed directly with the organizers. Send a note and we’ll help you find the right next step.</p>
@@ -1093,6 +1091,7 @@ function Router() {
       <Switch>
         <Route path="/"><PageShell><HomePage /></PageShell></Route>
         <Route path="/about"><PageShell><AboutPage /></PageShell></Route>
+        <Route path="/team"><PageShell><TeamPage /></PageShell></Route>
         <Route path="/events"><PageShell><EventsPage /></PageShell></Route>
         <Route path="/gallery"><PageShell><GalleryPage /></PageShell></Route>
         <Route path="/contact"><PageShell><ContactPage /></PageShell></Route>

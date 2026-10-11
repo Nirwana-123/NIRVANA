@@ -1,0 +1,197 @@
+/* Optional fonts for the old-letter look. Add this to index.html <head>:
+   <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500&family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+   Without them the form falls back to Georgia and a cursive font. */
+
+.letter-stage {
+  --ink: #2b1d12;
+  --ink-soft: rgba(70, 45, 20, 0.55);
+  position: relative;
+  perspective: 1200px;
+  max-width: 600px;
+}
+
+/* The parchment */
+.letter-paper {
+  transform-origin: center;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.45));
+}
+
+.letter {
+  position: relative;
+  padding: 36px 36px 30px;
+  color: var(--ink);
+  font-family: 'IM Fell English', Georgia, 'Times New Roman', serif;
+  background-color: #f1e2bb;
+  background-image:
+    radial-gradient(circle at 10% 14%, rgba(160, 110, 50, 0.28), transparent 26%),
+    radial-gradient(circle at 90% 84%, rgba(120, 80, 30, 0.34), transparent 30%),
+    radial-gradient(circle at 72% 8%, rgba(255, 255, 255, 0.35), transparent 28%),
+    radial-gradient(circle at 20% 92%, rgba(140, 95, 40, 0.22), transparent 24%);
+  border-radius: 255px 14px 225px 14px / 14px 225px 14px 255px; /* hand-torn corners */
+  box-shadow: inset 0 0 70px rgba(120, 80, 30, 0.42), inset 0 0 6px rgba(90, 60, 20, 0.5);
+}
+
+.letter-salutation,
+.letter-closing {
+  margin: 0 0 14px;
+  font-size: 22px;
+  font-style: italic;
+  color: var(--ink);
+}
+.letter-closing { margin: 18px 0 10px; }
+
+.letter-field { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.letter-field label {
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  font-style: italic;
+  color: var(--ink-soft);
+}
+
+/* Handwritten ink on the page */
+.letter input,
+.letter textarea {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #1f2a52;
+  font-family: 'Caveat', 'Bradley Hand', 'Segoe Script', cursive;
+  font-size: 24px;
+  line-height: 32px;
+  padding: 0 2px;
+}
+.letter input {
+  border-bottom: 1.5px solid var(--ink-soft);
+  height: 36px;
+}
+.letter textarea {
+  resize: none;
+  background-image: repeating-linear-gradient(transparent 0, transparent 31px, var(--ink-soft) 31px, var(--ink-soft) 32px);
+  background-attachment: local;
+}
+.letter input::placeholder,
+.letter textarea::placeholder { color: rgba(70, 45, 20, 0.4); }
+.letter input:focus,
+.letter textarea:focus { background-color: rgba(255, 245, 210, 0.45); }
+.letter input:focus { border-bottom-color: #8f1d1d; }
+
+.letter-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+
+.letter-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 22px;
+}
+.letter-status {
+  flex: 1;
+  margin: 0;
+  min-height: 1.2em;
+  font-size: 15px;
+  font-style: italic;
+  color: #5a3a14;
+}
+
+/* The red wax seal is the send button */
+.wax-seal {
+  flex: none;
+  width: 92px;
+  height: 92px;
+  border: 0;
+  cursor: pointer;
+  border-radius: 52% 48% 55% 45% / 48% 55% 45% 52%;
+  background: radial-gradient(circle at 35% 30%, #d9534f 0%, #a32a2a 55%, #7d1818 100%);
+  color: #f7d9a8;
+  font-family: 'IM Fell English', Georgia, serif;
+  font-size: 18px;
+  font-weight: 700;
+  box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.14), inset 0 -4px 8px rgba(0, 0, 0, 0.3), 0 6px 14px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+.wax-seal span {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin: auto;
+  border: 2px dashed rgba(247, 217, 168, 0.65);
+  border-radius: 50%;
+}
+.wax-seal:hover:not(:disabled) { transform: rotate(-5deg) scale(1.06); }
+.wax-seal:active:not(:disabled) { transform: scale(0.92); }
+.wax-seal:focus-visible { outline: 3px solid #1f2a52; outline-offset: 4px; }
+.wax-seal:disabled { cursor: default; filter: saturate(0.5) brightness(0.85); }
+
+/* The folded scroll that appears in the middle of the stage */
+.letter-roll {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  opacity: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 5px rgba(0, 0, 0, 0.45));
+}
+.letter-roll svg { display: block; }
+
+/* The pigeon (fixed to the window, rendered in <body>) */
+.pigeon {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 400;
+  width: 140px;
+  height: 116px;
+  visibility: hidden;
+  pointer-events: none;
+  will-change: transform;
+  filter: drop-shadow(0 8px 6px rgba(0, 0, 0, 0.3));
+}
+.pigeon svg { display: block; overflow: visible; }
+
+.pg-carried { opacity: 0; }
+.pigeon.has-scroll .pg-carried { opacity: 1; }
+
+.pg-wing {
+  transform-box: view-box;
+  transform-origin: 62px 56px;
+}
+.pigeon.is-flying .pg-wing {
+  animation: pg-flap 0.22s ease-in-out infinite alternate;
+}
+.pigeon.is-flying .pg-wing.back { animation-delay: 0.06s; }
+.pigeon.is-flying svg { animation: pg-bob 0.22s ease-in-out infinite alternate; }
+
+.pg-head {
+  transform-box: view-box;
+  transform-origin: 92px 52px;
+}
+.pigeon.is-landed .pg-head { animation: pg-peck 0.5s ease-in-out 2; }
+
+@keyframes pg-flap {
+  from { transform: rotate(-68deg); }
+  to   { transform: rotate(26deg); }
+}
+@keyframes pg-bob {
+  from { translate: 0 -3px; }
+  to   { translate: 0 4px; }
+}
+@keyframes pg-peck {
+  0%, 100% { transform: rotate(0deg); }
+  50%      { transform: rotate(22deg); }
+}
+
+@media (max-width: 560px) {
+  .letter { padding: 28px 22px 24px; }
+  .letter-row { grid-template-columns: 1fr; gap: 14px; }
+  .letter-foot { flex-direction: column-reverse; align-items: flex-end; }
+  .letter-status { align-self: stretch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pigeon { display: none; }
+  .wax-seal { transition: none; }
+}
