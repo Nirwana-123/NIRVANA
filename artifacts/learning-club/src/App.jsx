@@ -6,6 +6,8 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 import { ArrowRight, ArrowUp, BookOpen, Facebook, Instagram, Mail, Twitter, Youtube } from 'lucide-react';
+import Valuesgarden from '@/components/Valuesgarden';
+
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
@@ -165,7 +167,6 @@ function PageMeta({ title, description }) {
 function ChalkboardHero() {
   const boardRef = useRef(null);
   const stickRef = useRef(null);
-  const bannerRef = useRef(null);
   const underlineRef = useRef(null);
   const runRef = useRef(0);
 
@@ -253,49 +254,10 @@ function ChalkboardHero() {
     };
   }, []);
 
-  useEffect(() => {
-    const banner = bannerRef.current;
-    if (!banner) return undefined;
-
-    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-    let frame = 0;
-    const updatePosition = () => {
-      if (motionPreference.matches || frame) return;
-      frame = window.requestAnimationFrame(() => {
-        frame = 0;
-        const offset = Math.round(-banner.getBoundingClientRect().top * 0.12);
-        banner.style.setProperty('--hero-scroll-offset', `${offset}px`);
-      });
-    };
-    const handleMotionPreferenceChange = () => {
-      if (motionPreference.matches) {
-        if (frame) window.cancelAnimationFrame(frame);
-        frame = 0;
-        banner.style.removeProperty('--hero-scroll-offset');
-      } else {
-        updatePosition();
-      }
-    };
-
-    updatePosition();
-    window.addEventListener('scroll', updatePosition, { passive: true });
-    window.addEventListener('resize', updatePosition);
-    motionPreference.addEventListener('change', handleMotionPreferenceChange);
-
-    return () => {
-      window.removeEventListener('scroll', updatePosition);
-      window.removeEventListener('resize', updatePosition);
-      motionPreference.removeEventListener('change', handleMotionPreferenceChange);
-      if (frame) window.cancelAnimationFrame(frame);
-      banner.style.removeProperty('--hero-scroll-offset');
-    };
-  }, []);
-
   return (
     <>
     <section
-    className="hero-banner"  
-    ref={bannerRef}
+    className="hero-banner"
     style={{ '--hero-image': `url(${import.meta.env.BASE_URL}hero.png)` }}
   >
       <svg className="chalk-filter" aria-hidden="true" focusable="false">
@@ -334,32 +296,9 @@ function HomePage() {
       <PageMeta title="Home" description="A joyful community club where volunteer mentors help children learn, grow in confidence, and feel they belong." />
       <ChalkboardHero />
 
-      <section className="learning-section" aria-labelledby="lesson-heading">
-        <h2 className="section-heading center-heading" id="lesson-heading">A place for every kind of growing</h2>
-        <p className="section-lede">Small steps count. Our sessions make space for school skills, brave questions, and being part of a team.</p>
-        <div className="lesson-grid">
-          <article className="lesson-card" style={{ '--card-color': 'var(--sun)' }}>
-            <h3>Schoolwork, together</h3><p>Reading, writing, maths, and homework help—at a pace that feels right.</p>
-          </article>
-          <article className="lesson-card" style={{ '--card-color': 'var(--sky)' }}>
-            <h3>Confidence to try</h3><p>Room to make mistakes, ask again, and discover “I can do this.”</p>
-          </article>
-          <article className="lesson-card" style={{ '--card-color': 'var(--rose)' }}>
-            <h3>Creative curiosity</h3><p>Hands-on projects and playful ideas that make learning feel alive.</p>
-          </article>
-          <article className="lesson-card wide" style={{ '--card-color': 'var(--sage)' }}>
-            <BookOpen size={23} color="var(--sage)" aria-hidden="true" />
-            <div><h3>A circle of belonging</h3><p>Kind mentors and friendly faces help each child feel welcome, noticed, and included.</p></div>
-          </article>
-        </div>
-      </section>
-      <section className="home-note">
-        <div>
-          <h2>Learning is better side by side.</h2>
-          <p>Whether you’re looking for a welcoming place for a young learner or hoping to share your time as a mentor, we’d love to meet you.</p>
-        </div>
-        <Link className="chalk-button outline" href="/contact">Find your way in <ArrowRight size={14} /></Link>
-      </section>
+      <div className="home-rest">
+        <Valuesgarden />
+      </div>
     </>
   );
 }

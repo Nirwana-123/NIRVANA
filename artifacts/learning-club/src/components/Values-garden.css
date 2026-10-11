@@ -1,0 +1,77 @@
+/*
+  Map these to your own site variables if you have them.
+  Anything you don't define falls back to the value on the right.
+*/
+.vg {
+  --vg-ink: var(--chalk, #f3ecd8);
+  --vg-muted: var(--chalk-dim, #a9c7b8);
+  --vg-gold: var(--chalk-yellow, #f2c94c);
+  --vg-hand: var(--font-chalk, 'Patrick Hand', 'Comic Sans MS', cursive);
+  position: relative;
+  color: var(--vg-ink);
+}
+
+.vg-stage { display: grid; gap: 14px; }
+
+.vg-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 360px);
+  gap: 20px 40px;
+  align-items: end;
+}
+
+.vg-meter { min-width: 0; }
+.vg-mtop { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.vg-mlabel { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--vg-muted); font-weight: 500; }
+.vg-mpct { font-family: var(--vg-hand); font-size: 34px; line-height: 1; color: var(--vg-gold); font-variant-numeric: tabular-nums; }
+.vg-bar { position: relative; height: 10px; margin: 12px 0 10px; border-radius: 999px; background: rgba(243, 236, 216, 0.14); }
+.vg-fill { position: absolute; inset: 0 auto 0 0; width: 0; border-radius: 999px; background: var(--vg-gold); }
+.vg-heart {
+  position: absolute; top: 50%; left: 0; width: 26px; height: 26px; margin: -13px 0 0 -13px;
+  animation: vg-beat 1.6s ease-in-out infinite;
+}
+@keyframes vg-beat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+.vg-sname { font-family: var(--vg-hand); font-size: 20px; min-height: 1.3em; }
+
+.vg-svg { width: 100%; height: auto; display: block; }
+
+.vg-vals { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; text-align: center; }
+.vg-val { opacity: 0; transform: translateY(10px); }
+.vg-val h3 { font-family: var(--vg-hand); font-weight: 400; font-size: clamp(20px, 2.4vw, 26px); line-height: 1.1; margin: 0; }
+.vg-val h3 i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 8px; vertical-align: 1px; }
+.vg-val p { font-size: 13px; color: var(--vg-muted); margin: 4px auto 0; max-width: 30ch; }
+
+.vg-hint { display: none; }
+
+/*
+  Pinned mode: a tall track with a sticky, full-height stage.
+  --vg-length  how far you scroll while the garden is held (default 300vh)
+  --vg-top     height of any fixed header that covers the top of the screen (default 0px).
+               On your mobile layout set it to the mobile nav height, e.g. .vg { --vg-top: 96px; }
+*/
+.vg.vg-pin {
+  height: calc(100vh + var(--vg-length, 300vh));
+  height: calc(100svh + var(--vg-length, 300vh));
+  padding-block: 0;
+}
+.vg-pin .vg-stage {
+  position: sticky; top: var(--vg-top, 0px);
+  height: calc(100vh - var(--vg-top, 0px)); height: calc(100svh - var(--vg-top, 0px));
+  min-height: 560px;
+  grid-template-rows: auto minmax(0, 1fr) auto; padding-block: 22px 18px; box-sizing: border-box;
+}
+.vg-pin .vg-svg { height: 100%; }
+.vg-pin .vg-hint {
+  display: block; position: absolute; left: 0; right: 0; bottom: 6px; text-align: center;
+  font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--vg-muted); pointer-events: none;
+}
+.vg-hint span { display: block; font-size: 18px; animation: vg-bob 1.6s ease-in-out infinite; }
+@keyframes vg-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
+
+@media (max-width: 760px) {
+  .vg-head { grid-template-columns: minmax(0, 1fr); }
+  .vg-val p { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vg-heart, .vg-hint span { animation: none; }
+}

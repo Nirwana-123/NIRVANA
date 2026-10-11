@@ -191,6 +191,9 @@
   );
 }
 
+
+
+
 .dark {
   --button-outline: rgba(255, 255, 255, 0.1);
   --badge-outline: rgba(255, 255, 255, 0.05);
@@ -346,7 +349,7 @@ a { color: inherit; }
   position:relative;
   min-height:calc(100dvh - 75px);
   padding: 27px clamp(24px, 5.4vw, 82px) 30px;
-  overflow:hidden;
+  overflow:clip;
   background-color:var(--board);
   background-image: radial-gradient(ellipse at 13% 20%, rgba(255,255,255,.025), transparent 29%), radial-gradient(ellipse at 80% 77%, rgba(0,0,0,.12), transparent 38%), repeating-linear-gradient(0deg,rgba(245,246,223,.012) 0px,rgba(245,246,223,.012) 1px,transparent 1px,transparent 4px);
 }
@@ -822,8 +825,10 @@ e { color:#b8c9b9; font-size:8px; letter-spacing:.12em; text-transform:uppercase
 .hero-banner {
   --shade: 0.75;
 
-  position: relative;
-  top: -27px;
+  position: sticky;
+  top: 0;
+  z-index: 0;
+  margin-top: -27px;
   isolation: isolate;
   box-sizing: border-box;
   width: 100vw;
@@ -849,8 +854,9 @@ html, body {
   background-image:
     linear-gradient(rgba(0, 0, 0, var(--shade)), rgba(0, 0, 0, calc(var(--shade) + 0.1))),
     var(--hero-image);
-  background-position: center, center calc(50% + var(--hero-scroll-offset, 0px));
+  background-position: center, center;
   background-size: auto, cover;
+  background-attachment: scroll, fixed;
   background-repeat: no-repeat;
 }
 
@@ -904,14 +910,13 @@ html, body {
 }
 
 @media (max-width: 650px) {
-  .hero-banner {
-    
-    top: -20px;
+    .hero-banner {
+    top: 89px;
+    margin-top: -20px;
     min-height: min(82vh, 760px);
     min-height: min(82svh, 760px);
     padding: 32px 16px;
-  }
-  .hero-banner .chalk-hero {
+  }ero-banner .chalk-hero {
     width:100%;
     margin:0 auto;
     padding-left: 12px;
@@ -929,4 +934,28 @@ html, body {
 
 @media (prefers-reduced-motion: reduce) {
   .hero-banner::before { background-position: center, center; }
+}
+
+/* Content that slides up over the pinned hero */
+.home-rest {
+  position: relative;
+  z-index: 1;
+}
+.home-rest::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;               /* full width, same as the hero */
+  transform: translateX(-50%);
+  background: var(--board);
+  box-shadow: 0 -14px 30px rgba(0, 0, 0, 0.35);
+  z-index: -1;
+}
+
+/* Pin the garden just below your nav */
+.vg { --vg-top: var(--nav-h); }
+@media (max-width: 650px) {
+  .vg { --vg-top: 89px; }
 }
