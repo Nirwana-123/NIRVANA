@@ -8,6 +8,9 @@ import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter
 import { ArrowRight, ArrowUp, BookOpen, Facebook, Instagram, Mail, Twitter, Youtube } from 'lucide-react';
 import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
+import Meettheteam from '@/components/Meettheteam';
+
+
 
 const queryClient = new QueryClient();
 const navigation = [
@@ -351,45 +354,16 @@ function AboutPage() {
 }
 
 function TeamPage() {
+   const members = [
+    { name: 'Asha R.',  post: 'Founder and lead mentor', bio: 'Short bio here.', photo: '', instagram: 'nirvana.club', linkedin: 'asha-r', email: 'asha@example.com' },
+    { name: 'Rohan K.', post: 'Maths mentor',            bio: 'Short bio here.', photo: '', instagram: '', linkedin: '', email: '' },
+    { name: 'Meera D.', post: 'Reading buddy',           bio: 'Short bio here.', photo: '', instagram: '', linkedin: '', email: '' },
+  ];
   return (
     <>
       <PageMeta title="Team" description="Meet the mentors, organizers, and volunteers who make The Learning Nook a welcoming place to learn and grow." />
-      <header className="subpage-head">
-        <p className="eyebrow">THE PEOPLE BEHIND THE NOOK</p>
-        <h1 className="page-heading">A little help<br />goes a long way.</h1>
-        <p className="page-intro">The Learning Nook is made possible by people who share their time, care, and curiosity. Together, they make room for every child to feel welcome and keep growing.</p>
-      </header>
-      <section className="content-section">
-        <h2 className="section-heading">Many hands, one welcoming place</h2>
-        <p className="section-lede team-intro">Everyone brings something different. These are some of the ways people help make the club feel like a community.</p>
-        <div className="team-grid">
-          <article className="team-card" style={{ '--team-color': 'var(--rose)' }}>
-            <span className="team-mark" aria-hidden="true">01</span>
-            <p className="eyebrow">LEARNING &amp; ENCOURAGEMENT</p>
-            <h3>Volunteer mentors</h3>
-            <p>Offer patient one-to-one support, share a love of learning, and celebrate each child’s progress along the way.</p>
-          </article>
-          <article className="team-card" style={{ '--team-color': 'var(--sky)' }}>
-            <span className="team-mark" aria-hidden="true">02</span>
-            <p className="eyebrow">CARE &amp; COORDINATION</p>
-            <h3>Club organizers</h3>
-            <p>Help sessions run smoothly and make sure children, families, and volunteers know they have a place here.</p>
-          </article>
-          <article className="team-card" style={{ '--team-color': 'var(--sun)' }}>
-            <span className="team-mark" aria-hidden="true">03</span>
-            <p className="eyebrow">COMMUNITY &amp; CONNECTION</p>
-            <h3>Community supporters</h3>
-            <p>Contribute ideas, resources, and encouragement that help the club keep showing up for children.</p>
-          </article>
-        </div>
-      </section>
-      <section className="content-section two-col">
-        <div>
-          <h2 className="section-heading">There’s room for you, too</h2>
-          <p className="chalk-copy">You don’t need to have everything figured out to get involved. If you’d like to share your time or learn more about the team, we’d be glad to hear from you.</p>
-        </div>
-        <Link href="/contact" className="chalk-button">Say hello <ArrowRight size={14} /></Link>
-      </section>
+      
+      <Meettheteam members={members} />
     </>
   );
 }
