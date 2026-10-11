@@ -64,10 +64,7 @@ function SiteFrame({ children }) {
       <div className="board-frame">
         <main className="board" id="main-content" aria-label={`${pageName} page`}>
           <div className="board-content" key={location}>
-            <div className="topline">
-              <p className="eyebrow">A community learning club</p>
-              <span className="topline-note">Good things grow together</span>
-            </div>
+            
             {children}
             <Footer />
           </div>
