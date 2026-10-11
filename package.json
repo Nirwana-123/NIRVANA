@@ -1,0 +1,17 @@
+{
+  "name": "learning-club-website",
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "pnpm --filter @workspace/learning-club run build",
+    "typecheck:libs": "tsc --build",
+    "typecheck": "pnpm run typecheck:libs && pnpm -r --filter \"./artifacts/**\" --filter \"./scripts\" --if-present run typecheck",
+    "dev": "pnpm --filter @workspace/learning-club run dev"
+  },
+  "private": true,
+  "dependencies": {},
+  "devDependencies": {
+    "prettier": "^3.9.6",
+    "typescript": "~5.9.3"
+  }
+}
