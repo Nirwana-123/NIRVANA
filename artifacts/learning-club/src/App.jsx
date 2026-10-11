@@ -5,7 +5,10 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
-import { ArrowRight, ArrowUp, BookOpen, Facebook, Instagram, Mail, Menu, Twitter, X, Youtube } from 'lucide-react';
+import { ArrowRight, ArrowUp, BookOpen, Facebook, Heart, Instagram, Lightbulb, Mail, Menu, MessageCircle, Sprout, Twitter, Users, X, Youtube } from 'lucide-react';
+import anime from 'animejs/lib/anime.es.js';
+import { stepAvatars } from './step-avatars';
+import './about-heavy.css';
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
@@ -102,7 +105,7 @@ function SiteFrame({ children }) {
       </header>
 
       <div className="board-frame">
-        <main className="board" id="main-content" aria-label={`${pageName} page`}>
+        <main className={`board${location === '/about' ? ' board-about' : ''}`} id="main-content" aria-label={`${pageName} page`}>
           <div className="board-content" key={location}>
             
             {children}
@@ -188,6 +191,119 @@ function PageMeta({ title, description }) {
   }, [title, description]);
   return null;
 }
+
+function prefersReducedMotion() {
+  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function Reveal({
+  as: Tag = 'div',
+  animation = 'up',
+  delay = 0,
+  threshold = 0.2,
+  once = false,
+  className = '',
+  style,
+  children,
+  ...rest
+}) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return undefined;
+
+    if (prefersReducedMotion() || !('IntersectionObserver' in window)) {
+      setVisible(true);
+      return undefined;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const viewportHeight = entry.rootBounds?.height ?? window.innerHeight;
+        const hasReachedThreshold =
+          entry.intersectionRatio >= threshold ||
+          entry.intersectionRect.height >= viewportHeight * threshold;
+        if (hasReachedThreshold) {
+          setVisible(true);
+          if (once) observer.disconnect();
+        } else if (!entry.isIntersecting) {
+          setVisible(false);
+        }
+      },
+      { threshold: [0, 0.05, threshold, 0.5], rootMargin: '0px 0px -8% 0px' },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [threshold, once]);
+
+  return (
+    <Tag
+      ref={ref}
+      className={`reveal reveal-${animation}${visible ? ' is-visible' : ''} ${className}`.trim()}
+      style={{ '--reveal-delay': `${delay}ms`, ...style }}
+      {...rest}
+    >
+      {children}
+    </Tag>
+  );
+}
+
+function ChalkUnderline({ className = '' }) {
+  return (
+    <Reveal as="div" animation="fade" className={`chalk-draw ${className}`} aria-hidden="true">
+      <svg viewBox="0 0 420 20" preserveAspectRatio="none">
+        <path d="M4 12 C110 4 300 4 416 9" pathLength="1" />
+      </svg>
+    </Reveal>
+  );
+}
+
+function ScrollProgress() {
+  const barRef = useRef(null);
+
+  useEffect(() => {
+    if (prefersReducedMotion()) return undefined;
+    let frame = 0;
+
+    const update = () => {
+      frame = 0;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0;
+      barRef.current?.style.setProperty('--progress', progress);
+    };
+    const onScroll = () => {
+      if (!frame) frame = window.requestAnimationFrame(update);
+    };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return <div className="scroll-progress" ref={barRef} aria-hidden="true" />;
+}
+
+const aboutValues = [
+  { num: '01', title: 'Kindness first', text: 'Every child deserves patience, respect, and a warm welcome.' },
+  { num: '02', title: 'Curiosity over perfection', text: 'Questions and mistakes are part of the good work of learning.' },
+  { num: '03', title: 'We belong to each other', text: 'We make a community where children and mentors can show up as themselves.' },
+];
+
+const aboutSteps = [
+  { label: 'First', color: 'var(--sun)', title: 'Education for All', text: 'We provide educational support and guidance to help children strengthen their academic foundations and develop a love for learning.' },
+  { label: 'Second', color: 'var(--sky)', title: 'Building Moral Values', text: 'We encourage honesty, discipline, kindness, respect, and compassion to help children grow into responsible members of society.' },
+  { label: 'Third', color: 'var(--rose)', title: 'Confidence and Creativity', text: 'We motivate children to ask questions, express their ideas, explore their interests, and approach new challenges with confidence.' },
+  { label: 'Fourth', color: 'var(--Mint)', title: 'Life Skills Development', text: 'We help children develop essential life skills such as communication, teamwork, problem-solving, and decision-making to prepare them for everyday challenges.' },
+  { label: 'Fifth', color: 'var(--Peach)', title: 'A Community That Cares', text: 'We foster a friendly, inclusive space where every child feels welcomed, respected, encouraged, and valued.' },
+  { label: 'Sixth', color: 'var(--Lavender)', title: 'Awareness and Social Responsibility', text: 'We encourage children to understand their role in society, respect diversity, care for the environment, and contribute positively to their communities.' },
+];
 
 function ChalkboardHero() {
   const boardRef = useRef(null);
@@ -391,48 +507,444 @@ function HomePage() {
   );
 }
 
+function AboutLetters({ as: Tag = 'span', text, ...rest }) {
+  return (
+    <Tag aria-label={text} {...rest}>
+      {text.split(' ').map((word, i) => (
+        <span className="ah-word" aria-hidden="true" key={i}>
+          {Array.from(word).map((character, j) => <span className="ah-l" key={j}>{character}</span>)}
+        </span>
+      ))}
+    </Tag>
+  );
+}
+
+function AboutWords({ text, ...rest }) {
+  return (
+    <blockquote aria-label={text} {...rest}>
+      {text.split(' ').map((word, i) => (
+        <span className="ah-w" aria-hidden="true" key={i}><span>{word}</span></span>
+      ))}
+    </blockquote>
+  );
+}
+
+const aboutShape = (pointAt) => {
+  const points = [];
+  for (let i = 0; i < 60; i += 1) {
+    const [x, y] = pointAt((i / 60) * Math.PI * 2);
+    points.push(`${(200 + x).toFixed(1)},${(200 + y).toFixed(1)}`);
+  }
+  return points.join(' ');
+};
+
+const aboutShapes = [
+  aboutShape((t) => [152 * Math.sin(t) ** 3, -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * 9.5 + 10]),
+  aboutShape((t) => {
+    const radius = 120 + 58 * Math.cos(5 * t);
+    return [radius * Math.cos(t), radius * Math.sin(t)];
+  }),
+  aboutShape((t) => [150 * Math.cos(t), 150 * Math.sin(t)]),
+];
+
 function AboutPage() {
+  const rootRef = useRef(null);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return undefined;
+
+    const reduce = prefersReducedMotion();
+    const qs = (selector, scope = root) => scope.querySelector(selector);
+    const qa = (selector, scope = root) => Array.from(scope.querySelectorAll(selector));
+    const observers = [];
+    const listeners = [];
+    const confetti = new Set();
+    let raf = 0;
+    if (reduce || !('IntersectionObserver' in window)) root.classList.add('ah-static');
+
+    const listen = (element, type, handler) => {
+      element.addEventListener(type, handler);
+      listeners.push(() => element.removeEventListener(type, handler));
+    };
+    const register = (element, onEnter, onLeave, threshold = 0.3) => {
+      if (reduce || !('IntersectionObserver' in window)) return;
+      onLeave(element);
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const height = entry.rootBounds?.height ?? window.innerHeight;
+          if (entry.intersectionRatio >= threshold || entry.intersectionRect.height >= height * threshold) {
+            onEnter(entry.target);
+          } else if (!entry.isIntersecting) {
+            onLeave(entry.target);
+          }
+        });
+      }, { threshold: [0, 0.05, threshold, 0.5] });
+      observer.observe(element);
+      observers.push(observer);
+    };
+
+    const hero = qs('.ah-hero');
+    const heading = qs('.ah-hero h1');
+    const heroLetters = qa('.ah-l', heading);
+    const subtitle = qs('.ah-sub');
+    const underline = qs('.ah-u path');
+    const dotsEl = qs('.ah-dots');
+    const cols = Math.min(40, Math.ceil(window.innerWidth / 38));
+    const rows = Math.min(24, Math.ceil(hero.offsetHeight / 38));
+    dotsEl.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+    dotsEl.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
+    dotsEl.innerHTML = '<i></i>'.repeat(cols * rows);
+    const dots = qa('i', dotsEl);
+    const grid = { grid: [cols, rows] };
+    const wave = anime({
+      targets: dots,
+      scale: [{ value: 0.3, duration: 0 }, { value: 2.4, duration: 500, easing: 'easeOutSine' }, { value: 1, duration: 900, easing: 'easeInOutQuad' }],
+      opacity: [{ value: 0.2, duration: 0 }, { value: 1, duration: 500 }, { value: 0.4, duration: 900 }],
+      delay: anime.stagger(70, { ...grid, from: 'center' }),
+      endDelay: 700,
+      loop: true,
+      autoplay: false,
+    });
+
+    const onHeroClick = (event) => {
+      if (reduce) return;
+      const bounds = dotsEl.getBoundingClientRect();
+      const col = Math.min(cols - 1, Math.max(0, Math.floor(((event.clientX - bounds.left) / bounds.width) * cols)));
+      const row = Math.min(rows - 1, Math.max(0, Math.floor(((event.clientY - bounds.top) / bounds.height) * rows)));
+      anime({
+        targets: dots,
+        backgroundColor: [{ value: '#f2c14e', duration: 150 }, { value: '#f5f1e6', duration: 800 }],
+        translateY: [{ value: -14, duration: 200 }, { value: 0, duration: 600 }],
+        delay: anime.stagger(35, { ...grid, from: row * cols + col }),
+      });
+    };
+    const onHeroMove = (event) => {
+      if (reduce) return;
+      const x = event.clientX / window.innerWidth - 0.5;
+      const y = event.clientY / window.innerHeight - 0.5;
+      heading.style.transform = `rotateY(${x * 14}deg) rotateX(${-y * 10}deg)`;
+    };
+    const onHeroLeave = () => { heading.style.transform = ''; };
+    listen(hero, 'click', onHeroClick);
+    listen(hero, 'mousemove', onHeroMove);
+    listen(hero, 'mouseleave', onHeroLeave);
+
+    register(hero, () => {
+      wave.play();
+      anime.remove(heroLetters);
+      anime({
+        targets: heroLetters,
+        translateY: [150, 0],
+        rotateX: [-100, 0],
+        rotateZ: () => [anime.random(-25, 25), 0],
+        opacity: [0, 1],
+        delay: anime.stagger(55, { from: 'center' }),
+        duration: 1500,
+        easing: 'easeOutElastic(1, .55)',
+      });
+      anime({ targets: subtitle, opacity: [0, 1], translateY: [20, 0], delay: 900, duration: 800, easing: 'easeOutCubic' });
+      anime({ targets: underline, strokeDashoffset: [anime.setDashoffset, 0], delay: 1100, duration: 1200, easing: 'easeInOutSine' });
+    }, () => {
+      wave.pause();
+      anime.set(heroLetters, { opacity: 0 });
+      anime.set(subtitle, { opacity: 0 });
+      anime.set(underline, { strokeDashoffset: anime.setDashoffset });
+    });
+
+    qa('.ah-rv').forEach((element) => {
+      const isHeading = element.tagName === 'H2';
+      const targets = isHeading ? qa('.ah-l', element) : element;
+      register(element, () => {
+        anime.remove(targets);
+        anime({
+          targets,
+          opacity: [0, 1],
+          translateY: [isHeading ? 70 : 50, 0],
+          rotate: [isHeading ? 10 : 0, 0],
+          delay: isHeading ? anime.stagger(30) : 0,
+          duration: 1000,
+          easing: 'easeOutExpo',
+        });
+      }, () => {
+        anime.remove(targets);
+        anime.set(targets, { opacity: 0 });
+      });
+    });
+
+    const quote = qs('.ah-q');
+    const quoteWords = qa('.ah-w > span', quote);
+    register(quote, () => {
+      anime.remove(quoteWords);
+      anime({ targets: quoteWords, translateY: ['115%', 0], rotateZ: [10, 0], delay: () => anime.random(0, 600), duration: 1000, easing: 'easeOutExpo' });
+    }, () => {
+      anime.remove(quoteWords);
+      anime.set(quoteWords, { translateY: '115%', rotateZ: 10 });
+    }, 0.4);
+
+    const polygon = qs('.ah-poly');
+    polygon.setAttribute('points', aboutShapes[0]);
+    polygon.setAttribute('fill', '#e8a0a8');
+    polygon.setAttribute('stroke', '#e8a0a8');
+    const keyframes = (start, end) => [
+      { value: start, delay: 300, duration: 700, easing: 'easeInOutCubic' },
+      { value: end, delay: 800, duration: 700, easing: 'easeInOutCubic' },
+    ];
+    const morph = anime({
+      targets: polygon,
+      points: keyframes(aboutShapes[1], aboutShapes[2]),
+      fill: keyframes('#8cc3dd', '#a9c8a2'),
+      stroke: keyframes('#8cc3dd', '#a9c8a2'),
+      strokeWidth: [{ value: 7, duration: 1500, easing: 'easeInOutSine' }, { value: 3, duration: 1500, easing: 'easeInOutSine' }],
+      autoplay: false,
+    });
+    const ring = qs('.ah-ring');
+    const meter = qs('.ah-meter i');
+    const values = qa('.ah-val');
+    let currentValue = 0;
+
+    qa('.ah-step').forEach((card, index) => {
+      register(card, () => {
+        card.classList.add('is-visible');
+        anime.remove(card);
+        anime({ targets: card, opacity: 1, translateY: 0, rotateX: 0, scale: 1, delay: (index % 3) * 140, duration: 1200, easing: 'easeOutElastic(1, .7)' });
+      }, () => {
+        card.classList.remove('is-visible');
+        anime.remove(card);
+        anime.set(card, { opacity: 0, translateY: 90, rotateX: -60, scale: 0.9 });
+      }, 0.2);
+
+      const tilt = qs('.ah-tilt', card);
+      const onTiltMove = (event) => {
+        if (reduce) return;
+        const bounds = tilt.getBoundingClientRect();
+        const x = (event.clientX - bounds.left) / bounds.width - 0.5;
+        const y = (event.clientY - bounds.top) / bounds.height - 0.5;
+        tilt.style.transform = `perspective(700px) rotateY(${x * 16}deg) rotateX(${-y * 16}deg) scale(1.03)`;
+        tilt.style.setProperty('--mx', `${(x + 0.5) * 100}%`);
+        tilt.style.setProperty('--my', `${(y + 0.5) * 100}%`);
+        tilt.style.setProperty('--g', 1);
+      };
+      const onTiltLeave = () => {
+        tilt.style.transform = '';
+        tilt.style.setProperty('--g', 0);
+      };
+      listen(tilt, 'mousemove', onTiltMove);
+      listen(tilt, 'mouseleave', onTiltLeave);
+    });
+
+    const big = qs('.ah-big');
+    const bigLetters = qa('.ah-l', big);
+    register(big, () => {
+      anime.remove(bigLetters);
+      anime({
+        targets: bigLetters,
+        translateY: [-220, 0],
+        rotate: () => [anime.random(-40, 40), 0],
+        opacity: [0, 1],
+        delay: anime.stagger(50),
+        duration: 1400,
+        easing: 'easeOutElastic(1, .6)',
+        complete: () => anime({
+          targets: bigLetters,
+          translateY: [{ value: -14, duration: 500 }, { value: 0, duration: 500 }],
+          delay: anime.stagger(80),
+          loop: true,
+          easing: 'easeInOutSine',
+        }),
+      });
+    }, () => {
+      anime.remove(bigLetters);
+      anime.set(bigLetters, { opacity: 0 });
+    }, 0.4);
+
+    const button = qs('.ah-btn');
+    const onButtonClick = (event) => {
+      if (reduce) return;
+      anime({ targets: event.currentTarget, scale: [0.88, 1], duration: 800, easing: 'easeOutElastic(1, .5)' });
+      for (let i = 0; i < 34; i += 1) {
+        const chip = document.createElement('i');
+        const size = anime.random(6, 13);
+        chip.className = 'ah-chip';
+        chip.style.cssText = `left:${event.clientX}px;top:${event.clientY}px;width:${size}px;height:${size}px;background:${['#f2c14e', '#8cc3dd', '#e8a0a8', '#a9c8a2', '#f0b58f', '#b9a9d9'][i % 6]}`;
+        document.body.appendChild(chip);
+        confetti.add(chip);
+        const angle = Math.random() * Math.PI * 2;
+        const distance = anime.random(90, 300);
+        anime({
+          targets: chip,
+          translateX: Math.cos(angle) * distance,
+          translateY: Math.sin(angle) * distance + anime.random(20, 90),
+          rotate: anime.random(-540, 540),
+          scale: [1, 0],
+          opacity: [1, 0],
+          duration: anime.random(900, 1500),
+          easing: 'easeOutCubic',
+          complete: () => {
+            chip.remove();
+            confetti.delete(chip);
+          },
+        });
+      }
+    };
+    listen(button, 'click', onButtonClick);
+
+    const doodleLayer = qs('.ah-doodles');
+    doodleLayer.innerHTML = '';
+    const doodles = [];
+    const glyphs = ['✳', '★', '✦', '+', '✿'];
+    const colors = ['#f2c14e', '#8cc3dd', '#e8a0a8', '#a9c8a2', '#f0b58f', '#b9a9d9'];
+    if (!reduce) {
+      for (let i = 0; i < 16; i += 1) {
+        const element = document.createElement('i');
+        element.textContent = glyphs[i % glyphs.length];
+        element.style.left = `${anime.random(2, 96)}%`;
+        element.style.fontSize = `${anime.random(18, 46)}px`;
+        element.style.color = colors[i % colors.length];
+        doodleLayer.appendChild(element);
+        doodles.push({ element, top: anime.random(0, window.innerHeight), speed: anime.random(5, 16) / 10 });
+      }
+    }
+
+    const row1 = qs('.ah-row');
+    const row2 = qs('.ah-row.ah-o');
+    let offset1 = 0;
+    let offset2 = 0;
+    let velocity = 0;
+    let lastY = window.scrollY;
+    const tick = () => {
+      const y = window.scrollY;
+      velocity += ((y - lastY) - velocity) * 0.12;
+      lastY = y;
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      qs('.ah-bar').style.setProperty('--p', maxScroll > 0 ? Math.min(1, y / maxScroll) : 0);
+
+      if (!reduce) {
+        const speed = 1.2 + Math.abs(velocity) * 0.5;
+        const skew = `skewX(${-velocity * 0.5}deg)`;
+        const width1 = row1.scrollWidth / 4;
+        const width2 = row2.scrollWidth / 4;
+        if (width1 > 0 && width2 > 0) {
+          offset1 += speed;
+          offset2 += speed;
+          row1.style.transform = `translateX(${-(offset1 % width1)}px) ${skew}`;
+          row2.style.transform = `translateX(${(offset2 % width2) - width2}px) ${skew}`;
+        }
+        const height = window.innerHeight + 120;
+        doodles.forEach(({ element, top, speed: drift }) => {
+          const yOffset = ((((top - y * drift) % height) + height) % height) - 60;
+          element.style.transform = `translateY(${yOffset}px) rotate(${y * drift * 0.2}deg)`;
+        });
+      }
+
+      const pin = qs('.ah-pin');
+      if (!reduce) {
+        const bounds = pin.getBoundingClientRect();
+        const range = Math.max(1, pin.offsetHeight - window.innerHeight);
+        const progress = Math.max(0, Math.min(1, -bounds.top / range));
+        morph.seek(progress * 3000);
+        ring.style.transform = `rotate(${progress * 540}deg)`;
+        meter.style.setProperty('--p', progress);
+        const active = progress < 0.22 ? 0 : progress < 0.72 ? 1 : 2;
+        if (active !== currentValue) {
+          currentValue = active;
+          values.forEach((value, index) => value.classList.toggle('on', index === active));
+        }
+        raf = window.requestAnimationFrame(tick);
+      }
+    };
+    if (!reduce) tick();
+
+    return () => {
+      window.cancelAnimationFrame(raf);
+      observers.forEach((observer) => observer.disconnect());
+      listeners.forEach((removeListener) => removeListener());
+      anime.remove(qa('*'));
+      confetti.forEach((chip) => {
+        anime.remove(chip);
+        chip.remove();
+      });
+    };
+  }, []);
+
   return (
     <>
       <PageMeta title="About" description="Meet the values and approach behind The Learning Nook, a supportive community learning club." />
-      <header className="subpage-head">
-        {/* <p className="eyebrow">OUR LITTLE STORY</p> */}
-        <h1 className="page-heading" style={{marginTop:'30px'}}>About Nirwana</h1>
-        <p className="page-intro">Education, Values, and a Brighter Future</p>
-      </header>
-      <section className="content-section two-col">
-        <div className="chalk-copy">
-          <h2 className="section-heading">More than homework help</h2>
-          <p>At Nirwana, we believe every child deserves the opportunity to learn, grow, and dream without limits. We are a learning club dedicated to educating underprivileged children, supporting their academic journey, and nurturing the values that help them become kind, confident, and responsible individuals.</p>
-          <p>We aim to create a welcoming environment where children feel supported, discover their potential, and understand that their circumstances do not define their future.</p>
+      <div className="ah" ref={rootRef}>
+        <div className="ah-bar" aria-hidden="true" />
+        <div className="ah-doodles" aria-hidden="true" />
+        <div className="ah-main">
+          <section className="ah-hero">
+            <div className="ah-dots" aria-hidden="true" />
+            <div className="ah-hero-in">
+              <AboutLetters as="h1" text="About Nirwana" />
+              <svg className="ah-u" viewBox="0 0 420 20" aria-hidden="true">
+                <path d="M4 12 C110 4 300 4 416 9" fill="none" stroke="#f2c14e" strokeWidth="3" strokeLinecap="round" />
+              </svg>
+              <p className="ah-sub">Education, Values, and a Brighter Future</p>
+            </div>
+            <div className="ah-hint">SCROLL · CLICK THE DOTS</div>
+          </section>
+
+          <div className="ah-mq" aria-hidden="true">
+            <div className="ah-row">{Array.from({ length: 4 }, (_, i) => <span key={i}>LEARN ✳ GROW ✳ SHINE ✳</span>)}</div>
+            <div className="ah-row ah-o">{Array.from({ length: 4 }, (_, i) => <span key={i}>KINDNESS ✦ CURIOSITY ✦ BELONGING ✦</span>)}</div>
+          </div>
+
+          <section className="ah-wrap">
+            <AboutLetters as="h2" className="ah-rv" text="More than homework help" />
+            <p className="ah-rv">At Nirwana, we believe every child deserves the opportunity to learn, grow, and dream without limits. We are a learning club dedicated to educating underprivileged children, supporting their academic journey, and nurturing the values that help them become kind, confident, and responsible individuals.</p>
+            <p className="ah-rv">We aim to create a welcoming environment where children feel supported, discover their potential, and understand that their circumstances do not define their future.</p>
+            <AboutWords className="ah-q" text="“You don’t have to know it yet. We can figure it out together.”" />
+          </section>
+
+          <section className="ah-pin">
+            <div className="ah-pin-in">
+              <div className="ah-shape">
+                <svg viewBox="0 0 400 400" aria-hidden="true">
+                  <circle className="ah-ring" cx="200" cy="200" r="190" fill="none" stroke="#f5f1e6" strokeOpacity=".4" strokeWidth="3" strokeDasharray="2 12" strokeLinecap="round" />
+                  <polygon className="ah-poly" fillOpacity=".28" strokeWidth="3" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <div>
+                <h2>What we hold close</h2>
+                <p className="ah-pin-lede">The way we learn matters as much as what we learn.</p>
+                <div className="ah-vals">
+                  {aboutValues.map((value, index) => (
+                    <div className={`ah-val${index === 0 ? ' on' : ''}`} key={value.num}>
+                      <b>{value.num}</b><h3>{value.title}</h3><p>{value.text}</p>
+                    </div>
+                  ))}
+                </div>
+                <div className="ah-meter"><i /></div>
+              </div>
+            </div>
+          </section>
+
+          <section className="ah-wrap ah-work">
+            <AboutLetters as="h2" className="ah-rv ah-center" text="What We Do" />
+            <div className="ah-steps">
+              {aboutSteps.map((step, index) => (
+                <article className="ah-step" style={{ '--sc': step.color }} key={step.label}>
+                  <div className="ah-tilt">
+                    <div className="ah-step-avatar" aria-hidden="true" dangerouslySetInnerHTML={{ __html: stepAvatars[index] }} />
+                    <em className="ah-lb">{step.label}</em>
+                    <h3>{step.title}</h3>
+                    <p>{step.text}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="ah-outro">
+            <div>
+              <AboutLetters as="div" className="ah-big" text="Learn together." />
+              <Link className="ah-btn" href="/contact">Come say hello</Link>
+            </div>
+          </section>
         </div>
-        <aside className="quote-card">
-          <blockquote>“You don’t have to know it yet. We can figure it out together.”</blockquote>
-          <p>A thought we try to bring to every lesson, project, and conversation.</p>
-        </aside>
-      </section>
-      <section className="content-section two-col">
-        <div>
-          <h2 className="section-heading">What we hold close</h2>
-          <p className="section-lede" style={{ margin: '0 0 20px' }}>The way we learn matters as much as what we learn.</p>
-        </div>
-        <div className="values-list">
-          <div className="value-row"><span className="value-num">01</span><div><h3>Kindness first</h3><p>Every child deserves patience, respect, and a warm welcome.</p></div></div>
-          <div className="value-row"><span className="value-num">02</span><div><h3>Curiosity over perfection</h3><p>Questions and mistakes are part of the good work of learning.</p></div></div>
-          <div className="value-row"><span className="value-num">03</span><div><h3>We belong to each other</h3><p>We make a community where children and mentors can show up as themselves.</p></div></div>
-        </div>
-      </section>
-      <section className="content-section">
-        <h2 className="section-heading center-heading">What We Do</h2>
-        <div className="steps">
-          <article className="step" style={{ '--step-color': 'var(--sun)' }}><span>First</span><h3>Education for All</h3><p>We provide educational support and guidance to help children strengthen their academic foundations and develop a love for learning.</p></article>
-          <article className="step" style={{ '--step-color': 'var(--sky)' }}><span>Second</span><h3>Building Moral Values</h3><p>We encourage honesty, discipline, kindness, respect, and compassion to help children grow into responsible members of society.</p></article>
-          <article className="step" style={{ '--step-color': 'var(--rose)' }}><span>Third</span><h3>Confidence and Creativity</h3><p>We motivate children to ask questions, express their ideas, explore their interests, and approach new challenges with confidence.</p></article>
-          <article className="step" style={{ '--step-color': 'var(--Mint)' }}><span>Fourth</span><h3>Life Skills Development</h3><p>We help children develop essential life skills such as communication, teamwork, problem-solving, and decision-making to prepare them for everyday challenges.</p></article>
-          <article className="step" style={{ '--step-color': 'var(--Peach)' }}><span>Fifth</span><h3>A Community That Cares</h3><p>We foster a friendly, inclusive space where every child feels welcomed, respected, encouraged, and valued.</p></article>
-          <article className="step" style={{ '--step-color': 'var(--Lavender)' }}><span>Sixth</span><h3>Awareness and Social Responsibility</h3><p>We encourage children to understand their role in society, respect diversity, care for the environment, and contribute positively to their communities.</p></article>
-        </div>
-      </section>
+      </div>
     </>
   );
 }
