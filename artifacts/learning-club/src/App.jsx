@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
-import { ArrowRight, ArrowUp, BookOpen, Facebook, Instagram, Mail, Twitter, Youtube } from 'lucide-react';
+import { ArrowRight, ArrowUp, BookOpen, Facebook, Instagram, Mail, Menu, Twitter, X, Youtube } from 'lucide-react';
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
@@ -31,7 +31,23 @@ function SiteFrame({ children }) {
   const [location] = useLocation();
   const pageName = navigation.find((item) => item.href === location)?.title ?? 'Home';
 
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [location]);
+
+  useEffect(() => {
+    if (!menuOpen) return undefined;
+    const onKey = (event) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [menuOpen]);
+
   return (
+
     <div className="site-shell">
       <a className="skip-link" href="#main-content">Skip to page content</a>
       <aside className="side-rail" aria-label="Main navigation">
@@ -59,13 +75,24 @@ function SiteFrame({ children }) {
         </div>
       </aside>
 
-      <header className="mobile-nav">
+      <header className={`mobile-nav${menuOpen ? ' is-open' : ''}`}>
         <div className="mobile-nav-top">
-          <Link href="/" className="mobile-brand">NIRVANA</Link>
-           <BrandLogo className="mobile-logo" />
-          <span className="mobile-tagline">A little room to grow</span>
+          <Link href="/" className="mobile-home" aria-label="NIRVANA home">
+            <BrandLogo className="mobile-logo" />
+            <span className="mobile-brand-name">NIRVANA</span>
+          </Link>
+          <button
+            type="button"
+            className="menu-toggle"
+            aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <X size={22} aria-hidden="true" /> : <Menu size={22} aria-hidden="true" />}
+          </button>
         </div>
-        <nav className="mobile-links" aria-label="Main navigation">
+        <nav id="mobile-navigation" className="mobile-links" aria-label="Main navigation">
           {navigation.map((item) => (
             <Link key={item.href} href={item.href} aria-current={location === item.href ? 'page' : undefined}>
               {item.label}
@@ -369,15 +396,15 @@ function AboutPage() {
     <>
       <PageMeta title="About" description="Meet the values and approach behind The Learning Nook, a supportive community learning club." />
       <header className="subpage-head">
-        <p className="eyebrow">OUR LITTLE STORY</p>
-        <h1 className="page-heading">A table with room<br />for one more.</h1>
-        <p className="page-intro">The Learning Nook is built around a simple idea: children do well when they feel safe, supported, and known.</p>
+        {/* <p className="eyebrow">OUR LITTLE STORY</p> */}
+        <h1 className="page-heading" style={{marginTop:'30px'}}>About Nirwana</h1>
+        <p className="page-intro">Education, Values, and a Brighter Future</p>
       </header>
       <section className="content-section two-col">
         <div className="chalk-copy">
           <h2 className="section-heading">More than homework help</h2>
-          <p>We’re a community club where volunteer mentors share time, attention, and encouragement with children who could use an extra hand with learning.</p>
-          <p>There’s no one right way to learn here. We listen first, celebrate effort, and make room for the small breakthroughs that add up to confidence.</p>
+          <p>At Nirwana, we believe every child deserves the opportunity to learn, grow, and dream without limits. We are a learning club dedicated to educating underprivileged children, supporting their academic journey, and nurturing the values that help them become kind, confident, and responsible individuals.</p>
+          <p>We aim to create a welcoming environment where children feel supported, discover their potential, and understand that their circumstances do not define their future.</p>
         </div>
         <aside className="quote-card">
           <blockquote>“You don’t have to know it yet. We can figure it out together.”</blockquote>
@@ -396,11 +423,14 @@ function AboutPage() {
         </div>
       </section>
       <section className="content-section">
-        <h2 className="section-heading center-heading">A session, in three gentle steps</h2>
+        <h2 className="section-heading center-heading">What We Do</h2>
         <div className="steps">
-          <article className="step" style={{ '--step-color': 'var(--sun)' }}><span>First</span><h3>Settle in</h3><p>We start with a hello, a check-in, and a little time to feel at home.</p></article>
-          <article className="step" style={{ '--step-color': 'var(--sky)' }}><span>Then</span><h3>Learn by doing</h3><p>We work through school tasks or follow a curious idea together.</p></article>
-          <article className="step" style={{ '--step-color': 'var(--rose)' }}><span>Always</span><h3>Notice the good</h3><p>We finish by recognizing effort and choosing a next small step.</p></article>
+          <article className="step" style={{ '--step-color': 'var(--sun)' }}><span>First</span><h3>Education for All</h3><p>We provide educational support and guidance to help children strengthen their academic foundations and develop a love for learning.</p></article>
+          <article className="step" style={{ '--step-color': 'var(--sky)' }}><span>Second</span><h3>Building Moral Values</h3><p>We encourage honesty, discipline, kindness, respect, and compassion to help children grow into responsible members of society.</p></article>
+          <article className="step" style={{ '--step-color': 'var(--rose)' }}><span>Third</span><h3>Confidence and Creativity</h3><p>We motivate children to ask questions, express their ideas, explore their interests, and approach new challenges with confidence.</p></article>
+          <article className="step" style={{ '--step-color': 'var(--Mint)' }}><span>Fourth</span><h3>Life Skills Development</h3><p>We help children develop essential life skills such as communication, teamwork, problem-solving, and decision-making to prepare them for everyday challenges.</p></article>
+          <article className="step" style={{ '--step-color': 'var(--Peach)' }}><span>Fifth</span><h3>A Community That Cares</h3><p>We foster a friendly, inclusive space where every child feels welcomed, respected, encouraged, and valued.</p></article>
+          <article className="step" style={{ '--step-color': 'var(--Lavender)' }}><span>Sixth</span><h3>Awareness and Social Responsibility</h3><p>We encourage children to understand their role in society, respect diversity, care for the environment, and contribute positively to their communities.</p></article>
         </div>
       </section>
     </>
