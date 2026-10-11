@@ -16,6 +16,7 @@ const navigation = [
   { label: 'CONTACT', href: '/contact', title: 'Contact' },
 ];
 
+
 function SiteFrame({ children }) {
   const [location] = useLocation();
   const pageName = navigation.find((item) => item.href === location)?.title ?? 'Home';
@@ -39,11 +40,11 @@ function SiteFrame({ children }) {
         </nav>
         <div className="rail-bottom">
           <div className="rail-doodle" aria-hidden="true">✳ &nbsp; learn together</div>
-          <div className="rail-invite">
+          {/* <div className="rail-invite">
             There’s a place for you here.
             <br />
             <Link href="/contact">COME SAY HELLO <ArrowRight size={12} /></Link>
-          </div>
+          </div> */}
         </div>
       </aside>
 
@@ -107,6 +108,7 @@ function PageMeta({ title, description }) {
 function ChalkboardHero() {
   const boardRef = useRef(null);
   const stickRef = useRef(null);
+  const bannerRef = useRef(null);
   const underlineRef = useRef(null);
   const runRef = useRef(0);
 
@@ -132,6 +134,7 @@ function ChalkboardHero() {
         return span;
       });
     };
+
 
     const moveStick = (span) => {
       const boardBounds = board.getBoundingClientRect();
@@ -193,19 +196,63 @@ function ChalkboardHero() {
     };
   }, []);
 
+  useEffect(() => {
+    const banner = bannerRef.current;
+    if (!banner) return undefined;
+
+    const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+    const updatePosition = () => {
+      if (motionPreference.matches || frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const offset = Math.round(-banner.getBoundingClientRect().top * 0.12);
+        banner.style.setProperty('--hero-scroll-offset', `${offset}px`);
+      });
+    };
+    const handleMotionPreferenceChange = () => {
+      if (motionPreference.matches) {
+        if (frame) window.cancelAnimationFrame(frame);
+        frame = 0;
+        banner.style.removeProperty('--hero-scroll-offset');
+      } else {
+        updatePosition();
+      }
+    };
+
+    updatePosition();
+    window.addEventListener('scroll', updatePosition, { passive: true });
+    window.addEventListener('resize', updatePosition);
+    motionPreference.addEventListener('change', handleMotionPreferenceChange);
+
+    return () => {
+      window.removeEventListener('scroll', updatePosition);
+      window.removeEventListener('resize', updatePosition);
+      motionPreference.removeEventListener('change', handleMotionPreferenceChange);
+      if (frame) window.cancelAnimationFrame(frame);
+      banner.style.removeProperty('--hero-scroll-offset');
+    };
+  }, []);
+
   return (
     <>
+    <section
+    className="hero-banner"  
+    ref={bannerRef}
+    style={{ '--hero-image': `url(${import.meta.env.BASE_URL}hero.png)` }}
+  >
       <svg className="chalk-filter" aria-hidden="true" focusable="false">
         <filter id="chalk-rough" x="-5%" y="-5%" width="110%" height="110%">
           <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
           <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" />
         </filter>
       </svg>
+     
       <section className="home-hero chalk-hero" ref={boardRef} aria-label="Learn. Grow. Shine.">
-        {/* <p className="chalk-hero-tag" data-write>pull up a chair, there's room to grow</p> */}
+        <p className="chalk-hero-tag" data-write>pull up a chair, there's room to grow</p>
         <h1 className="chalk-hero-line" data-write>NIRVANA</h1>
         {/* <h1 className="chalk-hero-line" data-write>Grow.</h1> */}
-        <h6 className="chalk-hero-line chalk-yellow" style={{fontSize:'50px'}} data-write>A Reason to Smile</h6>
+        <h2 className="chalk-hero-line chalk-hero-subtitle chalk-yellow" data-write>A Reason to Smile</h2>
         <svg className="chalk-underline" ref={underlineRef} viewBox="0 0 420 20" aria-hidden="true">
           <path d="M4 12 C110 4 300 4 416 9" />
         </svg>
@@ -219,6 +266,7 @@ function ChalkboardHero() {
           <button type="button" className="chalk-replay">Write again</button>
         </div>
       </section>
+       </section>
     </>
   );
 }
