@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ArrowRight, BookOpen, Mail } from 'lucide-react';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
-
+import { ArrowRight, ArrowUp, BookOpen, Facebook, Instagram, Mail, Twitter, Youtube } from 'lucide-react';
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
@@ -16,6 +15,17 @@ const navigation = [
   { label: 'CONTACT', href: '/contact', title: 'Contact' },
 ];
 
+function BrandLogo({ className = '' }) {
+  return (
+    <img
+      className={`brand-logo ${className}`}
+      src={`${import.meta.env.BASE_URL}logo1.jpeg`}
+      alt=""
+      width="44"
+      height="44"
+    />
+  );
+}
 
 function SiteFrame({ children }) {
   const [location] = useLocation();
@@ -26,6 +36,7 @@ function SiteFrame({ children }) {
       <a className="skip-link" href="#main-content">Skip to page content</a>
       <aside className="side-rail" aria-label="Main navigation">
         <Link href="/" className="brand-mark" aria-label="NIRVANA home">
+         <BrandLogo />
           <div className="brand-name">NIRVANA</div>
           <div className="brand-note">A Reason To Smile</div>
         </Link>
@@ -51,6 +62,7 @@ function SiteFrame({ children }) {
       <header className="mobile-nav">
         <div className="mobile-nav-top">
           <Link href="/" className="mobile-brand">NIRVANA</Link>
+           <BrandLogo className="mobile-logo" />
           <span className="mobile-tagline">A little room to grow</span>
         </div>
         <nav className="mobile-links" aria-label="Main navigation">
@@ -67,24 +79,69 @@ function SiteFrame({ children }) {
           <div className="board-content" key={location}>
             
             {children}
-            <Footer />
+           
           </div>
         </main>
       </div>
+       <Footer />
     </div>
   );
 }
 
+const socials = [
+  { label: 'Instagram', href: 'https://instagram.com/', Icon: Instagram },
+  { label: 'Facebook', href: 'https://facebook.com/', Icon: Facebook },
+  { label: 'Twitter', href: 'https://twitter.com/', Icon: Twitter },
+  { label: 'YouTube', href: 'https://youtube.com/', Icon: Youtube },
+  { label: 'Email', href: 'mailto:hello@example.com', Icon: Mail },
+];
+
 function Footer() {
+  const [showTop, setShowTop] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 300);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <footer className="page-footer">
-      <div>
-        <div className="footer-brand">The Learning Nook</div>
-        <span>A welcoming place to learn, try, and belong.</span>
+    <footer className="site-footer">
+      <div className="footer-inner">
+        <div className="footer-left">
+          <div className="footer-logos">
+            <img src={`${import.meta.env.BASE_URL}logo1.jpeg`} alt="" />
+            <img src={`${import.meta.env.BASE_URL}logo2.png`} alt="" />
+          </div>
+          <div className="footer-title">NIRVANA</div>
+          <div className="footer-sub">A Reason to Smile</div>
+        </div>
+
+        <div className="footer-right">
+          <nav className="footer-links" aria-label="Footer navigation">
+            {navigation.map((item) => (
+              <Link key={item.href} href={item.href}>{item.title}</Link>
+            ))}
+          </nav>
+          <div className="footer-socials">
+            {socials.map(({ label, href, Icon }) => (
+              <a key={label} href={href} aria-label={label} target="_blank" rel="noreferrer">
+                <Icon size={30} />
+              </a>
+            ))}
+          </div>
+        </div>
       </div>
-      <nav className="footer-nav" aria-label="Footer navigation">
-        {navigation.slice(1).map((item) => <Link key={item.href} href={item.href}>{item.title}</Link>)}
-      </nav>
+
+      <button
+        type="button"
+        className={`back-to-top${showTop ? ' is-visible' : ''}`}
+        aria-label="Back to top"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      >
+        <ArrowUp size={24} />
+      </button>
     </footer>
   );
 }

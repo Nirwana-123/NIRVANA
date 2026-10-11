@@ -532,11 +532,107 @@ a { color: inherit; }
 .contact-aside ul { list-style:none; padding:0; margin:15px 0 0; display:grid; gap:12px; }
 .contact-aside li { color:#d2dbcd; font-size:11px; line-height:1.6; }
 .contact-aside strong { color:var(--sun); display:block; font-size:9px; letter-spacing:.13em; margin-bottom:2px; }
-.page-footer { display:flex; justify-content:space-between; align-items:center; gap:15px; padding-top:26px; margin-top:28px; border-top:1px dashed rgba(236,239,219,.25); color:#aebfae; font-size:9px; }
-.footer-brand { font:19px 'Patrick Hand', cursive; color:#d9dfd0; }
-.footer-nav { display:flex; gap:13px; flex-wrap:wrap; }
-.footer-nav a { text-decoration:none; color:#c8d4c7; letter-spacing:.08em; }
-.footer-nav a:hover { color:var(--sun); }
+.site-footer {
+  position: relative;
+  background: #000;
+  color: #fff;
+  padding: 36px clamp(20px, 8vw, 160px) 34px;
+}
+
+.brand-mark {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+  margin-left: 40px;
+}
+
+.brand-logo {
+  height: 44px;
+  width: 44px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  border-radius: 50%;        /* remove this line if your logo isn't round */
+}
+
+.brand-text { display: block; }
+
+.footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 32px;
+  flex-wrap: wrap;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* left side */
+.footer-logos { display: flex; gap: 20px; margin-bottom: 14px; }
+.footer-logos img { height: 96px; width: 96px; object-fit: contain; border-radius: 50%; }
+.footer-title { font-size: 38px; line-height: 1.1; letter-spacing: .02em; padding: 2px 20px; }
+.footer-sub { font-size: 17px; margin-top: 8px; color: #f1f1f1; padding: 0px 25px; }
+
+/* right side */
+.footer-right { display: flex; flex-direction: column; align-items: center; margin-top: 52px; }
+.footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 36px;
+  padding: 0 18px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, .85);
+}
+.footer-links a { color: #fff; text-decoration: none; font-size: 17px; transition: color .2s; }
+.footer-links a:hover { color: var(--sun); }
+
+.footer-socials {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  margin-top: 16px;
+  width: 100%;
+  padding: 0 18px;
+}
+.footer-socials a { color: #fff; display: grid; place-items: center; transition: color .2s, transform .2s; }
+.footer-socials a:hover { color: var(--sun); transform: translateY(-2px); }
+
+/* back to top */
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 30;
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #7a7a7a;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity .25s, transform .25s, background .2s;
+}
+.back-to-top.is-visible { opacity: 1; pointer-events: auto; transform: none; }
+.back-to-top:hover { background: #999; }
+
+/* tablet and phone */
+@media (max-width: 850px) {
+  .footer-inner { flex-direction: column; align-items: center; text-align: center; }
+  .footer-right { margin-top: 8px; }
+  .footer-links a { font-size: 19px; }
+}
+@media (max-width: 480px) {
+  .footer-logos img { height: 76px; width: 76px; }
+  .footer-title { font-size: 30px; }
+  .footer-links { gap: 6px 22px; }
+  .footer-socials { gap: 18px; }
+}
 .mobile-nav { display:none; }
 .not-found { text-align:center; padding:100px 15px; }
 
@@ -766,6 +862,35 @@ html, body {
   transform: none;
 }
 
+.brand-mark {
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.brand-logo {
+  display: block;
+  height: 44px;
+  width: 44px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  border-radius: 50%;          /* remove this line if the logo isn't round */
+}
+
+.brand-text { display: block; }
+
+/* mobile header */
+.mobile-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.mobile-logo {
+  height: 30px;
+  width: 30px;
+}
 @media (max-width: 1100px) {
   .hero-banner {
     min-height: min(88vh, 820px);
