@@ -1,0 +1,243 @@
+.gl-tools { display: flex; justify-content: center; margin: 6px 0 0; }
+
+.gl-breeze {
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1e3b31;
+  background: #f2c14e;
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: scale 0.2s;
+}
+.gl-breeze:hover { scale: 1.06; }
+.gl-breeze:active { scale: 0.95; }
+
+.gl-wall {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  row-gap: 30px;
+  padding-top: 26px;
+}
+
+.gl-slot {
+  position: relative;
+  flex: 0 0 25%;
+  display: flex;
+  justify-content: center;
+  padding: 7px 10px 0;
+  outline: none;
+  cursor: pointer;
+}
+.gl-slot::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 13px;
+  background: linear-gradient(#a98159, #7a5a39 60%, #5f4429);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.35);
+}
+.gl-slot::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 50%;
+  width: 8px; height: 8px;
+  margin-left: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #eee, #777);
+}
+.gl-slot:focus-visible .gl-frame { outline: 3px solid #f2c14e; outline-offset: 4px; }
+
+.gl-kick, .gl-hang { transform-origin: 50% 0; }
+.gl-kick { width: min(215px, 100%); }
+.gl-hang {
+  width: 100%;
+  animation: gl-sway var(--dur, 7s) ease-in-out var(--delay, 0s) infinite alternate;
+}
+@keyframes gl-sway {
+  from { rotate: calc(var(--amp, 3deg) * -1); }
+  to   { rotate: var(--amp, 3deg); }
+}
+
+.gl-strings { display: block; width: 100%; height: var(--len, 90px); overflow: visible; }
+.gl-strings path {
+  fill: none;
+  stroke: #e8dcc0;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.gl-frame {
+  position: relative;
+  margin: 0;
+  padding: 12px 12px 14px;
+  background: #f6f1e4;
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.42);
+  rotate: var(--tilt, 0deg);
+  transition: scale 0.25s;
+}
+.gl-slot:hover .gl-frame { scale: 1.04; }
+
+.gl-tape {
+  position: absolute;
+  top: -9px; left: 50%;
+  width: 56px; height: 18px;
+  margin-left: -28px;
+  background: rgba(240, 220, 160, 0.78);
+  rotate: -3deg;
+}
+
+.gl-cover { aspect-ratio: 1; overflow: hidden; background: #ddd; }
+.gl-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+.gl-fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--c, #ddd);
+  color: rgba(40, 30, 20, 0.6);
+  font-family: 'Patrick Hand', 'Chalkboard SE', 'Comic Sans MS', cursive;
+  font-size: clamp(26px, 3.5vw, 38px);
+  text-align: center;
+}
+
+.gl-cap {
+  margin-top: 10px;
+  font-family: 'Patrick Hand', 'Chalkboard SE', 'Comic Sans MS', cursive;
+  font-size: 19px;
+  line-height: 1.15;
+  color: #3b2c1c;
+  text-align: center;
+}
+.gl-cap small { display: block; margin-top: 2px; font-size: 14px; color: #7a6650; }
+
+@media (max-width: 900px) { .gl-slot { flex-basis: 50%; } }
+@media (max-width: 460px) { .gl-slot { flex-basis: 100%; } }
+
+.gl-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.94);
+  color: #fff;
+  font-family: Roboto, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  animation: gl-fade 0.25s ease;
+}
+
+.gl-lb-top {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px 18px;
+  pointer-events: none;
+}
+.gl-lb-top h2 { margin: 0; font-size: 24px; font-weight: 700; line-height: 1.2; color: #fff; }
+.gl-lb-top p { margin: 2px 0 0; font-size: 16px; color: #e3e3e3; }
+
+.gl-lb-close {
+  pointer-events: auto;
+  display: grid;
+  place-items: center;
+  padding: 8px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.gl-lb-close:hover { background: rgba(255, 255, 255, 0.14); }
+
+.gl-lb-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  translate: 0 -50%;
+  display: grid;
+  place-items: center;
+  width: 48px; height: 48px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s, scale 0.2s;
+}
+.gl-lb-nav:hover { background: rgba(255, 255, 255, 0.2); scale: 1.08; }
+.gl-lb-nav.prev { left: 8px; }
+.gl-lb-nav.next { right: 8px; }
+
+.gl-lb-stage {
+  position: absolute;
+  inset: 72px 84px 128px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.gl-lb-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  animation: gl-pop 0.35s cubic-bezier(0.2, 0.7, 0.2, 1);
+  user-select: none;
+}
+.gl-lb-img.gl-fallback {
+  width: min(520px, 80vw);
+  height: auto;
+  aspect-ratio: 3 / 4;
+  font-size: 48px;
+}
+
+.gl-lb-strip {
+  position: absolute;
+  left: 0; right: 0; bottom: 14px;
+  display: flex;
+  gap: 12px;
+  width: max-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 4px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.gl-lb-strip::-webkit-scrollbar { display: none; }
+
+.gl-thumb {
+  flex: none;
+  width: 100px; height: 74px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid #2f6fe4;
+  background: #111;
+  opacity: 0.55;
+  cursor: pointer;
+  transition: opacity 0.2s, border-color 0.2s;
+}
+.gl-thumb:hover { opacity: 0.85; }
+.gl-thumb.is-active { opacity: 1; border-color: #5b9bff; box-shadow: 0 0 0 1px #5b9bff; }
+.gl-thumb img, .gl-thumb .gl-fallback { display: block; width: 100%; height: 100%; object-fit: cover; font-size: 14px; }
+
+@keyframes gl-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes gl-pop  { from { opacity: 0; scale: 0.94; } to { opacity: 1; scale: 1; } }
+
+@media (max-width: 640px) {
+  .gl-lb-top h2 { font-size: 19px; }
+  .gl-lb-stage { inset: 64px 10px 110px; }
+  .gl-lb-nav { width: 40px; height: 40px; background: rgba(0, 0, 0, 0.45); }
+  .gl-lb-nav.prev { left: 4px; }
+  .gl-lb-nav.next { right: 4px; }
+  .gl-thumb { width: 72px; height: 54px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gl-hang, .gl-lightbox, .gl-lb-img { animation: none; }
+  .gl-frame, .gl-breeze, .gl-lb-nav { transition: none; }
+}

@@ -596,14 +596,6 @@ a { color: inherit; }
 .event-item p { font-size:11px; line-height:1.6; margin:0; color:#cbd7c8; }
 .event-type { color:#b7d4cf; font-size:9px; letter-spacing:.12em; text-transform:uppercase; }
 .note-strip { background:rgba(242,215,111,.1); border-left:2px solid var(--sun); padding:13px 16px; color:#e0dfc9; font-size:11px; line-height:1.7; margin-top:20px; }
-.gallery-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:17px; margin-top:26px; }
-.memory-card { color:#2e342b; padding:9px 9px 14px; background:#f1ead8; box-shadow:0 5px 12px rgba(0,0,0,.18); transform:rotate(var(--turn,0deg)); }
-.memory-card:nth-child(2n){--turn:1deg}.memory-card:nth-child(3n){--turn:-1.1deg}
-.memory-art { height:145px; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; background:var(--art-bg); }
-.memory-art::before,.memory-art::after { content:''; position:absolute; border:1px solid rgba(34,59,45,.2); border-radius:50%; width:120px; height:120px; transform:rotate(32deg) scaleY(.4); }
-.memory-art::after { width:80px; height:80px; transform:rotate(-22deg) scaleY(.55); }
-.art-symbol { position:relative; z-index:1; font:45px 'Patrick Hand', cursive; color:#285244; }
-.memory-caption { font:18px 'Patrick Hand', cursive; padding:9px 3px 0; }
 .gallery-footnote { color:#bdcdbd; font-size:11px; line-height:1.7; margin:20px 0 0; }
 .contact-layout { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,.85fr); gap:25px; align-items:start; }
 .contact-form { display:grid; gap:12px; }
@@ -821,8 +813,6 @@ a { color: inherit; }
   .steps { grid-template-columns:1fr; }
   .event-item { grid-template-columns:70px minmax(0,1fr); gap:12px; padding:13px; }
   .event-type { grid-column:2; }
-  .gallery-grid { grid-template-columns:1fr 1fr; gap:12px; }
-  .memory-art { height:115px; }
   .page-footer { align-items:flex-start; flex-direction:column; }
 }
 @media (max-width: 390px) {
@@ -838,8 +828,6 @@ a { color: inherit; }
   .lesson-card.wide { grid-column:auto; }
   .event-item { grid-template-columns:1fr; }
   .event-type { grid-column:auto; }
-  .gallery-grid { grid-template-columns:1fr; }
-  .memory-art { height:clamp(145px,55vw,200px); }
 }
 @media (prefers-reduced-motion: reduce) {
   *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }

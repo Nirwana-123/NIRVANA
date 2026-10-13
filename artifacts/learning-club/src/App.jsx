@@ -12,7 +12,9 @@ import './about-heavy.css';
 import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
 import LocationMap from '@/components/Location';
-import ContactForm from '@/components/LetterForm'
+import ContactForm from '@/components/LetterForm';
+import Meettheteam from '@/components/Meettheteam';
+import SwingGallery from '@/components/SwingGallery';
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
@@ -821,7 +823,7 @@ function AboutPage() {
           <section className="ah-hero">
             <div className="ah-dots" aria-hidden="true" />
             <div className="ah-hero-in">
-              <AboutLetters as="h1" text="About Nirwana" />
+              <AboutLetters as="h1" text="About Nirvana" />
               <svg className="ah-u" viewBox="0 0 420 20" aria-hidden="true">
                 <path d="M4 12 C110 4 300 4 416 9" fill="none" stroke="#f2c14e" strokeWidth="3" strokeLinecap="round" />
               </svg>
@@ -894,45 +896,16 @@ function AboutPage() {
 }
 
 function TeamPage() {
+   const members = [
+    { name: 'Asha R.',  post: 'Founder and lead mentor', bio: 'Short bio here.', photo: '', instagram: 'nirvana.club', linkedin: 'asha-r', email: 'asha@example.com' },
+    { name: 'Rohan K.', post: 'Maths mentor',            bio: 'Short bio here.', photo: '', instagram: '', linkedin: '', email: '' },
+    { name: 'Meera D.', post: 'Reading buddy',           bio: 'Short bio here.', photo: '', instagram: '', linkedin: '', email: '' },
+  ];
   return (
     <>
       <PageMeta title="Team" description="Meet the mentors, organizers, and volunteers who make The Learning Nook a welcoming place to learn and grow." />
-      <header className="subpage-head">
-        <p className="eyebrow">THE PEOPLE BEHIND THE NOOK</p>
-        <h1 className="page-heading">A little help<br />goes a long way.</h1>
-        <p className="page-intro">The Learning Nook is made possible by people who share their time, care, and curiosity. Together, they make room for every child to feel welcome and keep growing.</p>
-      </header>
-      <section className="content-section">
-        <h2 className="section-heading">Many hands, one welcoming place</h2>
-        <p className="section-lede team-intro">Everyone brings something different. These are some of the ways people help make the club feel like a community.</p>
-        <div className="team-grid">
-          <article className="team-card" style={{ '--team-color': 'var(--rose)' }}>
-            <span className="team-mark" aria-hidden="true">01</span>
-            <p className="eyebrow">LEARNING &amp; ENCOURAGEMENT</p>
-            <h3>Volunteer mentors</h3>
-            <p>Offer patient one-to-one support, share a love of learning, and celebrate each child’s progress along the way.</p>
-          </article>
-          <article className="team-card" style={{ '--team-color': 'var(--sky)' }}>
-            <span className="team-mark" aria-hidden="true">02</span>
-            <p className="eyebrow">CARE &amp; COORDINATION</p>
-            <h3>Club organizers</h3>
-            <p>Help sessions run smoothly and make sure children, families, and volunteers know they have a place here.</p>
-          </article>
-          <article className="team-card" style={{ '--team-color': 'var(--sun)' }}>
-            <span className="team-mark" aria-hidden="true">03</span>
-            <p className="eyebrow">COMMUNITY &amp; CONNECTION</p>
-            <h3>Community supporters</h3>
-            <p>Contribute ideas, resources, and encouragement that help the club keep showing up for children.</p>
-          </article>
-        </div>
-      </section>
-      <section className="content-section two-col">
-        <div>
-          <h2 className="section-heading">There’s room for you, too</h2>
-          <p className="chalk-copy">You don’t need to have everything figured out to get involved. If you’d like to share your time or learn more about the team, we’d be glad to hear from you.</p>
-        </div>
-        <Link href="/contact" className="chalk-button">Say hello <ArrowRight size={14} /></Link>
-      </section>
+      
+      <Meettheteam members={members} />
     </>
   );
 }
@@ -976,45 +949,11 @@ function EventsPage() {
   );
 }
 
-const memories = [
-  { title: 'A story shared aloud', bg: '#d2dfd0', symbol: 'READ' },
-  { title: 'Number games & big ideas', bg: '#eadcb8', symbol: '1 + 1' },
-  { title: 'Making something new', bg: '#dfcdd7', symbol: 'MAKE' },
-  { title: 'A question worth chasing', bg: '#c8dce0', symbol: '?' },
-  { title: 'Learning side by side', bg: '#e8d3c0', symbol: 'TOGETHER' },
-  { title: 'A proud little moment', bg: '#d5dfbd', symbol: 'I DID IT' },
-];
-
 function GalleryPage() {
   return (
     <>
       <PageMeta title="Gallery" description="A scrapbook of the activities and learning moments that make The Learning Nook feel like a community." />
-      <header className="subpage-head">
-        <p className="eyebrow">MEMORIES FROM THE NOOK</p>
-        <h1 className="page-heading">A little scrapbook<br />of trying things.</h1>
-        <p className="page-intro">Our best moments aren’t always big. Sometimes they’re a new word, a solved puzzle, or someone finding their place at the table.</p>
-      </header>
-      <section className="content-section">
-        <h2 className="section-heading">A few things we love to do</h2>
-        <div className="gallery-grid">
-          {memories.map((memory) => (
-            <article className="memory-card" key={memory.title}>
-              <div className="memory-art" style={{ '--art-bg': memory.bg }}>
-                <span className="art-symbol">{memory.symbol}</span>
-              </div>
-              <div className="memory-caption">{memory.title}</div>
-            </article>
-          ))}
-        </div>
-        <p className="gallery-footnote">Illustrated activity cards are here as a stand-in for club photos. Add approved, consented photos here when the club is ready to share them.</p>
-      </section>
-      <section className="content-section two-col">
-        <div>
-          <h2 className="section-heading">Every child’s story is their own</h2>
-          <p className="chalk-copy">We believe children should be able to learn and grow without feeling watched or put on display. Any real photos shared here should be chosen with care and permission.</p>
-        </div>
-        <div className="quote-card"><blockquote>“Look what I figured out!”</blockquote><p>That’s the kind of moment worth keeping close.</p></div>
-      </section>
+      <SwingGallery />
     </>
   );
 }
