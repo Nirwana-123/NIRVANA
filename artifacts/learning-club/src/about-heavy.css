@@ -1,0 +1,425 @@
+/* About page (heavy motion). Every class is prefixed "ah-" so it cannot clash with your site CSS.
+   Fonts: add Patrick Hand and DM Sans to index.html (or keep the fallbacks below). */
+.ah {
+  --bg: #1e3b31; --bg2: #183228; --chalk: #f5f1e6; --mu: #cfd9d2;
+  --sun: #f2c14e; --sky: #8cc3dd; --rose: #e8a0a8;
+  --Mint: #a9c8a2; --Peach: #f0b58f; --Lavender: #b9a9d9;
+  --hand: 'Patrick Hand', 'Chalkboard SE', 'Comic Sans MS', cursive;
+  --sans: 'DM Sans', system-ui, sans-serif;
+  position: relative;
+  background: var(--bg);
+  color: var(--chalk);
+  font-family: var(--sans);
+  line-height: 1.7;
+  overflow-x: clip; /* not "hidden": hidden would break the sticky pinned section */
+}
+.ah *, .ah *::before, .ah *::after { box-sizing: border-box; }
+.ah .ah-center { text-align: center; }
+
+.ah h1,.ah h2,.ah h3 {
+  font-family:var(--hand);
+  font-weight:400;
+  margin:0
+}
+.ah p {
+  color:var(--mu);
+  margin:0 0 16px
+}
+.ah .ah-bar {
+  --p:0;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:4px;
+  background:var(--sun);
+  transform-origin:left;
+  transform:scaleX(var(--p));
+  z-index:100
+}
+.ah .ah-doodles {
+  position:fixed;
+  inset:0;
+  overflow:hidden;
+  pointer-events:none;
+  z-index:0
+}
+.ah .ah-doodles i {
+  position:absolute;
+  top:0;
+  font-style:normal;
+  font-family:var(--hand);
+  opacity:.3
+}
+.ah-main {
+  position:relative;
+  z-index:1
+}
+.ah .ah-word {
+  display:inline-block;
+  white-space:nowrap;
+  margin:0 .12em
+}
+.ah .ah-l {
+  display:inline-block
+}
+.ah .ah-hero {
+  position:relative;
+  min-height:calc(100vh - var(--ah-header, 72px));
+  display:grid;
+  place-items:center;
+  text-align:center;
+  overflow:hidden;
+  cursor:pointer
+}
+.ah .ah-dots {
+  position:absolute;
+  inset:0;
+  display:grid;
+  align-items:center;
+  justify-items:center
+}
+.ah .ah-dots i {
+  width:5px;
+  height:5px;
+  border-radius:50%;
+  background:var(--chalk)
+}
+.ah .ah-hero-in {
+  position:relative;
+  z-index:1;
+  padding:0 16px;
+  perspective:900px;
+  pointer-events:none
+}
+.ah h1 {
+  font-size:clamp(54px,13vw,170px);
+  line-height:1;
+  transition:transform .25s ease-out
+}
+.ah .ah-u {
+  width:min(420px,70%);
+  height:20px;
+  overflow:visible
+}
+.ah .ah-sub {
+  font-size:clamp(16px,2.4vw,22px);
+  color:var(--sun)
+}
+.ah .ah-hint {
+  position:absolute;
+  bottom:4vh;
+  left:0;
+  right:0;
+  font-size:13px;
+  letter-spacing:3px;
+  color:var(--mu);
+  animation:ah-hint 1.8s ease-in-out infinite
+}
+@keyframes ah-hint {50%{translate:0 10px}}
+.ah .ah-mq {
+  padding:5vh 0;
+  overflow:hidden;
+  border-block:1px dashed #44695a;
+  background:rgba(24,50,40,.7)
+}
+.ah .ah-row {
+  display:flex;
+  width:max-content;
+  white-space:nowrap;
+  font-family:var(--hand);
+  font-size:clamp(44px,9vw,120px);
+  line-height:1.15
+}
+.ah .ah-row span {
+  padding-right:.5em
+}
+.ah .ah-row.ah-o {
+  color:transparent;
+  -webkit-text-stroke:1.5px var(--chalk)
+}
+.ah .ah-wrap {
+  max-width:1000px;
+  margin:0 auto;
+  padding:16vh 24px
+}
+.ah h2 {
+  font-size:clamp(34px,5.5vw,64px);
+  line-height:1.1;
+  margin-bottom:22px
+}
+.ah .ah-q {
+  font-family:var(--hand);
+  font-size:clamp(30px,5.4vw,62px);
+  line-height:1.2;
+  color:var(--sky);
+  margin:56px 0 0
+}
+.ah .ah-q .ah-w {
+  display:inline-block;
+  overflow:hidden;
+  vertical-align:top;
+  margin-right:.25em;
+  padding-bottom:.12em
+}
+.ah .ah-q .ah-w>span {
+  display:inline-block
+}
+.ah .ah-pin {
+  height:340vh
+}
+.ah .ah-pin-in {
+  position:sticky;
+  top:0;
+  height:100vh;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  gap:24px;
+  max-width:1280px;
+  margin:0 auto;
+  padding:0 24px
+}
+.ah .ah-shape {
+  width:min(430px,100%);
+  aspect-ratio:1;
+  margin:auto
+}
+.ah .ah-shape svg {
+  width:100%;
+  height:100%;
+  overflow:visible
+}
+.ah .ah-ring {
+  transform-box:fill-box;
+  transform-origin:center
+}
+.ah .ah-vals {
+  position:relative;
+  height:290px
+}
+.ah .ah-val {
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  opacity:0;
+  translate:0 50px;
+  filter:blur(10px);
+  transition:all .7s cubic-bezier(.2,.7,.2,1)
+}
+.ah .ah-val.on {
+  opacity:1;
+  translate:0 0;
+  filter:none
+}
+.ah .ah-val b {
+  font-family:var(--hand);
+  font-weight:400;
+  font-size:clamp(70px,13vw,150px);
+  line-height:1;
+  color:var(--c)
+}
+.ah .ah-val h3 {
+  font-size:clamp(28px,4vw,44px)
+}
+.ah .ah-val p {
+  max-width:34ch;
+  margin:6px 0 0
+}
+.ah .ah-meter {
+  height:3px;
+  background:#2f5244;
+  margin-top:20px
+}
+.ah .ah-meter i {
+  --p:0;
+  display:block;
+  height:100%;
+  background:var(--sun);
+  transform-origin:left;
+  transform:scaleX(var(--p))
+}
+.ah .ah-steps {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:24px;
+  perspective:1100px;
+  margin-top:44px
+}
+.ah .ah-step {
+  transform-origin:50% 100%
+}
+.ah .ah-tilt {
+  position:relative;
+  height:100%;
+  padding:22px 20px 26px;
+  background:var(--bg2);
+  border:1px solid #2f5244;
+  border-radius:14px;
+  transition:transform .35s cubic-bezier(.2,.7,.2,1);
+  overflow:hidden
+}
+.ah .ah-tilt::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:radial-gradient(240px circle at var(--mx,50%) var(--my,0%),rgba(245,241,230,.16),transparent 60%);
+  opacity:var(--g,0);
+  transition:opacity .3s;
+  pointer-events:none
+}
+.ah .ah-lb {
+  font-family:var(--hand);
+  font-style:normal;
+  font-size:19px;
+  color:var(--sc)
+}
+.ah .ah-step h3 {
+  font-size:25px;
+  margin:2px 0 8px
+}
+.ah .ah-step p {
+  font-size:15px;
+  margin:0
+}
+.ah .ah-outro {
+  min-height:90vh;
+  display:grid;
+  place-items:center;
+  text-align:center;
+  padding:12vh 24px
+}
+.ah .ah-big {
+  font-family:var(--hand);
+  font-size:clamp(48px,11vw,140px);
+  line-height:1.05;
+  position:relative;
+  top:-45px;
+}
+.ah .ah-btn {
+  margin-top:36px;
+  font:500 18px var(--sans);
+  background:var(--sun);
+  color:var(--bg);
+  border:0;
+  border-radius:999px;
+  padding:16px 36px;
+  cursor:pointer
+}
+.ah-chip {
+  position:fixed;
+  z-index:200;
+  pointer-events:none;
+  border-radius:2px
+}
+.ah .ah-step-avatar {
+  width: 140px;
+  max-width: 100%;
+  margin: 0 auto 14px;
+  opacity: 0;
+}
+.ah .ah-step-avatar svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.ah .ah-step.is-visible .ah-step-avatar {
+  animation: avatar-in 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 250ms);
+}
+.ah .ah-step.is-visible .ah-step-avatar svg {
+  animation: avatar-bob 3.4s ease-in-out infinite;
+  animation-delay: calc(var(--reveal-delay, 0ms) + 1100ms);
+}
+.ah .ah-step.is-visible .prop {
+  animation: prop-float 2.4s ease-in-out infinite;
+}
+.ah .ah-step.is-visible .prop.glow {
+  animation: prop-glow 2s ease-in-out infinite;
+}
+.ah .ah-step.is-visible .drop {
+  animation: drop-fall 1.5s ease-in infinite;
+}
+.ah .ah-step.is-visible .drop.d2 {
+  animation-delay: 0.5s;
+}
+.ah .ah-step.is-visible .drop.d3 {
+  animation-delay: 1s;
+}
+@keyframes avatar-in {
+  from { opacity: 0; translate: 0 26px; scale: 0.5; }
+  to   { opacity: 1; translate: 0 0;    scale: 1; }
+}
+@keyframes avatar-bob {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -4px; }
+}
+@keyframes prop-float {
+  0%, 100% { translate: 0 0; }
+  50%      { translate: 0 -5px; }
+}
+@keyframes prop-glow {
+  0%, 100% { opacity: 0.15; }
+  50%      { opacity: 0.4; }
+}
+@keyframes drop-fall {
+  0%   { translate: 0 0;    opacity: 0; }
+  20%  { opacity: 1; }
+  100% { translate: 0 18px; opacity: 0; }
+}
+@media(max-width:760px) {
+.ah .ah-steps {
+  grid-template-columns:1fr
+}
+.ah .ah-pin-in {
+  grid-template-columns:1fr;
+  align-content:center;
+  gap:0
+}
+.ah .ah-shape {
+  width:min(56vw,280px)
+}
+.ah .ah-vals {
+  height:260px
+}
+}
+@media(prefers-reduced-motion:reduce) {
+.ah .ah-step-avatar {
+  opacity:1
+}
+.ah .ah-step .ah-step-avatar,.ah .ah-step .ah-step-avatar svg,.ah .ah-step .prop,.ah .ah-step .drop {
+  animation:none!important
+}
+.ah .ah-hint {
+  animation:none
+}
+}
+
+/* ------------------------------------------------------------------
+   Full-screen layout: let the About page escape the site's "board" box
+   (the 1400px chalkboard container) so the hero, dots and marquee span
+   the whole window. Needs  className={`board${location === '/about' ? ' board-about' : ''}`}
+   on <main> in SiteFrame (you already have this).
+------------------------------------------------------------------- */
+.board-frame:has(> .board-about),
+.board.board-about,
+.board.board-about > .board-content {
+  max-width: none !important;
+  width: 100% !important;
+  margin-inline: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
+  overflow: visible !important; /* keeps position: sticky working */
+}
+.site-shell:has(.ah) { overflow: visible !important; }
+.board.board-about::before,
+.board.board-about::after { display: none !important; }
+
+/* Hero fills the window below your header; adjust if your header is taller. */
+.ah { --ah-header: 72px; }

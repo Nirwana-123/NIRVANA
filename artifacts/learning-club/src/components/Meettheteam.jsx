@@ -124,13 +124,12 @@ export default function MeetTheTeam({
 
       figs.forEach((el, i) => {
         const d = i - tF;
-        let x; let s; let op; let z;
-        if (d < 0) { const e = clamp(-d, 0, 1); x = -e * 58; s = 1 - e * 0.2; op = 1 - ss(0.25, 0.95, e); z = 2; }
-        else { const e = clamp(d, 0, 1); x = e * 72; s = 1 - e * 0.32; op = 1 - ss(0.3, 1, e); z = 3; }
-        el.style.transform = `translateX(${x.toFixed(2)}%) scale(${s.toFixed(3)})`;
-        el.style.opacity = op.toFixed(3);
-        el.style.zIndex = z;
-        el.style.visibility = op < 0.01 ? 'hidden' : 'visible';
+        // Members slide out from, and back in under, the accent band on the right.
+        const e = clamp(Math.abs(d), 0, 1);
+        el.style.transform = `translateX(${(e * 115).toFixed(2)}%)`;
+        el.style.opacity = '1';
+        el.style.zIndex = d < 0 ? 2 : 3;
+        el.style.visibility = e >= 0.999 ? 'hidden' : 'visible';
       });
       titles.forEach((el, i) => { el.style.transform = `translateY(${((i - tT) * 104).toFixed(2)}%)`; });
       descs.forEach((el, i) => {

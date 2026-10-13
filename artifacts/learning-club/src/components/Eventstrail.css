@@ -1,0 +1,122 @@
+/* Events chalk trail — all classes prefixed with "et-" so they can't clash with index.css */
+.et {
+  --et-line: rgba(242, 238, 220, .22);
+  --et-muted: #c3cebf;
+  --et-ink: #1c2b23;
+  margin-top: 8px;
+}
+
+.et h2, .et p { margin: 0; }
+
+/* legend */
+.et-legend {
+  display: flex; flex-wrap: wrap; gap: 8px 22px;
+  padding: 18px 0 22px;
+  font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--et-muted);
+}
+.et-legend span { display: inline-flex; align-items: center; gap: 8px; }
+.et-legend i { width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--sun); background: var(--sun); }
+.et-legend i.soon { background: none; border: 2px dashed var(--et-muted); }
+
+/* trail */
+.et-trail { position: relative; padding-block: 30px 10px; border-top: 1px dashed var(--et-line); }
+.et-trailsvg { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+.et-base, .et-done { fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.et-base { stroke: rgba(242, 238, 220, .32); stroke-width: 3.5; stroke-dasharray: 2 12; }
+.et-done { stroke: var(--sun); stroke-width: 4; }
+
+.et-stops { position: relative; list-style: none; margin: 0; padding: 0; }
+.et-stop {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 84px minmax(0, 1fr);
+  min-height: 300px;
+  align-items: center;
+}
+
+/* pin */
+.et-pin {
+  grid-column: 2; grid-row: 1; justify-self: center;
+  width: 46px; height: 46px; border-radius: 50%;
+  background: var(--board);
+  border: 3px dashed rgba(242, 238, 220, .45);
+  display: grid; place-items: center;
+  font: 400 24px/1 'Patrick Hand', cursive;
+  color: var(--et-muted);
+  position: relative; z-index: 2;
+  transition: background .35s, border-color .35s, color .35s, transform .35s;
+}
+.et-pin.on, .et-stop[data-live] .et-pin { background: var(--sun); border: 3px solid var(--sun); color: var(--et-ink); }
+.et-pin.on { transform: scale(1.08); }
+.et-stop[data-live] .et-pin::after {
+  content: ''; position: absolute; inset: -8px; border-radius: 50%;
+  border: 2px solid var(--sun); opacity: .6;
+  animation: et-ring 2.4s ease-out infinite;
+}
+@keyframes et-ring { from { transform: scale(.8); opacity: .8; } to { transform: scale(1.5); opacity: 0; } }
+
+/* card */
+.et-card {
+  grid-row: 1; grid-column: 1; justify-self: end;
+  width: min(100%, 400px);
+  position: relative;
+  background: rgba(18, 47, 39, .78);
+  border: 1px solid var(--et-line);
+  padding: 22px 22px 20px;
+}
+.et-stop:nth-child(even) .et-card { grid-column: 3; justify-self: start; }
+.et-card::before {
+  content: ''; position: absolute; top: -10px; left: 26px;
+  width: 64px; height: 20px; background: rgba(242, 215, 111, .55); transform: rotate(-3deg);
+}
+.et-stop:nth-child(even) .et-card::before { left: auto; right: 26px; transform: rotate(3deg); }
+
+.et-month {
+  display: inline-block; font: 700 11px 'DM Sans', sans-serif; letter-spacing: .2em;
+  color: var(--sun); border: 1.5px solid var(--sun); padding: 3px 10px; transform: rotate(-3deg);
+}
+.et-card h2 { font: 400 38px/1.05 'Patrick Hand', cursive; margin-top: 12px; color: var(--chalk); }
+.et-kind { font-size: 11px; letter-spacing: .16em; text-transform: uppercase; font-weight: 700; color: var(--sky); margin-top: 6px; }
+.et-card p { margin-top: 10px; color: var(--et-muted); font-size: 14px; line-height: 1.6; max-width: 40ch; }
+.et-card p.et-kind { color: var(--sky); font-size: 11px; line-height: 1.2; }
+.et-ico { position: absolute; right: 16px; top: 16px; width: 64px; height: 64px; }
+
+.et-btn {
+  display: inline-block; margin-top: 16px;
+  font: 400 19px/1 'Patrick Hand', cursive; color: var(--chalk); text-decoration: none;
+  border: 1.5px solid var(--chalk); padding: 9px 16px;
+  transition: background .2s, color .2s;
+}
+.et-btn:hover { background: var(--chalk); color: var(--et-ink); }
+.et-btn:focus-visible { outline: 2px solid var(--sky); outline-offset: 3px; }
+
+/* coming soon */
+.et-soon .et-card { border-style: dashed; background: none; }
+.et-soon .et-month { color: var(--et-muted); border: 1.5px dashed var(--et-muted); }
+.et-soon .et-card h2 { color: var(--et-muted); }
+.et-end { min-height: 220px; }
+
+/* walker */
+.et-walker { position: absolute; left: 0; top: 0; width: 0; height: 0; z-index: 3; pointer-events: none; }
+.et-fig {
+  position: absolute; left: -17px; top: -17px; width: 34px; height: 34px; border-radius: 50%;
+  background: var(--chalk); box-shadow: 0 4px 8px rgba(0, 0, 0, .4);
+  display: grid; place-items: center;
+  animation: et-bob 1.1s ease-in-out infinite;
+}
+.et-fig svg { width: 20px; height: 20px; }
+@keyframes et-bob { 50% { transform: translateY(-4px); } }
+
+/* mobile */
+@media (max-width: 700px) {
+  .et-stop { grid-template-columns: 56px minmax(0, 1fr); min-height: 250px; column-gap: 6px; }
+  .et-pin { grid-column: 1; width: 40px; height: 40px; font-size: 22px; }
+  .et-card, .et-stop:nth-child(even) .et-card { grid-column: 2; justify-self: stretch; width: auto; }
+  .et-stop:nth-child(even) .et-card::before { left: 26px; right: auto; transform: rotate(-3deg); }
+  .et-card h2 { font-size: 32px; }
+  .et-ico { width: 52px; height: 52px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .et-fig, .et-stop[data-live] .et-pin::after { animation: none; }
+  .et-pin { transition: none; }
+}
