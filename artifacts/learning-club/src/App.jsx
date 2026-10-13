@@ -8,12 +8,16 @@ import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter
 import { ArrowRight, ArrowUp, BookOpen, Facebook, Heart, Instagram, Lightbulb, Mail, Menu, MessageCircle, Sprout, Twitter, Users, X, Youtube } from 'lucide-react';
 import anime from 'animejs/lib/anime.es.js';
 import { stepAvatars } from './step-avatars';
+import kunalPhoto from '@/components/Kunal.png';
+import abhishekPhoto from '@/components/Abhishek.png';
+import aryanPhoto from '@/components/aryan.png';
 import './about-heavy.css';
 import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
+import Meettheteam from '@/components/Meettheteam';
 import LocationMap from '@/components/Location';
 import ContactForm from '@/components/LetterForm';
-import Meettheteam from '@/components/Meettheteam';
+import EventsTrail from '@/components/EventsTrail';
 import SwingGallery from '@/components/SwingGallery';
 const queryClient = new QueryClient();
 const navigation = [
@@ -894,9 +898,9 @@ function AboutPage() {
 
 function TeamPage() {
    const members = [
-    { name: 'Asha R.',  post: 'Founder and lead mentor', bio: 'Short bio here.', photo: '', instagram: 'nirvana.club', linkedin: 'asha-r', email: 'asha@example.com' },
-    { name: 'Rohan K.', post: 'Maths mentor',            bio: 'Short bio here.', photo: '', instagram: '', linkedin: '', email: '' },
-    { name: 'Meera D.', post: 'Reading buddy',           bio: 'Short bio here.', photo: '', instagram: '', linkedin: '', email: '' },
+    { name: 'Aryan G.',  post: 'Co-convenor', bio: 'mujhe meetha pasand h', photo: aryanPhoto, instagram: 'nirvana.club', linkedin: 'asha-r', email: 'asha@example.com' },
+    { name: 'Kunal L.', post: 'Sexkaretary',            bio: 'Gaandu h bsdka', photo: kunalPhoto, instagram: '', linkedin: '', email: '' },
+    { name: 'Abhishek D.', post: 'Creative Head',           bio: 'meetha', photo: abhishekPhoto, instagram: '', linkedin: '', email: '' },
   ];
   return (
     <>
@@ -910,36 +914,20 @@ function TeamPage() {
 function EventsPage() {
   return (
     <>
-      <PageMeta title="Events" description="Explore the kinds of welcoming learning sessions and community gatherings at The Learning Nook." />
+      <PageMeta title="Events" description="Explore the kinds of welcoming learning sessions and community gatherings at NIRVANA." />
       <header className="subpage-head">
         <p className="eyebrow">WHAT WE GET UP TO</p>
         <h1 className="page-heading">Little gatherings,<br />big discoveries.</h1>
-        <p className="page-intro">Our club calendar is made of shared learning time, playful projects, and chances to meet one another.</p>
+        <p className="page-intro">Follow the chalk trail through the club's year. Every stop is a day we come together. New stops are being added.</p>
       </header>
-      <section className="content-section">
-        <h2 className="section-heading">The kinds of days we make</h2>
-        <p className="section-lede" style={{ margin: '0 0 20px' }}>These are example session ideas, not confirmed dates. Please get in touch for current details.</p>
-        <div className="event-list">
-          <article className="event-item">
-            <div className="event-tag">Drop in</div>
-            <div><h3>Homework &amp; reading table</h3><p>Bring a book, a school question, or just yourself. A mentor can help you find a starting point.</p></div>
-            <span className="event-type">LEARNING</span>
-          </article>
-          <article className="event-item">
-            <div className="event-tag" style={{ borderColor: 'var(--sky)', color: 'var(--sky)' }}>Make</div>
-            <div><h3>Curiosity workshop</h3><p>A hands-on afternoon for trying, making, wondering, and sharing what you notice.</p></div>
-            <span className="event-type">CREATIVE</span>
-          </article>
-          <article className="event-item">
-            <div className="event-tag" style={{ borderColor: 'var(--rose)', color: 'var(--rose)' }}>Together</div>
-            <div><h3>Family &amp; friends gathering</h3><p>A relaxed chance to meet the club community and celebrate the things we’ve been learning.</p></div>
-            <span className="event-type">COMMUNITY</span>
-          </article>
-        </div>
-        <div className="note-strip">The schedule, location, and age groups can vary. Reach out before visiting so we can share the latest information and help you feel prepared.</div>
-      </section>
+
+      <EventsTrail />
+
       <section className="content-section two-col">
-        <div><h2 className="section-heading">Would you like to help host?</h2><p className="chalk-copy">Volunteers bring all kinds of strengths: patient listening, a love of books, a knack for puzzles, or simply a little time to share.</p></div>
+        <div>
+          <h2 className="section-heading">Would you like to help host?</h2>
+          <p className="chalk-copy">Volunteers bring all kinds of strengths: patient listening, a love of books, a knack for puzzles, or simply a little time to share.</p>
+        </div>
         <Link href="/contact" className="chalk-button">Ask about volunteering <ArrowRight size={14} /></Link>
       </section>
     </>
