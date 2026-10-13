@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
-import { ArrowRight, ArrowUp, BookOpen, Facebook, Heart, Instagram, Lightbulb, Mail, Menu, MessageCircle, Sprout, Twitter, Users, X, Youtube } from 'lucide-react';
+import { ArrowRight, ArrowUp, BookOpen, Facebook, Heart, Instagram, Lightbulb, Mail, MapPin, Menu, MessageCircle, Sprout, Twitter, Users, X, Youtube } from 'lucide-react';
 import anime from 'animejs/lib/anime.es.js';
 import { stepAvatars } from './step-avatars';
 import kunalPhoto from '@/components/Kunal.png';
@@ -26,6 +26,12 @@ const navigation = [
   { label: 'TEAM', href: '/team', title: 'Team' },
   { label: 'EVENTS', href: '/events', title: 'Events' },
   { label: 'GALLERY', href: '/gallery', title: 'Gallery' },
+  { label: 'CONTACT', href: '/contact', title: 'Contact' },
+];
+const footerLinks = [
+  { label: 'HOME', href: '/', title: 'Home' },
+  { label: 'ABOUT', href: '/about', title: 'About' },
+  { label: 'DEVELOPERS', href: '/team', title: 'Developers' },
   { label: 'CONTACT', href: '/contact', title: 'Contact' },
 ];
 
@@ -161,7 +167,7 @@ function Footer() {
 
         <div className="footer-right">
           <nav className="footer-links" aria-label="Footer navigation">
-            {navigation.map((item) => (
+            {footerLinks.map((item) => (
               <Link key={item.href} href={item.href}>{item.title}</Link>
             ))}
           </nav>
@@ -958,15 +964,42 @@ function ContactPage() {
           <p className="section-lede" style={{ margin: '0 0 18px' }}>Write your letter, press the wax seal, and a pigeon will carry it away.</p>
           <ContactForm />
         </div>
-        <aside className="contact-aside">
-          <h2>There are lots of ways to say hello.</h2>
-          <p>Ask about learning sessions, volunteer roles, or how the club can support your family. You don’t need to have it all figured out before reaching out.</p>
-          <ul>
-            <li><strong>FOR FAMILIES</strong>Ask about getting to know the club and what support could look like.</li>
-            <li><strong>FOR VOLUNTEERS</strong>Tell us what you enjoy and how you might like to lend a hand.</li>
-            <li><strong>FOR NEIGHBOURS</strong>Share an idea, offer a resource, or simply introduce yourself.</li>
-          </ul>
-          <div className="note-strip">Your note is sent through our configured email service; this website does not store submissions.</div>
+        <aside className="contact-details" aria-label="Contact details">
+          <h2 className="contact-details-heading">CONTACT DETAILS</h2>
+          <div className="contact-details-card">
+            <div className="cd-row">
+              <Mail className="cd-icon" size={28} aria-hidden="true" />
+              <div>
+                <p className="cd-label">Email</p>
+                <a className="cd-value" href="mailto:nss@svnit.ac.in">Nirwana_chapter@svnit.ac.in</a>
+              </div>
+            </div>
+
+            <div className="cd-row">
+              <MapPin className="cd-icon" size={28} aria-hidden="true" />
+              <div>
+                <p className="cd-label">Address</p>
+                <p className="cd-value">
+                  NIRWANA , SVNIT<br />
+                  Ichchhanath, Surat<br />
+                  Gujarat - 395007
+                </p>
+              </div>
+            </div>
+
+            <div className="cd-row cd-social-row">
+              <p className="cd-label">Connect With Us</p>
+              <div className="cd-socials">
+                {socials
+                  .filter(({ label }) => label !== 'Email')
+                  .map(({ label, href, Icon }) => (
+                    <a key={label} href={href} aria-label={label} target="_blank" rel="noreferrer">
+                      <Icon size={22} />
+                    </a>
+                  ))}
+              </div>
+            </div>
+          </div>
         </aside>
       </section>
 
