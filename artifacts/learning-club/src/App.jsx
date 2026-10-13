@@ -9,8 +9,8 @@ import { ArrowRight, ArrowUp, BookOpen, Facebook, Heart, Instagram, Lightbulb, M
 import anime from 'animejs/lib/anime.es.js';
 import { stepAvatars } from './step-avatars';
 import kunalPhoto from '@/components/Kunal.png';
-import abhishekPhoto from '@/components/abhishekr.png';
-import aryanPhoto from '@/components/aryan.png'
+import abhishekPhoto from '@/components/Abhishek.png';
+import aryanPhoto from '@/components/aryan.png';
 import './about-heavy.css';
 import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
@@ -18,6 +18,7 @@ import Meettheteam from '@/components/Meettheteam';
 import LocationMap from '@/components/Location';
 import ContactForm from '@/components/LetterForm';
 import EventsTrail from '@/components/EventsTrail';
+import SwingGallery from '@/components/SwingGallery';
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
@@ -826,7 +827,7 @@ function AboutPage() {
           <section className="ah-hero">
             <div className="ah-dots" aria-hidden="true" />
             <div className="ah-hero-in">
-              <AboutLetters as="h1" text="About Nirwana" />
+              <AboutLetters as="h1" text="About Nirvana" />
               <svg className="ah-u" viewBox="0 0 420 20" aria-hidden="true">
                 <path d="M4 12 C110 4 300 4 416 9" fill="none" stroke="#f2c14e" strokeWidth="3" strokeLinecap="round" />
               </svg>
@@ -936,45 +937,11 @@ function EventsPage() {
   );
 }
 
-const memories = [
-  { title: 'A story shared aloud', bg: '#d2dfd0', symbol: 'READ' },
-  { title: 'Number games & big ideas', bg: '#eadcb8', symbol: '1 + 1' },
-  { title: 'Making something new', bg: '#dfcdd7', symbol: 'MAKE' },
-  { title: 'A question worth chasing', bg: '#c8dce0', symbol: '?' },
-  { title: 'Learning side by side', bg: '#e8d3c0', symbol: 'TOGETHER' },
-  { title: 'A proud little moment', bg: '#d5dfbd', symbol: 'I DID IT' },
-];
-
 function GalleryPage() {
   return (
     <>
       <PageMeta title="Gallery" description="A scrapbook of the activities and learning moments that make The Learning Nook feel like a community." />
-      <header className="subpage-head">
-        <p className="eyebrow">MEMORIES FROM THE NOOK</p>
-        <h1 className="page-heading">A little scrapbook<br />of trying things.</h1>
-        <p className="page-intro">Our best moments aren’t always big. Sometimes they’re a new word, a solved puzzle, or someone finding their place at the table.</p>
-      </header>
-      <section className="content-section">
-        <h2 className="section-heading">A few things we love to do</h2>
-        <div className="gallery-grid">
-          {memories.map((memory) => (
-            <article className="memory-card" key={memory.title}>
-              <div className="memory-art" style={{ '--art-bg': memory.bg }}>
-                <span className="art-symbol">{memory.symbol}</span>
-              </div>
-              <div className="memory-caption">{memory.title}</div>
-            </article>
-          ))}
-        </div>
-        <p className="gallery-footnote">Illustrated activity cards are here as a stand-in for club photos. Add approved, consented photos here when the club is ready to share them.</p>
-      </section>
-      <section className="content-section two-col">
-        <div>
-          <h2 className="section-heading">Every child’s story is their own</h2>
-          <p className="chalk-copy">We believe children should be able to learn and grow without feeling watched or put on display. Any real photos shared here should be chosen with care and permission.</p>
-        </div>
-        <div className="quote-card"><blockquote>“Look what I figured out!”</blockquote><p>That’s the kind of moment worth keeping close.</p></div>
-      </section>
+      <SwingGallery />
     </>
   );
 }
