@@ -131,6 +131,9 @@ importers:
 
   artifacts/learning-club:
     dependencies:
+      '@emailjs/browser':
+        specifier: ^5.0.3
+        version: 5.0.3
       animejs:
         specifier: ^3.2.2
         version: 3.2.2
@@ -644,6 +647,10 @@ packages:
 
   '@drizzle-team/brocli@0.10.2':
     resolution: {integrity: sha512-z33Il7l5dKjUgGULTqBsQBQwckHh5AbIuxhdsIxDDiZAzBOrZO6q9ogcWC65kU382AfynTfgNumVcNIjuIua6w==}
+
+  '@emailjs/browser@5.0.3':
+    resolution: {integrity: sha512-4HGAkWdzql7mrG34ZFFj7IDJNRgtbl1+yVgHdQJ6XSfhq9gxGUHtttr4UKNi7Fk++1hMXRHy1lTeGZrkioOtsw==}
+    engines: {node: '>=14.0.0'}
 
   '@esbuild/aix-ppc64@0.28.2':
     resolution: {integrity: sha512-XExcO+dvLKvVtNTibSTBej1NCAbaGhWn9Ww1ZPx80qsahhPFe/8jgWP0IchNe0F3HwkU7n8ejhH8bjonqht8mQ==}
@@ -3493,6 +3500,8 @@ snapshots:
   '@date-fns/tz@1.5.0': {}
 
   '@drizzle-team/brocli@0.10.2': {}
+
+  '@emailjs/browser@5.0.3': {}
 
   '@esbuild/aix-ppc64@0.28.2':
     optional: true

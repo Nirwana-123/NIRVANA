@@ -768,14 +768,14 @@ function AboutPage() {
       if (!reduce) {
         const speed = 1.2 + Math.abs(velocity) * 0.5;
         const skew = `skewX(${-velocity * 0.5}deg)`;
-        const width1 = row1.scrollWidth / 4;
-        const width2 = row2.scrollWidth / 4;
-        if (width1 > 0 && width2 > 0) {
-          offset1 += speed;
-          offset2 += speed;
-          row1.style.transform = `translateX(${-(offset1 % width1)}px) ${skew}`;
-          row2.style.transform = `translateX(${(offset2 % width2) - width2}px) ${skew}`;
-        }
+        // const width1 = row1.scrollWidth / 4;
+        // const width2 = row2.scrollWidth / 4;
+        // if (width1 > 0 && width2 > 0) {
+        //   offset1 += speed;
+        //   offset2 += speed;
+        //   row1.style.transform = `translateX(${-(offset1 % width1)}px) ${skew}`;
+        //   row2.style.transform = `translateX(${(offset2 % width2) - width2}px) ${skew}`;
+        // }
         const height = window.innerHeight + 120;
         doodles.forEach(({ element, top, speed: drift }) => {
           const yOffset = ((((top - y * drift) % height) + height) % height) - 60;
@@ -829,13 +829,10 @@ function AboutPage() {
               </svg>
               <p className="ah-sub">Education, Values, and a Brighter Future</p>
             </div>
-            <div className="ah-hint">SCROLL · CLICK THE DOTS</div>
+            <div className="ah-hint"></div>
           </section>
 
-          <div className="ah-mq" aria-hidden="true">
-            <div className="ah-row">{Array.from({ length: 4 }, (_, i) => <span key={i}>LEARN ✳ GROW ✳ SHINE ✳</span>)}</div>
-            <div className="ah-row ah-o">{Array.from({ length: 4 }, (_, i) => <span key={i}>KINDNESS ✦ CURIOSITY ✦ BELONGING ✦</span>)}</div>
-          </div>
+          
 
           <section className="ah-wrap">
             <AboutLetters as="h2" className="ah-rv" text="More than homework help" />
@@ -959,27 +956,6 @@ function GalleryPage() {
 }
 
 function ContactPage() {
-
-  function sendLetter(form) {
-    const subject = encodeURIComponent(`A note from ${String(form.get('name') || 'a visitor')}`);
-    const body = encodeURIComponent(
-      `Name: ${String(form.get('name') || '')}\nReply email: ${String(form.get('email') || '')}\n\n${String(form.get('message') || '')}`,
-    );
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-  }
-
-  const [status, setStatus] = useState('');
-  function handleSubmit(event) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const subject = encodeURIComponent(`A note from ${String(form.get('name') || 'a visitor')}`);
-    const body = encodeURIComponent(
-      `Name: ${String(form.get('name') || '')}\nReply email: ${String(form.get('email') || '')}\n\n${String(form.get('message') || '')}`,
-    );
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    setStatus('Your email app should open with your note ready. Add the club’s email address before sending.');
-  }
-
   return (
     <>
        <PageMeta title="Contact" description="Get in touch with The Learning Nook to ask about joining, volunteering, or learning more." />
@@ -991,8 +967,8 @@ function ContactPage() {
       <section className="content-section contact-layout">
         <div>
           <h2 className="section-heading">Write us a little note</h2>
-          <p className="section-lede" style={{ margin: '0 0 18px' }}>Write your letter, press the wax seal, and a pigeon will carry it away. Add the club’s email address to the mail link before you send.</p>
-          <ContactForm onSend={sendLetter} />
+          <p className="section-lede" style={{ margin: '0 0 18px' }}>Write your letter, press the wax seal, and a pigeon will carry it away.</p>
+          <ContactForm />
         </div>
         <aside className="contact-aside">
           <h2>There are lots of ways to say hello.</h2>
@@ -1002,7 +978,7 @@ function ContactPage() {
             <li><strong>FOR VOLUNTEERS</strong>Tell us what you enjoy and how you might like to lend a hand.</li>
             <li><strong>FOR NEIGHBOURS</strong>Share an idea, offer a resource, or simply introduce yourself.</li>
           </ul>
-          <div className="note-strip">This website uses an email-app link rather than collecting or storing your message.</div>
+          <div className="note-strip">Your note is sent through our configured email service; this website does not store submissions.</div>
         </aside>
       </section>
 
