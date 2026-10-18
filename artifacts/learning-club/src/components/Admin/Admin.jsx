@@ -233,7 +233,7 @@ function Panel({ onLogout }) {
             </button>
           </>
         )}
-      </section>
+      <section/>
 
       <section className="adm-card" aria-labelledby="adm-lib">
         <div className="adm-lib-head">
