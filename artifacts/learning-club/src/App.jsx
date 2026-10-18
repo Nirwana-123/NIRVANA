@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
@@ -11,7 +11,6 @@ import { stepAvatars } from './step-avatars';
 import kunalPhoto from '@/components/Kunal.png';
 import abhishekPhoto from '@/components/Abhishek.png';
 import aryanPhoto from '@/components/aryan.png';
-
 import './about-heavy.css';
 import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
@@ -22,7 +21,8 @@ import Developers from './components/developers';
 import ContactForm from '@/components/LetterForm';
 import EventsTrail from '@/components/EventsTrail';
 import SwingGallery from '@/components/SwingGallery';
-import FacultySection from '@/components/FacultySection';
+import FacultySection from '@/components//FacultySection';
+const Admin = lazy(() => import('./components/Admin/Admin'));
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
@@ -37,8 +37,7 @@ const footerLinks = [
   { label: 'HOME', href: '/', title: 'Home' },
   { label: 'ABOUT', href: '/about', title: 'About' },
   { label: 'DEVELOPERS', href: '/developers', title: 'Developers' },
-  { label: 'CENTRES', href: '/centres', title: 'Centres' },
-  { label: 'CONTACT', href: '/contact', title: 'Contact' },
+  { label: 'ADMIN', href: '/admin', title: 'Admin' },
 ];
 
 function BrandLogo({ className = '' }) {
@@ -1061,6 +1060,7 @@ function Router() {
         <Route path="/gallery"><PageShell><GalleryPage /></PageShell></Route>
         <Route path="/contact"><PageShell><ContactPage /></PageShell></Route>
         <Route path="/developers"><Developers/></Route>
+        <Route path="/admin"><Suspense fallback={<main className="adm-login"><p>Loading…</p></main>}><Admin /></Suspense></Route>
         <Route><NotFound /></Route>
       </Switch>
     </RoutedErrorBoundary>
