@@ -11,6 +11,7 @@ import { stepAvatars } from './step-avatars';
 import kunalPhoto from '@/components/Kunal.png';
 import abhishekPhoto from '@/components/Abhishek.png';
 import aryanPhoto from '@/components/aryan.png';
+
 import './about-heavy.css';
 import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
@@ -21,6 +22,7 @@ import Developers from './components/developers';
 import ContactForm from '@/components/LetterForm';
 import EventsTrail from '@/components/EventsTrail';
 import SwingGallery from '@/components/SwingGallery';
+import FacultySection from '@/components/FacultySection';
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
@@ -912,10 +914,18 @@ function TeamPage() {
     { name: 'Kunal L.', post: 'Sexkaretary',            bio: 'Gaandu h bsdka', photo: kunalPhoto, instagram: '', linkedin: '', email: '' },
     { name: 'Abhishek D.', post: 'Creative Head',           bio: 'meetha', photo: abhishekPhoto, instagram: '', linkedin: '', email: '' },
   ];
+
+  const faculty = [
+  { name: 'Dr. Full Name', post: 'Faculty Chairperson',    bio: 'Two to three lines about them.' },
+  { name: 'Dr. Full Name', post: 'Faculty Co-Chairperson', bio: 'Two to three lines about them.' },
+  { name: 'Dr. Full Name', post: 'Faculty Co-Chairperson', bio: 'Two to three lines about them.' },
+];
   return (
     <>
       <PageMeta title="Team" description="Meet the mentors, organizers, and volunteers who make The Learning Nook a welcoming place to learn and grow." />
       
+      <FacultySection faculty={faculty} />
+
       <Meettheteam members={members} />
     </>
   );
