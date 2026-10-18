@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import emailjs from '@emailjs/browser';
 import anime from 'animejs/lib/anime.es.js';
 import './LetterForm.css';
 
@@ -51,9 +52,9 @@ const Pigeon = forwardRef(function Pigeon(_, ref) {
 /**
  * Contact form drawn as an old parchment letter.
  * On "Send": the letter folds into a scroll, a pigeon flies in, grabs it and flies away.
- * Afterwards `onSend(formData)` runs (use it to open your mailto link) and a fresh page unrolls.
+ * The form is sent through EmailJS before the pigeon animation plays.
  */
-export default function LetterForm({ onSend }) {
+export default function LetterForm() {
   const stageRef = useRef(null);
   const paperRef = useRef(null);
   const formRef = useRef(null);
@@ -61,7 +62,7 @@ export default function LetterForm({ onSend }) {
   const pigeonRef = useRef(null);
   const alive = useRef(true);
   const [phase, setPhase] = useState('idle'); // idle | sending | sent
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState('idle');
 
   /* Entrance: the page unrolls when it scrolls into view. */
   useEffect(() => {
@@ -161,16 +162,43 @@ export default function LetterForm({ onSend }) {
     event.preventDefault();
     if (phase !== 'idle') return;
     const form = formRef.current;
-    const data = new FormData(form);
-    setPhase('sending');
-    setStatus('');
+    if (!form) return;
 
-    if (!reducedMotion()) await flyAway();
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    if (!serviceId || !templateId || !publicKey) {
+      console.error('EmailJS is not configured. Set the required VITE_EMAILJS_* variables.');
+      setStatus('error');
+      return;
+    }
+
+    setPhase('sending');
+    setStatus('sending');
+
+    try {
+      await emailjs.sendForm(serviceId, templateId, form, { publicKey });
+    } catch (error) {
+      console.error('EmailJS error:', error);
+      if (alive.current) {
+        setStatus('error');
+        setPhase('idle');
+      }
+      return;
+    }
+
+    if (!alive.current) return;
+    if (!reducedMotion()) {
+      try {
+        await flyAway();
+      } catch (error) {
+        console.error('Letter delivery animation error:', error);
+      }
+    }
     if (!alive.current) return;
 
-    onSend?.(data);
     setPhase('sent');
-    setStatus('Your letter is on its way! Your email app should open with your note ready. Add the club’s email address before sending.');
+    setStatus('success');
 
     if (reducedMotion()) {
       form.reset();
@@ -183,6 +211,13 @@ export default function LetterForm({ onSend }) {
     await unroll();
     if (alive.current) setPhase('idle');
   };
+
+  const statusMessage = {
+    idle: '',
+    sending: 'Sending your letter…',
+    success: 'Your letter is on its way!',
+    error: 'Sorry, your letter could not be sent. Please try again.',
+  }[status];
 
   return (
     <div className="letter-stage" ref={stageRef}>
@@ -209,7 +244,7 @@ export default function LetterForm({ onSend }) {
           </div>
 
           <div className="letter-foot">
-            <p className="letter-status" role="status" aria-live="polite">{status}</p>
+            <p className="letter-status" role="status" aria-live="polite">{statusMessage}</p>
             <button className="wax-seal" type="submit" disabled={phase !== 'idle'} aria-label="Send letter by pigeon">
               <span>Send</span>
             </button>

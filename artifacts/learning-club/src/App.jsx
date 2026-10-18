@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
 import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
-import { ArrowRight, ArrowUp, BookOpen, Facebook, Heart, Instagram, Lightbulb, Mail, Menu, MessageCircle, Sprout, Twitter, Users, X, Youtube } from 'lucide-react';
+import { ArrowRight, ArrowUp, BookOpen, Facebook, Heart, Instagram, Lightbulb, Mail, MapPin, Menu, MessageCircle, Sprout, Twitter, Users, X, Youtube } from 'lucide-react';
 import anime from 'animejs/lib/anime.es.js';
 import { stepAvatars } from './step-avatars';
 import kunalPhoto from '@/components/Kunal.png';
@@ -16,6 +16,8 @@ import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
 import Meettheteam from '@/components/Meettheteam';
 import LocationMap from '@/components/Location';
+import Centres from '@/components/centres/Centres';
+import Developers from './components/developers';
 import ContactForm from '@/components/LetterForm';
 import EventsTrail from '@/components/EventsTrail';
 import SwingGallery from '@/components/SwingGallery';
@@ -24,8 +26,16 @@ const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
   { label: 'ABOUT', href: '/about', title: 'About' },
   { label: 'TEAM', href: '/team', title: 'Team' },
+  { label: 'CENTRES', href: '/centres', title: 'Centres' },
   { label: 'EVENTS', href: '/events', title: 'Events' },
   { label: 'GALLERY', href: '/gallery', title: 'Gallery' },
+  { label: 'CONTACT', href: '/contact', title: 'Contact' },
+];
+const footerLinks = [
+  { label: 'HOME', href: '/', title: 'Home' },
+  { label: 'ABOUT', href: '/about', title: 'About' },
+  { label: 'DEVELOPERS', href: '/developers', title: 'Developers' },
+  { label: 'CENTRES', href: '/centres', title: 'Centres' },
   { label: 'CONTACT', href: '/contact', title: 'Contact' },
 ];
 
@@ -161,7 +171,7 @@ function Footer() {
 
         <div className="footer-right">
           <nav className="footer-links" aria-label="Footer navigation">
-            {navigation.map((item) => (
+            {footerLinks.map((item) => (
               <Link key={item.href} href={item.href}>{item.title}</Link>
             ))}
           </nav>
@@ -772,14 +782,14 @@ function AboutPage() {
       if (!reduce) {
         const speed = 1.2 + Math.abs(velocity) * 0.5;
         const skew = `skewX(${-velocity * 0.5}deg)`;
-        const width1 = row1.scrollWidth / 4;
-        const width2 = row2.scrollWidth / 4;
-        if (width1 > 0 && width2 > 0) {
-          offset1 += speed;
-          offset2 += speed;
-          row1.style.transform = `translateX(${-(offset1 % width1)}px) ${skew}`;
-          row2.style.transform = `translateX(${(offset2 % width2) - width2}px) ${skew}`;
-        }
+        // const width1 = row1.scrollWidth / 4;
+        // const width2 = row2.scrollWidth / 4;
+        // if (width1 > 0 && width2 > 0) {
+        //   offset1 += speed;
+        //   offset2 += speed;
+        //   row1.style.transform = `translateX(${-(offset1 % width1)}px) ${skew}`;
+        //   row2.style.transform = `translateX(${(offset2 % width2) - width2}px) ${skew}`;
+        // }
         const height = window.innerHeight + 120;
         doodles.forEach(({ element, top, speed: drift }) => {
           const yOffset = ((((top - y * drift) % height) + height) % height) - 60;
@@ -833,13 +843,10 @@ function AboutPage() {
               </svg>
               <p className="ah-sub">Education, Values, and a Brighter Future</p>
             </div>
-            <div className="ah-hint">SCROLL · CLICK THE DOTS</div>
+            <div className="ah-hint"></div>
           </section>
 
-          <div className="ah-mq" aria-hidden="true">
-            <div className="ah-row">{Array.from({ length: 4 }, (_, i) => <span key={i}>LEARN ✳ GROW ✳ SHINE ✳</span>)}</div>
-            <div className="ah-row ah-o">{Array.from({ length: 4 }, (_, i) => <span key={i}>KINDNESS ✦ CURIOSITY ✦ BELONGING ✦</span>)}</div>
-          </div>
+          
 
           <section className="ah-wrap">
             <AboutLetters as="h2" className="ah-rv" text="More than homework help" />
@@ -914,6 +921,20 @@ function TeamPage() {
   );
 }
 
+function CentresPage() {
+  return (
+    <>
+      <PageMeta title="Centres" description="Explore the NIRVANA learning centres, meet the centre heads, and find contact and location details." />
+      <header className="subpage-head">
+        <p className="eyebrow">A PLACE TO LEARN TOGETHER</p>
+        <h1 className="page-heading">Our Centres.</h1>
+        <p className="page-intro">Meet the people and places that make our learning community feel like home.</p>
+      </header>
+      <Centres />
+    </>
+  );
+}
+
 function EventsPage() {
   return (
     <>
@@ -947,27 +968,6 @@ function GalleryPage() {
 }
 
 function ContactPage() {
-
-  function sendLetter(form) {
-    const subject = encodeURIComponent(`A note from ${String(form.get('name') || 'a visitor')}`);
-    const body = encodeURIComponent(
-      `Name: ${String(form.get('name') || '')}\nReply email: ${String(form.get('email') || '')}\n\n${String(form.get('message') || '')}`,
-    );
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-  }
-
-  const [status, setStatus] = useState('');
-  function handleSubmit(event) {
-    event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    const subject = encodeURIComponent(`A note from ${String(form.get('name') || 'a visitor')}`);
-    const body = encodeURIComponent(
-      `Name: ${String(form.get('name') || '')}\nReply email: ${String(form.get('email') || '')}\n\n${String(form.get('message') || '')}`,
-    );
-    window.location.href = `mailto:?subject=${subject}&body=${body}`;
-    setStatus('Your email app should open with your note ready. Add the club’s email address before sending.');
-  }
-
   return (
     <>
        <PageMeta title="Contact" description="Get in touch with The Learning Nook to ask about joining, volunteering, or learning more." />
@@ -979,18 +979,45 @@ function ContactPage() {
       <section className="content-section contact-layout">
         <div>
           <h2 className="section-heading">Write us a little note</h2>
-          <p className="section-lede" style={{ margin: '0 0 18px' }}>Write your letter, press the wax seal, and a pigeon will carry it away. Add the club’s email address to the mail link before you send.</p>
-          <ContactForm onSend={sendLetter} />
+          <p className="section-lede" style={{ margin: '0 0 18px' }}>Write your letter, press the wax seal, and a pigeon will carry it away.</p>
+          <ContactForm />
         </div>
-        <aside className="contact-aside">
-          <h2>There are lots of ways to say hello.</h2>
-          <p>Ask about learning sessions, volunteer roles, or how the club can support your family. You don’t need to have it all figured out before reaching out.</p>
-          <ul>
-            <li><strong>FOR FAMILIES</strong>Ask about getting to know the club and what support could look like.</li>
-            <li><strong>FOR VOLUNTEERS</strong>Tell us what you enjoy and how you might like to lend a hand.</li>
-            <li><strong>FOR NEIGHBOURS</strong>Share an idea, offer a resource, or simply introduce yourself.</li>
-          </ul>
-          <div className="note-strip">This website uses an email-app link rather than collecting or storing your message.</div>
+        <aside className="contact-details" aria-label="Contact details">
+          <h2 className="contact-details-heading">CONTACT DETAILS</h2>
+          <div className="contact-details-card">
+            <div className="cd-row">
+              <Mail className="cd-icon" size={28} aria-hidden="true" />
+              <div>
+                <p className="cd-label">Email</p>
+                <a className="cd-value" href="mailto:nss@svnit.ac.in">Nirwana_chapter@svnit.ac.in</a>
+              </div>
+            </div>
+
+            <div className="cd-row">
+              <MapPin className="cd-icon" size={28} aria-hidden="true" />
+              <div>
+                <p className="cd-label">Address</p>
+                <p className="cd-value">
+                  NIRWANA , SVNIT<br />
+                  Ichchhanath, Surat<br />
+                  Gujarat - 395007
+                </p>
+              </div>
+            </div>
+
+            <div className="cd-row cd-social-row">
+              <p className="cd-label">Connect With Us</p>
+              <div className="cd-socials">
+                {socials
+                  .filter(({ label }) => label !== 'Email')
+                  .map(({ label, href, Icon }) => (
+                    <a key={label} href={href} aria-label={label} target="_blank" rel="noreferrer">
+                      <Icon size={22} />
+                    </a>
+                  ))}
+              </div>
+            </div>
+          </div>
         </aside>
       </section>
 
@@ -1019,9 +1046,11 @@ function Router() {
         <Route path="/"><PageShell><HomePage /></PageShell></Route>
         <Route path="/about"><PageShell><AboutPage /></PageShell></Route>
         <Route path="/team"><PageShell><TeamPage /></PageShell></Route>
+        <Route path="/centres"><PageShell><CentresPage /></PageShell></Route>
         <Route path="/events"><PageShell><EventsPage /></PageShell></Route>
         <Route path="/gallery"><PageShell><GalleryPage /></PageShell></Route>
         <Route path="/contact"><PageShell><ContactPage /></PageShell></Route>
+        <Route path="/developers"><Developers/></Route>
         <Route><NotFound /></Route>
       </Switch>
     </RoutedErrorBoundary>

@@ -1,0 +1,72 @@
+/* ---------- Developers section ---------- */
+.devs { padding: 36px 0 40px; }
+
+.devs-head { text-align: center; margin-bottom: 34px; }
+.devs-title { margin: 0 0 10px; font: 400 clamp(36px, 5vw, 54px)/1 'Patrick Hand', cursive; color: var(--chalk); }
+.devs-intro { max-width: 520px; margin: 0 auto; font-size: 14px; line-height: 1.75; color: #d5dfd2; }
+
+.devs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.dev-card {
+  padding: 30px 24px 26px;
+  border: 1px solid rgba(242, 238, 220, .25);
+  border-radius: 14px;
+  text-align: center;
+  background: #153a30;
+}
+
+.dev-photo {
+  width: 300px;
+  height: 300px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 3px solid var(--sun);
+  background: rgba(255, 255, 255, .06);
+  font: 400 40px 'Patrick Hand', cursive;
+  color: var(--sun);
+}
+.dev-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.dev-name { margin: 0; font: 400 30px 'Patrick Hand', cursive; color: var(--chalk); }
+.dev-role { margin: 4px 0 12px; font-size: 13px; font-weight: 700; color: var(--sun); }
+.dev-bio { margin: 0 0 16px; font-size: 13px; line-height: 1.7; color: #d5dfd2; }
+
+.dev-skills { list-style: none; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin: 0 0 20px; padding: 0; }
+.dev-skills li {
+  padding: 4px 12px;
+  border: 1px solid rgba(242, 238, 220, .4);
+  border-radius: 999px;
+  font-size: 12px;
+  color: #e5eadb;
+}
+
+.dev-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+.dev-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background .2s, color .2s;
+}
+.dev-btn.primary { background: var(--sun); color: #122f27; border: 1px solid var(--sun); }
+.dev-btn.primary:hover { background: transparent; color: var(--sun); }
+.dev-btn.ghost { background: transparent; color: #f2eedc; border: 1px solid rgba(242, 238, 220, .55); }
+.dev-btn.ghost:hover { background: rgba(242, 238, 220, .12); }
+.dev-btn:focus-visible { outline: 2px solid var(--sun); outline-offset: 3px; }
+
+@media (max-width: 760px) {
+  .devs-grid { grid-template-columns: minmax(0, 1fr); }
+}
