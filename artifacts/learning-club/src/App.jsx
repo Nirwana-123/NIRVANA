@@ -22,7 +22,7 @@ import ContactForm from '@/components/LetterForm';
 import EventsTrail from '@/components/EventsTrail';
 import SwingGallery from '@/components/SwingGallery';
 import FacultySection from '@/components//FacultySection';
-const Admin = lazy(() => import('./components/Admin/Admin'));
+ import Admin from './components/Admin/Admin';
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
