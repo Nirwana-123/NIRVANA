@@ -606,12 +606,51 @@ a { color: inherit; }
 .field input:focus,.field textarea:focus { border-color:var(--sun); box-shadow:0 0 0 2px rgba(242,215,111,.1); }
 .field input::placeholder,.field textarea::placeholder { color:#9aab9a; }
 .form-status { color:var(--sage); font-size:12px; line-height:1.6; }
-.contact-aside { border:1px dashed rgba(236,239,219,.3); padding:21px; }
-.contact-aside h2 { color:var(--rose); margin:0 0 10px; font:26px 'Patrick Hand', cursive; }
-.contact-aside p { color:#d2dbcd; font-size:11px; line-height:1.8; margin:0 0 12px; }
-.contact-aside ul { list-style:none; padding:0; margin:15px 0 0; display:grid; gap:12px; }
-.contact-aside li { color:#d2dbcd; font-size:11px; line-height:1.6; }
-.contact-aside strong { color:var(--sun); display:block; font-size:9px; letter-spacing:.13em; margin-bottom:2px; }
+.contact-details-heading {
+  margin:0 0 16px;
+  font-size:clamp(1.6rem,3vw,2.2rem);
+  font-weight:800;
+  color:#e5e9da;
+}
+.contact-details-card {
+  background:var(--board-deep);
+  border:1px solid #ececec;
+  border-radius:10px;
+  box-shadow:0 2px 10px rgba(0,0,0,.06);
+  padding:8px 30px;
+}
+.cd-row {
+  display:flex;
+  align-items:flex-start;
+  gap:20px;
+  padding:24px 0;
+  border-bottom:1px solid #e5e5e5;
+}
+.cd-row:last-child { border-bottom:none; }
+.cd-icon { flex-shrink:0; color:#1976d2; margin-top:4px; }
+.cd-label { margin:0 0 6px; font-size:.95rem; color:#e5e9da; }
+.cd-value {
+  margin:0;
+  font-size:1.05rem;
+  font-weight:600;
+  line-height:1.6;
+  color:#e5e9da;
+  text-decoration:none;
+}
+.cd-social-row { display:block; }
+.cd-socials { display:flex; gap:14px; margin-top:14px; }
+.cd-socials a {
+  display:grid;
+  place-items:center;
+  width:52px;
+  height:52px;
+  border:1px solid #ddd;
+  border-radius:50%;
+  color:#555;
+  background:#fff;
+  transition:background .2s,color .2s;
+}
+.cd-socials a:hover,.cd-socials a:focus-visible { background:#1976d2; color:#fff; }
 .site-footer {
   position: relative;
   background: #000;

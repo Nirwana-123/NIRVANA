@@ -24,6 +24,10 @@ pnpm build
 
 The production build is written to `artifacts/learning-club/dist/public`.
 
+## Contact form
+
+The contact form sends messages using EmailJS. Copy `artifacts/learning-club/.env.example` to `artifacts/learning-club/.env` and fill in the Service ID, Template ID, and Public Key from your EmailJS account. Configure the EmailJS template to use the form fields `{{name}}`, `{{email}}`, and `{{message}}`. The `.env` file is ignored by Git; never commit credentials.
+
 ## Project layout
 
 - `artifacts/learning-club/` — website UI and Vite configuration
