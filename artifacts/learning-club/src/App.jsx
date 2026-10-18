@@ -16,6 +16,8 @@ import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
 import Meettheteam from '@/components/Meettheteam';
 import LocationMap from '@/components/Location';
+import Centres from '@/components/centres/Centres';
+import Developers from './components/developers';
 import ContactForm from '@/components/LetterForm';
 import EventsTrail from '@/components/EventsTrail';
 import SwingGallery from '@/components/SwingGallery';
@@ -24,6 +26,7 @@ const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
   { label: 'ABOUT', href: '/about', title: 'About' },
   { label: 'TEAM', href: '/team', title: 'Team' },
+  { label: 'CENTRES', href: '/centres', title: 'Centres' },
   { label: 'EVENTS', href: '/events', title: 'Events' },
   { label: 'GALLERY', href: '/gallery', title: 'Gallery' },
   { label: 'CONTACT', href: '/contact', title: 'Contact' },
@@ -31,7 +34,8 @@ const navigation = [
 const footerLinks = [
   { label: 'HOME', href: '/', title: 'Home' },
   { label: 'ABOUT', href: '/about', title: 'About' },
-  { label: 'DEVELOPERS', href: '/team', title: 'Developers' },
+  { label: 'DEVELOPERS', href: '/developers', title: 'Developers' },
+  { label: 'CENTRES', href: '/centres', title: 'Centres' },
   { label: 'CONTACT', href: '/contact', title: 'Contact' },
 ];
 
@@ -917,6 +921,20 @@ function TeamPage() {
   );
 }
 
+function CentresPage() {
+  return (
+    <>
+      <PageMeta title="Centres" description="Explore the NIRVANA learning centres, meet the centre heads, and find contact and location details." />
+      <header className="subpage-head">
+        <p className="eyebrow">A PLACE TO LEARN TOGETHER</p>
+        <h1 className="page-heading">Our Centres.</h1>
+        <p className="page-intro">Meet the people and places that make our learning community feel like home.</p>
+      </header>
+      <Centres />
+    </>
+  );
+}
+
 function EventsPage() {
   return (
     <>
@@ -1028,9 +1046,11 @@ function Router() {
         <Route path="/"><PageShell><HomePage /></PageShell></Route>
         <Route path="/about"><PageShell><AboutPage /></PageShell></Route>
         <Route path="/team"><PageShell><TeamPage /></PageShell></Route>
+        <Route path="/centres"><PageShell><CentresPage /></PageShell></Route>
         <Route path="/events"><PageShell><EventsPage /></PageShell></Route>
         <Route path="/gallery"><PageShell><GalleryPage /></PageShell></Route>
         <Route path="/contact"><PageShell><ContactPage /></PageShell></Route>
+        <Route path="/developers"><Developers/></Route>
         <Route><NotFound /></Route>
       </Switch>
     </RoutedErrorBoundary>
