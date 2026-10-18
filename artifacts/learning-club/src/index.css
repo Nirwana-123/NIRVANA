@@ -1107,10 +1107,10 @@ html, body {
 /* .menu-toggle { display: none; } */
 
 /* Content that slides up over the pinned hero */
-.home-rest {
+/* .home-rest {
   position: relative;
   z-index: 1;
-}
+} */
 .home-rest::before {
   content: '';
   position: absolute;
