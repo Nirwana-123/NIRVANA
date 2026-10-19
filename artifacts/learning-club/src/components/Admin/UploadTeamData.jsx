@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { auth } from '@/lib/firebase';
-import { uploadAllTeamData, validateTeamData } from './upload';
+import { uploadAllTeamData, validateTeamData } from '../../../Utils/UploadTeam';
 import './Admin.css';
 
 export default function TeamDataPage({ onAuthError, onNote }) {
