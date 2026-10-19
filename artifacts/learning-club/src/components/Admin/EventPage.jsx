@@ -95,23 +95,25 @@ export default function EventPage({ api, getToken, onAuthError, onNote }) {
             <form className="adm-cols" onSubmit={submit} noValidate>
                 {/* ---------- Left: form ---------- */}
                 <div className="adm-form">
+
                     <h2 className="adm-sec-title">Event details</h2>
-
-                    <input aria-label="Event title"  style={{outline:"1px solid grey", height:'40px' , padding:'10px'}} placeholder="Event title *" value={title} onChange={(e) => setTitle(e.target.value)} required />
-
                     <fieldset className="adm-float">
-  <legend>Event Date *</legend>
-  <input
-    id="ev-date"
-    aria-label="Event date"
-    type="date"
-    value={date}
-    onChange={(e) => setDate(e.target.value)}
-    required
-  />
-</fieldset>
-
-                    <input aria-label="Venue" aria-describedby="ev-venue-hint" placeholder="Venue *" value={venue} onChange={(e) => setVenue(e.target.value)} required />
+                        <input aria-label="Event title" placeholder="Event title *" value={title} onChange={(e) => setTitle(e.target.value)} required />
+                    </fieldset>
+                    <fieldset className="adm-float">
+                        <legend>Event Date *</legend>
+                        <input
+                            id="ev-date"
+                            aria-label="Event date"
+                            type="date"
+                            value={date}
+                            onChange={(e) => setDate(e.target.value)}
+                            required
+                        />
+                    </fieldset>
+                    <fieldset className="adm-float">
+                        <input aria-label="Venue" aria-describedby="ev-venue-hint" placeholder="Venue *" value={venue} onChange={(e) => setVenue(e.target.value)} required />
+                    </fieldset>
                     <small id="ev-venue-hint" className="adm-hint">Enter the complete venue (building, institution, etc.)</small>
 
                     <h2 className="adm-sec-title adm-gap">Event image</h2>

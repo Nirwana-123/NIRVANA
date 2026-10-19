@@ -75,6 +75,11 @@
 /* Event page only. Reuses .adm-cols / .adm-form / .adm-preview / .adm-sec-title from DashLayout.css.
    Colors use the same --adm-* variables, so set them once in Admin.css. */
 
+:root {
+  --adm-focus: #e8efd9; /* the cream text color you use on the green background */
+  --adm-bg: #17382c;    /* your dark green */
+}
+
 .adm-page-title { margin: 0 0 20px; font-size: 1.9rem; font-weight: 400; }
 
 .adm-form textarea {
@@ -146,8 +151,9 @@
   padding: 0 5px;
   font-size: 0.75rem;
   line-height: 1;
-  color: inherit;
-  opacity: 0.8;
+  /* color: inherit; */
+  /* opacity: 0.8; */
+  z-index: 10;
 }
 
 .adm-float input {
@@ -170,3 +176,26 @@
 }
 
 .adm-float:focus-within legend { color: var(--adm-accent, #1976d2); opacity: 1; }
+
+/* focus: just recolor the existing border, no extra shadow */
+.adm-float:focus-within {
+  border-color: var(--adm-accent, #1976d2);
+  box-shadow: none;
+}
+
+.adm-float:focus-within legend {
+  color: var(--adm-focus, #e8efd9);
+  opacity: 1;
+}
+
+/* the highlighted day / month / year block */
+.adm-float input::-webkit-datetime-edit-day-field:focus,
+.adm-float input::-webkit-datetime-edit-month-field:focus,
+.adm-float input::-webkit-datetime-edit-year-field:focus {
+  background: var(--adm-focus, #e8efd9);
+  color: var(--adm-bg, #17382c); /* dark text on the light highlight */
+  outline: none;
+}
+
+/* calendar icon visible on the dark background */
+.adm-float input { color-scheme: dark; }
