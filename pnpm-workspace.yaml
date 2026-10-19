@@ -56,4 +56,6 @@ overrides:
   js-yaml: '4.3.2'
 
 allowBuilds:
+  '@firebase/util': set this to true or false
   esbuild: true
+  protobufjs: set this to true or false
