@@ -123,8 +123,9 @@ export default function EventPage({ api, getToken, onAuthError, onNote }) {
                     </label>
                     {image && <small className="adm-hint">{image.file.name}</small>}
                     <small className="adm-hint">For best results, use a landscape image with a 16:9 aspect ratio (e.g. 1280×720).</small>
-
+               
                     <textarea
+                        style={{outline:'1px solid grey', padding:'5px'}}
                         aria-label="Short description"
                         placeholder="Short description / summary *"
                         rows={5}
@@ -132,6 +133,7 @@ export default function EventPage({ api, getToken, onAuthError, onNote }) {
                         onChange={(e) => setSummary(e.target.value)}
                         required
                     />
+                   
                     <small className={`adm-hint${summary.length > SUMMARY_MAX ? ' over' : ''}`}>
                         {summary.length}/{SUMMARY_MAX} characters (recommended max)
                     </small>
@@ -140,6 +142,7 @@ export default function EventPage({ api, getToken, onAuthError, onNote }) {
 
                     <h2 className="adm-sec-title adm-gap">Event content</h2>
                     <textarea
+                        style={{outline:'1px solid grey', padding:'5px'}}
                         aria-label="Event content"
                         placeholder="Write the full event details here"
                         rows={10}

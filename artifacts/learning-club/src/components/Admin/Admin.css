@@ -129,7 +129,6 @@
   overflow: hidden;
   border: 1px solid var(--adm-border, #e3e3e3);
   border-radius: 8px;
-  background: var(--adm-bg, #fff);
 }
 .adm-ev-card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
 .adm-ev-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
