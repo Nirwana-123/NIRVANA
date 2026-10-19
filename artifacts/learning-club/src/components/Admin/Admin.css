@@ -69,3 +69,5 @@
 
 @media (max-width: 520px) { .adm-card { padding: 18px 14px; } .adm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
 @media (prefers-reduced-motion: reduce) { .adm-btn, .adm-bar i { transition: none; } .adm-btn:hover:not(:disabled) { transform: none; } }
+.adm-warn { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 16px; padding: 11px 14px; font-size: 13px; background: rgba(255, 155, 155, .12); border-left: 2px solid #ff9b9b; }
+.adm-login-card .adm-info { margin: 0 0 16px; font-size: 13px; color: var(--sun, #f2d76f); }
