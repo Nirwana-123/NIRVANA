@@ -913,17 +913,11 @@ function TeamPage() {
     { name: 'Kunal L.', post: 'Sexkaretary',            bio: 'Gaandu h bsdka', photo: kunalPhoto, instagram: '', linkedin: '', email: '' },
     { name: 'Abhishek D.', post: 'Creative Head',           bio: 'meetha', photo: abhishekPhoto, instagram: '', linkedin: '', email: '' },
   ];
-
-  const faculty = [
-  { name: 'Dr. Full Name', post: 'Faculty Chairperson',    bio: 'Two to three lines about them.' },
-  { name: 'Dr. Full Name', post: 'Faculty Co-Chairperson', bio: 'Two to three lines about them.' },
-  { name: 'Dr. Full Name', post: 'Faculty Co-Chairperson', bio: 'Two to three lines about them.' },
-];
   return (
     <>
-      <PageMeta title="Team" description="Meet the mentors, organizers, and volunteers who make The Learning Nook a welcoming place to learn and grow." />
+      {/* <PageMeta title="Team" description="Meet the mentors, organizers, and volunteers who make The Learning Nook a welcoming place to learn and grow." /> */}
       
-      <FacultySection faculty={faculty} />
+      <FacultySection />
 
       <Meettheteam members={members} />
     </>
