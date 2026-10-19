@@ -70,4 +70,65 @@
 @media (max-width: 520px) { .adm-card { padding: 18px 14px; } .adm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
 @media (prefers-reduced-motion: reduce) { .adm-btn, .adm-bar i { transition: none; } .adm-btn:hover:not(:disabled) { transform: none; } }
 .adm-warn { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin: 0 0 16px; padding: 11px 14px; font-size: 13px; background: rgba(255, 155, 155, .12); border-left: 2px solid #ff9b9b; }
-.adm-login-card .adm-info { margin: 0 0 16px; font-size: 13px; color: var(--sun, #f2d76f); }
+.adm-login-card .adm-info { margin: 0 0 16px; font-size: 13px; color: var(--sun, #f2d76f);}
+
+/* Event page only. Reuses .adm-cols / .adm-form / .adm-preview / .adm-sec-title from DashLayout.css.
+   Colors use the same --adm-* variables, so set them once in Admin.css. */
+
+.adm-page-title { margin: 0 0 20px; font-size: 1.9rem; font-weight: 400; }
+
+.adm-form textarea {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font: inherit;
+}
+
+.adm-gap { margin-top: 18px; }
+
+/* date field with a small label sitting on the border */
+.adm-float { position: relative; }
+.adm-float label {
+  position: absolute;
+  top: -8px;
+  left: 12px;
+  padding: 0 4px;
+  font-size: 0.72rem;
+  background: var(--adm-bg, #fff);
+  color: var(--adm-muted, #555);
+}
+
+/* outlined "Select image" button */
+.adm-select-image {
+  display: block;
+  padding: 12px;
+  margin-left: 20px;
+  border: 1px solid var(--adm-accent, #1976d2);
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--adm-accent, #1976d2) !important;
+  cursor: pointer;
+}
+.adm-select-image:hover { background: rgba(25, 118, 210, 0.06); }
+.adm-select-image:focus-within { outline: 2px solid var(--adm-accent, #1976d2); outline-offset: 2px; }
+
+.adm-hint.over { color: #c62828; }
+.adm-error { color: #c62828; }
+.adm-actions { display: flex; gap: 12px; margin-top: 8px; }
+
+/* preview card */
+.adm-ev-card {
+  overflow: hidden;
+  border: 1px solid var(--adm-border, #e3e3e3);
+  border-radius: 8px;
+  background: var(--adm-bg, #fff);
+}
+.adm-ev-card img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+.adm-ev-body { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
+.adm-ev-body h3 { margin: 0; font-size: 1.15rem; font-weight: 600; overflow-wrap: anywhere; }
+.adm-ev-body p { margin: 0; overflow-wrap: anywhere; }
+.adm-ev-meta { color: var(--adm-muted, #666); font-size: 0.9rem; }
+.adm-ev-body small { color: var(--adm-muted, #666); }
