@@ -1,0 +1,175 @@
+/* Layout only. Colors come from your existing Admin.css.
+   The few var(--x, fallback) values below are just fallbacks:
+   set --adm-accent / --adm-border / --adm-muted / --adm-panel in Admin.css
+   (or replace them here) to match your current theme. */
+
+.adm-shell {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+/* ---- Sidebar ---- */
+.adm-side {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 24px;
+  padding: 28px 12px 24px;
+  border-right: 1px solid var(--adm-border, #e3e3e3);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.adm-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+}
+
+.adm-avatar {
+  display: grid;
+  place-items: center;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: #bdbdbd;
+  color: #fff;
+}
+
+.adm-profile strong { font-size: 1.15rem; font-weight: 500; }
+
+.adm-profile small {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--adm-muted, #666);
+}
+
+.adm-nav { list-style: none; margin: 0; padding: 0; }
+
+.adm-nav button {
+  width: 100%;
+  padding: 16px 8px;
+  border: 0;
+  border-right: 3px solid transparent;
+  background: none;
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  text-align: center;
+  color: var(--adm-muted, #555);
+  cursor: pointer;
+}
+
+.adm-nav button:hover { color: var(--adm-accent, #1976d2); }
+
+.adm-nav button.active {
+  color: var(--adm-accent, #1976d2);
+  border-right-color: var(--adm-accent, #1976d2);
+}
+
+.adm-nav button:focus-visible { outline: 2px solid var(--adm-accent, #1976d2); outline-offset: -2px; }
+
+.adm-logout { margin-top: auto; justify-content: center; }
+
+/* ---- Main area ---- */
+.adm-main { padding: 28px 32px 48px; min-width: 0; }
+.adm-main h1 { margin: 0 0 20px; font-size: 1.9rem; font-weight: 400; }
+
+.adm-sec-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--adm-accent, #1976d2);
+}
+
+.adm-cols {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 32px;
+  align-items: start;
+}
+
+/* Left column: plain stacked form, no card, like the reference */
+.adm-form { display: flex; flex-direction: column; gap: 12px; }
+.adm-form label { font-size: 0.85rem; color: var(--adm-muted, #555); }
+.adm-form input { width: 100%; box-sizing: border-box; }
+.adm-hint { color: var(--adm-muted, #666); }
+.adm-form .adm-sec-title:not(:first-child) { margin-top: 14px; }
+.adm-form .adm-btn.primary { align-self: flex-start; margin-top: 8px; }
+
+/* Right column: preview panel */
+.adm-preview {
+  padding: 20px;
+  border: 1px solid var(--adm-border, #e3e3e3);
+  border-radius: 8px;
+  background: var(--adm-panel, #fafafa);
+  position: sticky;
+  top: 20px;
+}
+
+.adm-preview h2 { margin: 0 0 16px; font-size: 1.3rem; font-weight: 500; }
+
+.adm-placeholder {
+  margin: 0;
+  padding: 36px 0;
+  text-align: center;
+  font-style: italic;
+  color: var(--adm-muted, #888);
+}
+
+.adm-preview .adm-queue { margin: 0; max-height: 420px; overflow-y: auto; }
+
+/* Library */
+.adm-lib { margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--adm-border, #e3e3e3); }
+.adm-lib .adm-lib-head { margin-bottom: 16px; }
+.adm-lib .adm-sec-title span { text-transform: none; color: var(--adm-muted, #666); }
+
+/* ---- Tablet / phone: sidebar becomes a scrolling top bar ---- */
+@media (max-width: 900px) {
+  .adm-cols { grid-template-columns: 1fr; }
+  .adm-preview { position: static; }
+}
+
+@media (max-width: 720px) {
+  .adm-shell { grid-template-columns: 1fr; }
+
+  .adm-side {
+    position: static;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    border-right: 0;
+    border-bottom: 1px solid var(--adm-border, #e3e3e3);
+  }
+
+  .adm-profile { flex-direction: row; gap: 10px; }
+  .adm-avatar { width: 40px; height: 40px; }
+  .adm-avatar svg { width: 22px; height: 22px; }
+  .adm-profile small { display: none; }
+
+  .adm-side nav { flex: 1; min-width: 0; overflow-x: auto; }
+  .adm-nav { display: flex; }
+  .adm-nav button {
+    width: auto;
+    white-space: nowrap;
+    padding: 10px 12px;
+    border-right: 0;
+    border-bottom: 3px solid transparent;
+  }
+  .adm-nav button.active { border-bottom-color: var(--adm-accent, #1976d2); }
+
+  .adm-logout { margin-top: 0; }
+  .adm-main { padding: 20px 16px 40px; }
+}
