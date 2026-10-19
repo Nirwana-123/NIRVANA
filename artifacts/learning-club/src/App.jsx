@@ -23,6 +23,7 @@ import EventsTrail from '@/components/EventsTrail';
 import SwingGallery from '@/components/SwingGallery';
 import FacultySection from '@/components//FacultySection';
  import Admin from './components/Admin/Admin';
+ import Verify from './components/Verification/Verify';
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
@@ -1050,6 +1051,8 @@ function Router() {
         <Route path="/contact"><PageShell><ContactPage /></PageShell></Route>
         <Route path="/developers"><Developers/></Route>
         <Route path="/admin"><Suspense fallback={<main className="adm-login"><p>Loading…</p></main>}><Admin /></Suspense></Route>
+        <Route path="/verify"><PageShell><Verify /></PageShell></Route>
+<Route path="/verify/:id"><PageShell><Verify /></PageShell></Route>
         <Route><NotFound /></Route>
       </Switch>
     </RoutedErrorBoundary>

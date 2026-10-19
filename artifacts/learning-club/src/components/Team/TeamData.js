@@ -53,20 +53,21 @@ export const Head = [
         name:'Kislay',
         post:'Technical Head',
         email:'kislayg1@gmail.com',
-        linkdin:'https://www.linkedin.com/in/kislay-gupta-608711342'
+        linkdin:'https://www.linkedin.com/in/kislay-gupta-608711342',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792440575/kislay.png'
     },
      {
         name:'Abhishek',
         post:'Creative Head',
         email:'abhishekdhiman589@gmail.com',
         linkdin:'https://www.linkedin.com/in/abhishek-dhiman-9b0061352',
-        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792439458/abhi.png'
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792440324/abhi.png'
     },
     {
          name:'Harsh ',
         post:'Managing Head ',
         email:'harshkulhari417@gmail.com',
-        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792439120/harsh.png'
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792440899/harsh.png'
     },
     
    
