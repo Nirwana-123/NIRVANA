@@ -73,6 +73,7 @@
   },
   "dependencies": {
     "@emailjs/browser": "^5.0.3",
-    "animejs": "^3.2.2"
+    "animejs": "^3.2.2",
+    "firebase": "^13.0.0"
   }
 }

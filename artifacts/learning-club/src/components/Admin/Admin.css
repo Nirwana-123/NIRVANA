@@ -1,0 +1,71 @@
+/* ---------- Admin panel ---------- */
+.adm, .adm-login { min-height: 100dvh; background: var(--board-deep, #122f27); color: var(--chalk, #f2eedc); font-family: 'DM Sans', sans-serif; }
+.adm { max-width: 980px; margin: 0 auto; padding: 28px clamp(16px, 4vw, 32px) 60px; }
+.adm h1 { margin: 0; font: 400 40px 'Patrick Hand', cursive; }
+.adm h2 { margin: 0 0 16px; font: 400 28px 'Patrick Hand', cursive; color: var(--sun, #f2d76f); }
+.adm h2 span { font: 400 16px 'DM Sans', sans-serif; color: #a9bda9; }
+.adm label, .adm-login label { display: block; margin: 0 0 6px; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #cbd6c6; }
+
+.adm input[type="text"], .adm input:not([type]), .adm-login input, .adm select {
+  width: 100%; padding: 11px 12px; font-size: 16px; color: var(--chalk, #f2eedc);
+  background: rgba(4, 20, 15, .35); border: 1px solid rgba(222, 231, 214, .4); border-radius: 6px; outline: none;
+}
+.adm input:focus, .adm-login input:focus, .adm select:focus { border-color: var(--sun, #f2d76f); box-shadow: 0 0 0 2px rgba(242, 215, 111, .15); }
+.adm select { width: auto; min-width: 170px; }
+
+.adm-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 18px; margin-bottom: 20px; border-bottom: 1px dashed rgba(236, 239, 219, .28); }
+.adm-note { margin: 0 0 16px; padding: 11px 14px; font-size: 13px; background: rgba(242, 215, 111, .1); border-left: 2px solid var(--sun, #f2d76f); }
+.adm-card { margin-bottom: 24px; padding: 24px; border: 1px solid rgba(236, 239, 219, .22); border-radius: 12px; background: rgba(255, 255, 255, .04); }
+
+/* buttons */
+.adm-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 11px 18px; font: 700 12px 'DM Sans', sans-serif; letter-spacing: .08em; text-transform: uppercase; border-radius: 6px; cursor: pointer; transition: transform .15s, background .15s; }
+.adm-btn:hover:not(:disabled) { transform: translateY(-2px); }
+.adm-btn:disabled { opacity: .5; cursor: not-allowed; }
+.adm-btn.primary { color: #122f27; background: var(--sun, #f2d76f); border: 1px solid var(--sun, #f2d76f); margin-top: 16px; }
+.adm-btn.ghost { color: var(--chalk, #f2eedc); background: transparent; border: 1px solid rgba(242, 238, 220, .5); }
+.adm-icon-btn { display: grid; place-items: center; width: 34px; height: 34px; color: var(--chalk, #f2eedc); background: transparent; border: 0; border-radius: 6px; cursor: pointer; }
+.adm-icon-btn:hover:not(:disabled) { background: rgba(255, 255, 255, .1); }
+.adm-icon-btn.danger:hover { color: #ff9b9b; }
+.adm-btn:focus-visible, .adm-icon-btn:focus-visible { outline: 2px solid var(--sun, #f2d76f); outline-offset: 2px; }
+
+/* drop zone */
+.adm-drop { display: grid; justify-items: center; gap: 8px; margin-top: 18px; padding: 30px 16px; text-align: center; color: #cbd6c6; border: 2px dashed rgba(236, 239, 219, .35); border-radius: 12px; transition: background .2s, border-color .2s; }
+.adm-drop.on { background: rgba(242, 215, 111, .08); border-color: var(--sun, #f2d76f); }
+.adm-drop p { margin: 0; } .adm-drop small { color: #a9bda9; }
+
+/* upload queue */
+.adm-queue { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 10px; }
+.adm-queue li { display: grid; grid-template-columns: 56px minmax(0, 1fr) 34px; gap: 12px; align-items: center; padding: 8px; border-radius: 8px; background: rgba(0, 0, 0, .2); }
+.adm-queue img { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; }
+.adm-fname { display: block; overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.adm-bar { height: 6px; margin: 6px 0 4px; overflow: hidden; border-radius: 3px; background: rgba(255, 255, 255, .12); }
+.adm-bar i { display: block; height: 100%; background: var(--sun, #f2d76f); transition: width .2s; }
+.adm-queue .done .adm-bar i { background: #8fd19e; } .adm-queue .error .adm-bar i { background: #ff9b9b; }
+.adm-queue small { color: #a9bda9; }
+
+/* library */
+.adm-lib-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+.adm-lib-head h2 { margin: 0; }
+.adm-empty { margin: 0; color: #a9bda9; }
+.adm-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+.adm-grid li { overflow: hidden; border-radius: 10px; background: rgba(0, 0, 0, .25); border: 1px solid rgba(236, 239, 219, .15); }
+.adm-grid img { display: block; width: 100%; aspect-ratio: 7 / 5; object-fit: cover; }
+.adm-meta { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 6px 6px 6px 12px; font-size: 12px; }
+.adm-meta > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.adm-meta > div { display: flex; flex: none; }
+
+/* login */
+.adm-login { display: grid; place-items: center; padding: 20px; }
+.adm-login-card { width: min(380px, 100%); padding: 34px 28px 30px; text-align: center; border: 10px solid #8a5a34; border-radius: 10px; background: linear-gradient(160deg, #22302b, #1a2622); box-shadow: inset 0 0 40px rgba(0, 0, 0, .6), 0 18px 40px rgba(0, 0, 0, .4); }
+.adm-login-card h1 { margin: 8px 0 4px; font: 400 44px 'Patrick Hand', cursive; }
+.adm-login-card p { margin: 0 0 20px; font-size: 14px; color: #cbd6c6; }
+.adm-login-card label { text-align: left; }
+.adm-login-card .adm-btn { width: 100%; }
+.adm-lock { display: inline-grid; place-items: center; width: 56px; height: 56px; color: var(--sun, #f2d76f); border: 2px dashed var(--sun, #f2d76f); border-radius: 50%; }
+.adm-pass-row { position: relative; }
+.adm-pass-row input { padding-right: 44px; }
+.adm-pass-row .adm-icon-btn { position: absolute; top: 4px; right: 4px; }
+.adm-login-card .adm-error { margin: 12px 0 0; color: #ffb3b3; font-size: 13px; }
+
+@media (max-width: 520px) { .adm-card { padding: 18px 14px; } .adm-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+@media (prefers-reduced-motion: reduce) { .adm-btn, .adm-bar i { transition: none; } .adm-btn:hover:not(:disabled) { transform: none; } }
