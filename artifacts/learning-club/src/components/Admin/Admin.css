@@ -132,3 +132,41 @@
 .adm-ev-body p { margin: 0; overflow-wrap: anywhere; }
 .adm-ev-meta { color: var(--adm-muted, #666); font-size: 0.9rem; }
 .adm-ev-body small { color: var(--adm-muted, #666); }
+.adm-float { position: relative; }
+
+.adm-float {
+  min-width: 0;
+  margin: 0;
+  padding: 0 9px;
+  border: 1px solid var(--adm-border, #c4c4c4);
+  border-radius: 4px;
+}
+
+.adm-float legend {
+  padding: 0 5px;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: inherit;
+  opacity: 0.8;
+}
+
+.adm-float input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  height: 46px;
+  padding: 0 5px;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 1.05rem;
+}
+
+.adm-float:focus-within {
+  border-color: var(--adm-accent, #1976d2);
+  box-shadow: 0 0 0 1px var(--adm-accent, #1976d2);
+}
+
+.adm-float:focus-within legend { color: var(--adm-accent, #1976d2); opacity: 1; }
