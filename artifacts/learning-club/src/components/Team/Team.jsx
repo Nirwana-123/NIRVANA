@@ -1,30 +1,40 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import '../Team//Team.css';
+import '../Team/Team.css';
+import { Head } from './TeamData';
 
-/*
-  Pass your members however you already load them:
-    <MeetTheTeam members={members} />
-  Each member: { name, post, bio, photo, instagram, linkedin, email, accent }
-  Only name is needed. Missing photo shows a silhouette, missing links hide that icon,
-  missing accent cycles through a built-in palette. instagram / linkedin can be a handle or a full URL.
-  If your field names differ (e.g. image, role), change the single `normalize` function below.
-*/
 const ACCENTS = ['#c62839', '#1f5f8b', '#2e7d52', '#b7791f', '#7a3b8f', '#0f766e'];
 const str = (v) => (typeof v === 'string' ? v.trim() : '');
 const url = (v, base) => { const s = str(v); if (!s) return ''; return /^https?:\/\//i.test(s) ? s : base + s.replace(/^[@/]+/, ''); };
-const normalize = (m, i) => ({
-  id: m.id ?? `${m.name}-${i}`,
-  name: str(m.name) || 'Member',
-  post: str(m.post),
-  bio: str(m.bio),
-  photo: str(m.photo),
-  accent: /^#[0-9a-f]{6}$/i.test(str(m.accent)) ? str(m.accent) : ACCENTS[i % ACCENTS.length],
-  links: {
-    instagram: url(m.instagram, 'https://instagram.com/'),
-    linkedin: url(m.linkedin, 'https://www.linkedin.com/in/'),
-    email: str(m.email) ? `mailto:${str(m.email)}` : '',
-  },
-});
+
+// Accepts both data shapes: Head { name, post, email, linkdin }
+// and ProgramCoordinators { name, position, gmail, description, photo }.
+const normalize = (m, i) => {
+  const email = str(m.email || m.gmail);
+  return {
+    id: `${i}-${email || str(m.name)}`,
+    name: str(m.name),
+    post: str(m.post || m.position),
+    bio: str(m.bio || m.description),
+    photo: str(m.photo),
+    accent: ACCENTS[i % ACCENTS.length],
+    links: {
+      instagram: url(m.instagram, 'https://instagram.com/'),
+      linkedin: url(m.linkdin || m.linkedin, 'https://linkedin.com/in/'),
+      email: email ? `mailto:${email}` : '',
+    },
+  };
+};
+
+// Drops repeated people (same email, or same name when there is no email).
+const unique = (list) => {
+  const seen = new Set();
+  return list.filter((m) => {
+    const key = str(m.email || m.gmail).toLowerCase() || str(m.name).toLowerCase();
+    if (!key || seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+};
 
 const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 const ss = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
@@ -58,7 +68,7 @@ const ICONS = {
 const LABELS = { instagram: 'Instagram', linkedin: 'LinkedIn', email: 'Email' };
 
 export default function MeetTheTeam({
-  members: rawMembers = [],
+  members: rawMembers = Head, // defaults to the Head list from TeamData
   watermark = 'NIRVANA',
   crumb = 'Members',
   perMember = '90vh', // scroll length per member
@@ -66,7 +76,7 @@ export default function MeetTheTeam({
   const rootRef = useRef(null);
   const goToRef = useRef(() => {});
   const [active, setActive] = useState(0);
-  const members = useMemo(() => rawMembers.map(normalize), [rawMembers]);
+  const members = useMemo(() => unique(rawMembers).map(normalize), [rawMembers]);
   const n = members.length;
 
   useEffect(() => {
@@ -176,7 +186,7 @@ export default function MeetTheTeam({
 
   if (!n) return null;
   const current = members[Math.min(active, n - 1)];
-  const socials = ['instagram', 'linkedin', 'email'].filter((k) => current.links?.[k]);
+  const socials = ['instagram', 'linkedin', 'email'].filter((k) => current.links[k]);
 
   return (
     <section className="team" ref={rootRef} style={{ '--n': n, '--team-per': perMember }} aria-label="Meet the club members">
