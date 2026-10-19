@@ -4,7 +4,7 @@ import { auth } from '@/lib/firebase';
 import { useSessionTimeout } from '@/lib/useSessionTimeout';
 import EventPage from './EventPage';
 import './Admin.css';
-import './DashLayout.css'; // layout only: sidebar + two-column pages
+import './Dashboard.css'; // layout only: sidebar + two-column pages
 
 const API = import.meta.env.VITE_API_URL ?? '';
 const MAX_MB = 10;
