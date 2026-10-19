@@ -1,11 +1,12 @@
 import { useEffect, useRef } from 'react';
 import { ProgramCoordinators } from './Team/TeamData';
 const toFaculty = (list) =>
-  list.map(({ name, position, description, gmail }) => ({
+  list.map(({ name, position, description, gmail,photo }) => ({
     name,
     post: position,
     bio: description,
     email: gmail,
+    Photo:photo
   }));
 
 /*
@@ -165,7 +166,7 @@ export default function FacultySection({
               style={{ '--d': `${i * 120}ms`, ...(ring ? { '--ring': ring } : {}) }}
               key={person.name}
             >
-              <div className="fac-photo"><Portrait photo={person.photo} name={person.name} /></div>
+              <div className="fac-photo"><Portrait photo={person.Photo} name={person.name} /></div>
               <div className="fac-shelf" aria-hidden="true" />
               <h3 className="fac-name">{person.name}</h3>
               {person.post && <p className="fac-post">{person.post}</p>}
