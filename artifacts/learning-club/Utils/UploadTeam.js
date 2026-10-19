@@ -9,7 +9,7 @@ import {
 //  - `firestore` must be exported from your firebase file (next to `auth`)
 //  - the TeamData path must point to your TeamData.js
 import { firestore as db } from '@/lib/firebase';
-import * as TeamData from '@/components/Pages/Team/TeamData';
+// import * as TeamData from '@/components/Pages/Team/TeamData';
 
 const COLLECTION = 'volunteers';
 const BATCH_SIZE = 400; // Firestore allows 500 writes per batch

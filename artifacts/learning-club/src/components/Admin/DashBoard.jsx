@@ -4,6 +4,7 @@ import { auth } from '@/lib/firebase';
 import { useSessionTimeout } from '@/lib/useSessionTimeout';
 import EventPage from './EventPage';
 import ImagesPage from './ImageUpload';
+import UploadTeamData from './UploadTeamData'
 import './Admin.css';
 import './Dashboard.css'; // layout only: sidebar + two-column pages
 
@@ -112,6 +113,8 @@ export default function DashBoard({ handleSignOut }) {
           <ImagesPage api={api} getToken={getToken} onAuthError={guard} onNote={setNote} />
         )}
 
+       
+
         {section !== 'events' && section !== 'images' && (
           <>
             <h1>{current.label}</h1>
@@ -119,6 +122,10 @@ export default function DashBoard({ handleSignOut }) {
               <p className="adm-empty">{current.label} is not available in this panel yet.</p>
             </section>
           </>
+        )}
+
+         {section === 'team' && (
+          <UploadTeamData api={api} getToken={getToken} onAuthError={guard} onNote={setNote} />
         )}
       </main>
     </div>

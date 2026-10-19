@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import './meet-the-team.css';
+import '../Team//Team.css';
 
 /*
   Pass your members however you already load them:
