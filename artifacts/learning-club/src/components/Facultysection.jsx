@@ -1,4 +1,12 @@
 import { useEffect, useRef } from 'react';
+import { ProgramCoordinators } from './Team/TeamData';
+const toFaculty = (list) =>
+  list.map(({ name, position, description, gmail }) => ({
+    name,
+    post: position,
+    bio: description,
+    email: gmail,
+  }));
 
 /*
   "Guided by faculty, driven by students". Sits above <Meettheteam /> on the Team page.
@@ -99,7 +107,7 @@ function Portrait({ photo, name }) {
 }
 
 export default function FacultySection({
-  faculty = [],
+  faculty = toFaculty(ProgramCoordinators),
   eyebrow = 'Our faculty',
   title = 'Guided by',
   lede = 'The faculty who mentor the club and stand behind everything we do.',

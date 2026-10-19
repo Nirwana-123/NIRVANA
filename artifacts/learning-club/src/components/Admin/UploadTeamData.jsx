@@ -3,7 +3,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { uploadAllTeamData, validateTeamData } from '../../../Utils/UploadTeam';
 import './Admin.css';
-import './TeamDataPage.css';
+// import './TeamDataPage.css';
 
 export default function TeamDataPage({ onAuthError, onNote }) {
   const dialogRef = useRef(null);
