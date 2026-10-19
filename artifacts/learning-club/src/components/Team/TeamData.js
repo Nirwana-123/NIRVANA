@@ -23,16 +23,56 @@ export const ProgramCoordinators = [
 
 ]
 
-const team2026 = [
+export const Head = [
     {
         name:'Ankit',
         post:'Convenor',
-        email:'bhaduankit42@gmail.com'
+        email:'bhaduankit42@gmail.com',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792437535/Ankit.png'
     },
     {
-         name:'Rushikesh Sabe',
+        name:'Aryan',
+        post:'Co.Convenor',
+        email:'aryanghosaliya@gmail.com',
+        linkdin:'https://in.linkedin.com/in/aryan-ghosaliya-b86019378',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792438449/Aryan.png'
+    },
+    {
+        name:'Kunal',
+        post:'Secretary  ',
+        email:'kunallunayach5151@gmail.com',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792438739/Kunal.png'
+    },
+    {
+        name:'Ritesh',
+        post:'Treasurer ',
+        email:' ritesh.tiwari.1729@gmail.com',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792437918/Ritesh.png'
+    },
+    {
+        name:'Kislay',
+        post:'Technical Head',
+        email:'kislayg1@gmail.com',
+        linkdin:'https://www.linkedin.com/in/kislay-gupta-608711342'
+    },
+     {
+        name:'Abhishek',
+        post:'Creative Head',
+        email:'abhishekdhiman589@gmail.com',
+        linkdin:'https://www.linkedin.com/in/abhishek-dhiman-9b0061352',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792439458/abhi.png'
+    },
+    {
+         name:'Harsh ',
+        post:'Managing Head ',
+        email:'harshkulhari417@gmail.com',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792439120/harsh.png'
+    },
+    
+   
+    {
+         name:'Rushikesh',
         post:'Tutor Coordinator ',
         email:'rushikeshsabe129@gmail.com'
     },
-    
 ]

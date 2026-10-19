@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { ProgramCoordinators } from './Team/TeamData';
+
 const toFaculty = (list) =>
   list.map(({ name, position, description, gmail,photo }) => ({
     name,

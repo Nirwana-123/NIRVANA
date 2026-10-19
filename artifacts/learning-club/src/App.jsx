@@ -908,18 +908,13 @@ function AboutPage() {
 }
 
 function TeamPage() {
-   const members = [
-    { name: 'Aryan G.',  post: 'Co-convenor', bio: 'mujhe meetha pasand h', photo: aryanPhoto, instagram: 'nirvana.club', linkedin: 'asha-r', email: 'asha@example.com' },
-    { name: 'Kunal L.', post: 'Sexkaretary',            bio: 'Gaandu h bsdka', photo: kunalPhoto, instagram: '', linkedin: '', email: '' },
-    { name: 'Abhishek D.', post: 'Creative Head',           bio: 'meetha', photo: abhishekPhoto, instagram: '', linkedin: '', email: '' },
-  ];
   return (
     <>
       {/* <PageMeta title="Team" description="Meet the mentors, organizers, and volunteers who make The Learning Nook a welcoming place to learn and grow." /> */}
       
       <FacultySection />
 
-      <Meettheteam members={members} />
+      <Meettheteam  />
     </>
   );
 }
