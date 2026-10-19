@@ -14,7 +14,7 @@ import aryanPhoto from '@/components/aryan.png';
 import './about-heavy.css';
 import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
-import Meettheteam from '@/components/Meettheteam';
+import Meettheteam from './components/Team/Team';
 import LocationMap from '@/components/Location';
 import Centres from '@/components/centres/Centres';
 import Developers from './components/developers';
