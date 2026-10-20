@@ -53,6 +53,7 @@ export default function Verify() {
   };
 
   const { status, data } = state;
+  const details = data?.details ?? {};
 
   return (
     <section className="vf" aria-labelledby="vf-title">
@@ -70,10 +71,10 @@ export default function Verify() {
             <ShieldCheck size={46} aria-hidden="true" />
             <h2>Certificate verified</h2>
             <p className="vf-name">{data.name}</p>
-            {data.role && <p className="vf-text">{data.role}</p>}
+            {details.role && <p className="vf-text">{details.role}</p>}
             <dl>
               <dt>Certificate ID</dt><dd>{data.id}</dd>
-              {data.year && (<><dt>Year</dt><dd>{data.year}</dd></>)}
+              {details.year && (<><dt>Year</dt><dd>{details.year}</dd></>)}
             </dl>
             <p className="vf-text">This certificate is genuine and was issued by NIRVANA.</p>
           </>
