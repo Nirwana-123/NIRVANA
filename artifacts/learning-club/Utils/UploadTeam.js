@@ -16,12 +16,11 @@ const BATCH_SIZE = 400; // Firestore allows 500 writes per batch
 
 // Core groups + every export that starts with "Team" (Team2019, Team2020, ...)
 export function getAllCategories() {
-  const core = {
-    Sir: TeamData.Sir,
-    ProgramCoordinators: TeamData.ProgramCoordinators,
-    Founder: TeamData.Founder,
-    CoFounder: TeamData.CoFounder,
-  };
+  const core = Object.fromEntries(
+    ['Sir', 'ProgramCoordinators', 'Founder', 'CoFounder']
+      .filter((key) => Array.isArray(TeamData[key]))
+      .map((key) => [key, TeamData[key]]),
+  );
   const years = Object.fromEntries(
     Object.entries(TeamData).filter(([key, value]) => key.startsWith('Team') && Array.isArray(value)),
   );
