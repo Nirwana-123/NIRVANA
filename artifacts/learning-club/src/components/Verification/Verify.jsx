@@ -2,15 +2,14 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation, useRoute } from 'wouter';
 import { Search, ShieldAlert, ShieldCheck } from 'lucide-react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { firestore } from '@/lib/firebase';
+import { db } from '@/lib/firebase';
 import './Verify.css';
 
 // Shows at /verify (manual search) and /verify/<ID> (what the QR code opens)
 export default function Verify() {
   const [match, params] = useRoute('/verify/:id');
-
   const [, navigate] = useLocation();
-  const id = match ? decodeURIComponent(params.id) : '';
+  const id = match ? decodeURIComponent(params.id).trim() : '';
   const [input, setInput] = useState(id);
   const [state, setState] = useState({ status: id ? 'loading' : 'idle' });
 
@@ -29,19 +28,20 @@ export default function Verify() {
       setState({ status: 'idle' });
       return undefined;
     }
+
     let active = true;
     setState({ status: 'loading' });
 
     const verifyCertificate = async () => {
       try {
         const certificates = query(
-          collection(firestore, 'Volunteer_Data'),
+          collection(db, 'Volunteer_Data'),
           where('id', '==', id),
         );
         const snapshot = await getDocs(certificates);
         const record = snapshot.docs[0]?.data();
 
-        if (!record || typeof record.id !== 'string' || typeof record.name !== 'string' || !record.name.trim()) {
+        if (!record || typeof record.name !== 'string' || !record.name.trim()) {
           if (active) setState({ status: 'invalid' });
           return;
         }
@@ -49,12 +49,21 @@ export default function Verify() {
         if (active) {
           setState({
             status: 'valid',
-            data: { id: record.id, name: record.name.trim() },
+            data: { id, name: record.name.trim() },
           });
         }
       } catch (error) {
         console.error('Certificate verification lookup failed:', error);
-        if (active) setState({ status: 'error' });
+        if (active) {
+          setState({
+            status:
+              error.code === 'resource-exhausted'
+                ? 'busy'
+                : error.code === 'permission-denied'
+                  ? 'permission'
+                  : 'error',
+          });
+        }
       }
     };
 
@@ -103,23 +112,29 @@ export default function Verify() {
           </>
         )}
 
-        {status === 'revoked' && (
-          <>
-            <ShieldAlert size={46} aria-hidden="true" />
-            <h2>Certificate no longer valid</h2>
-            <p className="vf-text">This certificate has been withdrawn by NIRVANA. Please contact the club.</p>
-          </>
-        )}
-
         {status === 'busy' && <p className="vf-text">Too many checks in a short time. Please wait a minute and try again.</p>}
+        {status === 'permission' && (
+          <p className="vf-text">
+            Firestore denied this lookup. Enable public read access for the Volunteer_Data collection in your Firestore rules.
+          </p>
+        )}
         {status === 'error' && <p className="vf-text">We couldn’t check right now. Please try again in a moment.</p>}
       </div>
 
       <form className="vf-form" onSubmit={submit}>
         <label htmlFor="vf-id">Certificate ID</label>
         <div>
-          <input id="vf-id" value={input} onChange={(e) => setInput(e.target.value)} placeholder="NIRV-2026-XXXXXX" autoComplete="off" spellCheck="false" />
-          <button type="submit" disabled={!input.trim()}><Search size={16} aria-hidden="true" /> Verify</button>
+          <input
+            id="vf-id"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="NIRV-2026-XXXXXX"
+            autoComplete="off"
+            spellCheck="false"
+          />
+          <button type="submit" disabled={!input.trim()}>
+            <Search size={16} aria-hidden="true" /> Verify
+          </button>
         </div>
       </form>
 

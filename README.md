@@ -16,6 +16,18 @@ pnpm dev
 
 The development server runs on port `5173` by default. To use a different port, set `PORT`; to serve the app from a subpath, set `BASE_PATH` (default `/`).
 
+## Certificate verification
+
+The verification page queries Firestore directly from the browser. In Firebase Console, add this match to the existing Firestore rules:
+
+```text
+match /Volunteer_Data/{document} {
+  allow read: if true;
+}
+```
+
+This makes every field in every `Volunteer_Data` document publicly readable, not just the ID being checked. Use it only if all data in that collection is safe to expose. Merge the match into the existing rules rather than replacing rules for the rest of the project.
+
 ## Build
 
 ```bash
