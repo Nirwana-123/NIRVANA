@@ -1052,7 +1052,7 @@ function Router() {
         <Route path="/developers"><Developers/></Route>
         <Route path="/admin"><Suspense fallback={<main className="adm-login"><p>Loading…</p></main>}><Admin /></Suspense></Route>
         <Route path="/verify"><PageShell><Verify /></PageShell></Route>
-<Route path="/verify/:id"><PageShell><Verify /></PageShell></Route>
+<Route path="/verify/:id"><PageShell><Verify/></PageShell></Route>
         <Route><NotFound /></Route>
       </Switch>
     </RoutedErrorBoundary>

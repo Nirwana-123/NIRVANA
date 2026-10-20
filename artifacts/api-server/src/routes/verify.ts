@@ -49,27 +49,25 @@ verifyRouter.get("/:id", verifyRateLimit, async (req, res) => {
   }
 
   try {
-    const snapshot = await getVolunteerCollection()
-      .where("id", "==", id)
-      .limit(1)
-      .get();
-    const record = snapshot.docs[0]?.data();
+    const collection = getVolunteerCollection();
+    const snapshot = await collection.where("id", "==", id).limit(1).get();
+    const record =
+      snapshot.docs[0]?.data() ??
+      (await collection.doc(id).get()).data();
 
-    if (!record || typeof record.name !== "string" || !record.name.trim()) {
+    if (
+      !record ||
+      record.id !== id ||
+      typeof record.name !== "string" ||
+      !record.name.trim()
+    ) {
       return res.json({ valid: false });
-    }
-
-    const details: { role?: string; year?: string | number } = {};
-    if (typeof record.role === "string") details.role = record.role;
-    if (typeof record.year === "string" || typeof record.year === "number") {
-      details.year = record.year;
     }
 
     return res.json({
       valid: true,
-      id,
+      id: record.id,
       name: record.name.trim(),
-      details,
     });
   } catch (error) {
     const errorCode =
