@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useRoute } from 'wouter';
 import { Search, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { firestore } from '@/lib/firebase';
 import './Verify.css';
-
-const API = import.meta.env.VITE_API_URL ?? '';
 
 // Shows at /verify (manual search) and /verify/<ID> (what the QR code opens)
 export default function Verify() {
   const [match, params] = useRoute('/verify/:id');
+
   const [, navigate] = useLocation();
   const id = match ? decodeURIComponent(params.id) : '';
   const [input, setInput] = useState(id);
@@ -28,22 +29,37 @@ export default function Verify() {
       setState({ status: 'idle' });
       return undefined;
     }
-    const controller = new AbortController();
+    let active = true;
     setState({ status: 'loading' });
 
-    fetch(`${API}/api/verify/${encodeURIComponent(id)}`, { signal: controller.signal })
-      .then(async (response) => {
-        const data = await response.json().catch(() => ({}));
-        if (response.status === 429) return setState({ status: 'busy' });
-        if (response.status >= 500) return setState({ status: 'error' });
-        if (data.valid) return setState({ status: 'valid', data });
-        return setState({ status: data.revoked ? 'revoked' : 'invalid' });
-      })
-      .catch((error) => {
-        if (error.name !== 'AbortError') setState({ status: 'error' });
-      });
+    const verifyCertificate = async () => {
+      try {
+        const certificates = query(
+          collection(firestore, 'Volunteer_Data'),
+          where('id', '==', id),
+        );
+        const snapshot = await getDocs(certificates);
+        const record = snapshot.docs[0]?.data();
 
-    return () => controller.abort();
+        if (!record || typeof record.id !== 'string' || typeof record.name !== 'string' || !record.name.trim()) {
+          if (active) setState({ status: 'invalid' });
+          return;
+        }
+
+        if (active) {
+          setState({
+            status: 'valid',
+            data: { id: record.id, name: record.name.trim() },
+          });
+        }
+      } catch (error) {
+        console.error('Certificate verification lookup failed:', error);
+        if (active) setState({ status: 'error' });
+      }
+    };
+
+    void verifyCertificate();
+    return () => { active = false; };
   }, [id]);
 
   const submit = (event) => {
@@ -51,9 +67,7 @@ export default function Verify() {
     const value = input.trim();
     if (value) navigate(`/verify/${encodeURIComponent(value)}`);
   };
-
   const { status, data } = state;
-  const details = data?.details ?? {};
 
   return (
     <section className="vf" aria-labelledby="vf-title">
@@ -71,10 +85,8 @@ export default function Verify() {
             <ShieldCheck size={46} aria-hidden="true" />
             <h2>Certificate verified</h2>
             <p className="vf-name">{data.name}</p>
-            {details.role && <p className="vf-text">{details.role}</p>}
             <dl>
               <dt>Certificate ID</dt><dd>{data.id}</dd>
-              {details.year && (<><dt>Year</dt><dd>{details.year}</dd></>)}
             </dl>
             <p className="vf-text">This certificate is genuine and was issued by NIRVANA.</p>
           </>
