@@ -5,7 +5,7 @@ import { firestore } from '@/lib/firebase';
 import './EventsTrail.css';
 
 // Which Firestore collection the trail reads (the admin page saves to "events")
-const EVENTS_COLLECTION = 'events';
+const EVENTS_COLLECTION = 'EventData';
 // Descriptions longer than this get a "Read more" button
 const LONG_TEXT = 180;
 
@@ -13,9 +13,9 @@ const LONG_TEXT = 180;
    soon: true -> dashed "coming soon" card     end: true -> last card (flag pin) */
 const tail = [
   {
-    id: 'tail-soon',
+    id: '',
     month: 'SOON',
-    title: 'Something new is brewing',
+    title: 'Something new brewing',
     kind: 'Coming soon',
     summary: 'Another gathering is being planned. Check back to see it appear on the trail.',
     soon: true,
