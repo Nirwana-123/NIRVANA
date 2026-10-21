@@ -85,12 +85,17 @@ function StopCard({ stop }) {
         </div>
       )}
 
-      {canExpand && (
-        <button type="button" className="et-more" aria-expanded={open} aria-controls={bodyId} onClick={() => setOpen((v) => !v)}>
-          {open ? 'Show less' : 'Read more'}
-        </button>
-      )}
-      {stop.cta && <Link href={stop.cta.href} className="et-btn">{stop.cta.label}</Link>}
+     {(canExpand || stop.cta) && (
+  <div className="et-actions">
+    {canExpand && (
+      <button type="button" className="et-more" aria-expanded={open} aria-controls={bodyId} onClick={() => setOpen((v) => !v)}>
+        {open ? 'Show less' : 'Read more'}
+      </button>
+    )}
+    {stop.cta && <Link href={stop.cta.href} className="et-btn">{stop.cta.label}</Link>}
+  </div>
+)}
+      {/* {stop.cta && <Link href={stop.cta.href} className="et-btn">{stop.cta.label}</Link>} */}
     </article>
   );
 }
@@ -116,7 +121,7 @@ export default function EventsTrail() {
         const next = list.findIndex((item) => item.iso && item.iso >= today);
         if (next >= 0) {
           list[next].live = true;                                    // pulsing pin on the next upcoming event
-          list[next].cta = { label: 'Ask about joining', href: '/contact' };
+          list[next].cta = { label: 'Images', href: '/gallery' };
         }
         setEvents(list);
         setStatus('ready');
