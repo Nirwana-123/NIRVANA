@@ -23,6 +23,7 @@ import EventsTrail from '@/components/Eventstrail';
 import SwingGallery from '@/components/SwingGallery';
 import FacultySection from '@/components/Facultysection';
 const Admin = lazy(() => import('./components/Admin/Admin'));
+import Verify from '@/components/Verification/Verify';
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
@@ -908,24 +909,13 @@ function AboutPage() {
 }
 
 function TeamPage() {
-   const members = [
-    { name: 'Aryan G.',  post: 'Co-convenor', bio: 'mujhe meetha pasand h', photo: aryanPhoto, instagram: 'nirvana.club', linkedin: 'asha-r', email: 'asha@example.com' },
-    { name: 'Kunal L.', post: 'Sexkaretary',            bio: 'Gaandu h bsdka', photo: kunalPhoto, instagram: '', linkedin: '', email: '' },
-    { name: 'Abhishek D.', post: 'Creative Head',           bio: 'meetha', photo: abhishekPhoto, instagram: '', linkedin: '', email: '' },
-  ];
-
-  const faculty = [
-  { name: 'Dr. Full Name', post: 'Faculty Chairperson',    bio: 'Two to three lines about them.' },
-  { name: 'Dr. Full Name', post: 'Faculty Co-Chairperson', bio: 'Two to three lines about them.' },
-  { name: 'Dr. Full Name', post: 'Faculty Co-Chairperson', bio: 'Two to three lines about them.' },
-];
   return (
     <>
-      <PageMeta title="Team" description="Meet the mentors, organizers, and volunteers who make The Learning Nook a welcoming place to learn and grow." />
+      {/* <PageMeta title="Team" description="Meet the mentors, organizers, and volunteers who make The Learning Nook a welcoming place to learn and grow." /> */}
       
-      <FacultySection faculty={faculty} />
+      <FacultySection />
 
-      <Meettheteam members={members} />
+      <Meettheteam  />
     </>
   );
 }
@@ -1061,6 +1051,8 @@ function Router() {
         <Route path="/contact"><PageShell><ContactPage /></PageShell></Route>
         <Route path="/developers"><Developers/></Route>
         <Route path="/admin"><Suspense fallback={<main className="adm-login"><p>Loading…</p></main>}><Admin /></Suspense></Route>
+        <Route path="/verify"><PageShell><Verify /></PageShell></Route>
+<Route path="/verify/:id"><PageShell><Verify/></PageShell></Route>
         <Route><NotFound /></Route>
       </Switch>
     </RoutedErrorBoundary>

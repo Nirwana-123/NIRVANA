@@ -1,0 +1,38 @@
+/* ---------- Certificate verification page ---------- */
+.vf { max-width: 560px; margin: 0 auto; padding: 30px 0 40px; text-align: center; }
+.vf-eyebrow { margin: 0; color: var(--sun, #f2d76f); font-size: 10px; font-weight: 700; letter-spacing: .22em; }
+.vf-title { margin: 10px 0 24px; font: 400 clamp(38px, 6vw, 56px)/1 'Patrick Hand', cursive; color: var(--chalk, #f2eedc); }
+
+.vf-card {
+  display: grid; justify-items: center; gap: 8px;
+  padding: 30px 24px; min-height: 120px;
+  border: 8px solid #8a5a34; border-radius: 10px;
+  background: linear-gradient(160deg, #22302b, #1a2622);
+  box-shadow: inset 0 0 40px rgba(0, 0, 0, .6), 0 18px 40px rgba(0, 0, 0, .35);
+  color: var(--chalk, #f2eedc);
+}
+.vf-card h2 { margin: 6px 0 0; font: 400 34px 'Patrick Hand', cursive; }
+.vf-text { margin: 0; max-width: 420px; font-size: 14px; line-height: 1.7; color: #d5dfd2; }
+.vf-text b { overflow-wrap: anywhere; color: var(--chalk, #f2eedc); }
+.vf-name { margin: 2px 0 4px; font: 400 clamp(32px, 6vw, 46px)/1.1 'Patrick Hand', cursive; color: var(--chalk, #f2eedc); overflow-wrap: anywhere; }
+
+.vf-card dl { display: grid; grid-template-columns: auto auto; gap: 6px 16px; margin: 8px 0; padding: 12px 0; border-top: 1px dashed rgba(236, 239, 219, .3); border-bottom: 1px dashed rgba(236, 239, 219, .3); font-size: 14px; }
+.vf-card dt { text-align: right; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #a9bda9; align-self: center; }
+.vf-card dd { margin: 0; text-align: left; font-weight: 700; letter-spacing: .04em; }
+
+.vf-card.valid svg { color: var(--sage, #b5d2ad); }
+.vf-card.valid h2 { color: var(--sage, #b5d2ad); }
+.vf-card.invalid svg, .vf-card.revoked svg { color: var(--rose, #e5a2b3); }
+.vf-card.invalid h2, .vf-card.revoked h2 { color: var(--rose, #e5a2b3); }
+
+.vf-form { margin-top: 28px; text-align: left; }
+.vf-form label { display: block; margin-bottom: 6px; font-size: 10px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #cbd6c6; }
+.vf-form div { display: flex; gap: 8px; }
+.vf-form input { flex: 1; min-width: 0; padding: 12px; font-size: 16px; color: var(--chalk, #f2eedc); background: rgba(4, 20, 15, .35); border: 1px solid rgba(222, 231, 214, .4); border-radius: 6px; outline: none; }
+.vf-form input:focus { border-color: var(--sun, #f2d76f); box-shadow: 0 0 0 2px rgba(242, 215, 111, .15); }
+.vf-form button { display: inline-flex; align-items: center; gap: 6px; padding: 0 18px; font: 700 12px 'DM Sans', sans-serif; letter-spacing: .08em; text-transform: uppercase; color: #122f27; background: var(--sun, #f2d76f); border: 0; border-radius: 6px; cursor: pointer; }
+.vf-form button:disabled { opacity: .5; cursor: not-allowed; }
+.vf-help { margin: 22px 0 0; font-size: 13px; color: #a9bda9; }
+.vf-help a { color: var(--sun, #f2d76f); }
+
+@media (max-width: 480px) { .vf-form div { flex-direction: column; } .vf-form button { justify-content: center; padding: 12px; } }

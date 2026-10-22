@@ -119,4 +119,15 @@
 @media (prefers-reduced-motion: reduce) {
   .et-fig, .et-stop[data-live] .et-pin::after { animation: none; }
   .et-pin { transition: none; }
+}/* Read more on the left, the Images button at the far right */
+.et-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 14px;
 }
+.et-actions .et-more { margin: 0; }
+.et-actions .et-btn { margin: 0 0 0 auto; }   /* stays at the right even if there is no Read more */
+
