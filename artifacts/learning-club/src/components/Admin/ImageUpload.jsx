@@ -1,16 +1,46 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { addDoc, collection, deleteDoc, doc, getDocs, limit, orderBy, query, serverTimestamp } from 'firebase/firestore';
 import { Copy, ImagePlus, Trash2, UploadCloud } from 'lucide-react';
+import { firestore } from '@/lib/firebase';
 
 const MAX_MB = 10;
 
-const slugify = (text) =>
-  text.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+// From your Cloudinary dashboard (see .env): VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
+// The event selected when the page opens. Must match the Cloudinary folder name exactly.
+const DEFAULT_EVENT = 'Dushera(2026)';
+// Add more event folder names here. Events with existing photos are added automatically.
+const EVENT_FOLDERS = [];
+
+const EVENT_NAME = /^[A-Za-z0-9 _()-]{1,60}$/;
 const thumbOf = (url) => url.replace('/upload/', '/upload/c_fill,w_420,h_300,q_auto,f_auto/');
 
+function sendToCloudinary(file, event, onProgress) {
+  return new Promise((resolve, reject) => {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('upload_preset', UPLOAD_PRESET);
+    form.append('folder', `Events/${event}`);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`);
+    xhr.upload.onprogress = (e) => e.lengthComputable && onProgress(Math.round((e.loaded / e.total) * 100));
+    xhr.onload = () => {
+      let body = {};
+      try { body = JSON.parse(xhr.responseText); } catch { /* not JSON */ }
+      if (xhr.status >= 200 && xhr.status < 300) resolve(body);
+      else reject(new Error(body.error?.message || 'Cloudinary rejected the upload'));
+    };
+    xhr.onerror = () => reject(new Error('Network error'));
+    xhr.send(form);
+  });
+}
+
 /* ---------------- "Upload photos" page ---------------- */
-export default function ImagesPage({ api, getToken, onAuthError, onNote }) {
-  const [eventName, setEventName] = useState('');
+export default function ImagesPage({ onNote }) {
+  const [eventName, setEventName] = useState(DEFAULT_EVENT);
   const [queue, setQueue] = useState([]);
   const [photos, setPhotos] = useState([]);
   const [filter, setFilter] = useState('all');
@@ -22,14 +52,20 @@ export default function ImagesPage({ api, getToken, onAuthError, onNote }) {
 
   const refresh = useCallback(async () => {
     try {
-      const data = await api('/api/admin/photos', { token: await getToken() });
-      if (!Array.isArray(data.photos)) throw new Error('Invalid response from photo service.');
-      setPhotos(data.photos);
-    } catch (err) { onAuthError(err); }
-  }, [api, getToken, onAuthError]);
+      const snap = await getDocs(query(collection(firestore, 'photos'), orderBy('createdAt', 'desc'), limit(300)));
+      setPhotos(snap.docs.map((d) => ({ id: d.id, ...d.data() })));
+    } catch (err) {
+      console.error(err);
+      onNote(err.code === 'permission-denied' ? 'Firestore refused to list photos. Check the "photos" rules.' : 'Could not load the photo list.');
+    }
+  }, [onNote]);
 
   useEffect(() => { refresh(); }, [refresh]);
   useEffect(() => () => queueRef.current.forEach((i) => URL.revokeObjectURL(i.preview)), []);
+
+  // Dropdown options: default event, configured folders, and every event that already has photos.
+  const libraryEvents = [...new Set(photos.map((p) => p.event).filter(Boolean))];
+  const eventOptions = [...new Set([DEFAULT_EVENT, ...EVENT_FOLDERS, ...libraryEvents])];
 
   const addFiles = (fileList) => {
     const items = [];
@@ -44,51 +80,47 @@ export default function ImagesPage({ api, getToken, onAuthError, onNote }) {
   const patch = (id, changes) => setQueue((q) => q.map((i) => (i.id === id ? { ...i, ...changes } : i)));
   const removeFromQueue = (id) => setQueue((q) => { q.filter((i) => i.id === id).forEach((i) => URL.revokeObjectURL(i.preview)); return q.filter((i) => i.id !== id); });
 
-  const uploadOne = async (item, slug) => {
+  const uploadOne = async (item, event) => {
     patch(item.id, { status: 'uploading', progress: 0 });
-    const sig = await api('/api/admin/sign', { token: await getToken(), method: 'POST', body: { event: slug } });
-    await new Promise((resolve, reject) => {
-      const form = new FormData();
-      form.append('file', item.file);
-      form.append('api_key', sig.apiKey);
-      form.append('timestamp', sig.timestamp);
-      form.append('signature', sig.signature);
-      form.append('folder', sig.folder);
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', `https://api.cloudinary.com/v1_1/${sig.cloudName}/image/upload`);
-      xhr.upload.onprogress = (e) => e.lengthComputable && patch(item.id, { progress: Math.round((e.loaded / e.total) * 100) });
-      xhr.onload = () => (xhr.status >= 200 && xhr.status < 300 ? resolve() : reject(new Error('Cloudinary rejected the upload')));
-      xhr.onerror = () => reject(new Error('Network error'));
-      xhr.send(form);
+    const result = await sendToCloudinary(item.file, event, (progress) => patch(item.id, { progress }));
+    await addDoc(collection(firestore, 'photos'), {
+      event,
+      url: result.secure_url,
+      publicId: result.public_id,
+      createdAt: serverTimestamp(),
     });
     patch(item.id, { status: 'done', progress: 100 });
   };
 
   const uploadAll = async () => {
-    const slug = slugify(eventName);
-    if (!slug) return onNote('Type the event name first.');
+    if (!CLOUD_NAME || !UPLOAD_PRESET) return onNote('Cloudinary is not set up: add VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET to .env and restart.');
+    if (!EVENT_NAME.test(eventName)) return onNote('Choose a valid event first.');
     onNote('');
     setUploading(true);
     for (const item of queueRef.current.filter((i) => i.status !== 'done')) {
       try {
-        await uploadOne(item, slug);
+        await uploadOne(item, eventName);
       } catch (err) {
         patch(item.id, { status: 'error' });
-        if (err.status === 401 || err.status === 403) { setUploading(false); return onAuthError(err); }
-        onNote(err.message);
+        onNote(err.code === 'permission-denied'
+          ? 'The photo reached Cloudinary, but Firestore refused to save its link. Check the "photos" rules and your "executives" entry.'
+          : err.message);
       }
     }
     setUploading(false);
     await refresh();
-    onNote('Upload finished.');
+    onNote(`Upload finished. Photos are in Events / ${eventName}.`);
   };
 
+  // Removes the photo from the website list. The file itself stays in Cloudinary.
   const remove = async (photo) => {
-    if (!window.confirm('Delete this photo for good?')) return;
+    if (!window.confirm('Remove this photo from the website? The file stays in Cloudinary until you delete it there.')) return;
     try {
-      await api('/api/admin/photos', { token: await getToken(), method: 'DELETE', body: { publicId: photo.id } });
+      await deleteDoc(doc(firestore, 'photos', photo.id));
       setPhotos((list) => list.filter((p) => p.id !== photo.id));
-    } catch (err) { onAuthError(err); }
+    } catch (err) {
+      onNote(err.code === 'permission-denied' ? 'Firestore refused the removal.' : err.message);
+    }
   };
 
   const copy = async (url) => {
@@ -100,7 +132,6 @@ export default function ImagesPage({ api, getToken, onAuthError, onNote }) {
     }
   };
 
-  const events = [...new Set(photos.map((p) => p.event))];
   const shown = filter === 'all' ? photos : photos.filter((p) => p.event === filter);
   const pending = queue.filter((i) => i.status !== 'done').length;
 
@@ -113,10 +144,11 @@ export default function ImagesPage({ api, getToken, onAuthError, onNote }) {
         <section className="adm-form" aria-labelledby="adm-up">
           <h2 id="adm-up" className="adm-sec-title">Event details</h2>
 
-          <label htmlFor="adm-event">Event name</label>
-          <input id="adm-event" list="adm-events" value={eventName} onChange={(e) => setEventName(e.target.value)} placeholder="e.g. Diwali Celebration 2026" />
-          <datalist id="adm-events">{events.map((e) => <option key={e} value={e} />)}</datalist>
-          <small className="adm-hint">Pick an existing event or type a new one.</small>
+          <label htmlFor="adm-event">Event</label>
+          <select id="adm-event" className="adm-select" value={eventName} onChange={(e) => setEventName(e.target.value)}>
+            {eventOptions.map((name) => <option key={name} value={name}>{name}</option>)}
+          </select>
+          <small className="adm-hint">Photos are saved in Cloudinary under Events / {eventName}.</small>
 
           <h2 className="adm-sec-title">Photos</h2>
           <div
@@ -166,9 +198,9 @@ export default function ImagesPage({ api, getToken, onAuthError, onNote }) {
       <section className="adm-lib" aria-labelledby="adm-lib">
         <div className="adm-lib-head">
           <h2 id="adm-lib" className="adm-sec-title">Uploaded photos <span>({shown.length})</span></h2>
-          <select value={filter} onChange={(e) => setFilter(e.target.value)} aria-label="Filter by event">
+          <select className="adm-select" value={filter} onChange={(e) => setFilter(e.target.value)} aria-label="Filter by event">
             <option value="all">All events</option>
-            {events.map((e) => <option key={e} value={e}>{e}</option>)}
+            {libraryEvents.map((e) => <option key={e} value={e}>{e}</option>)}
           </select>
         </div>
 
@@ -183,7 +215,7 @@ export default function ImagesPage({ api, getToken, onAuthError, onNote }) {
                   <span>{photo.event}</span>
                   <div>
                     <button className="adm-icon-btn" onClick={() => copy(photo.url)} aria-label="Copy link"><Copy size={16} /></button>
-                    <button className="adm-icon-btn danger" onClick={() => remove(photo)} aria-label="Delete photo"><Trash2 size={16} /></button>
+                    <button className="adm-icon-btn danger" onClick={() => remove(photo)} aria-label="Remove from website"><Trash2 size={16} /></button>
                   </div>
                 </div>
               </li>
