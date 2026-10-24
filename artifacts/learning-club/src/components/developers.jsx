@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ArrowUpRight, Linkedin, Mail } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ArrowUpRight, Linkedin, Mail,Github } from 'lucide-react';
 import './developers.css';
 
 // Edit these two developers. Photos go in public/developers/ (optional:
@@ -8,18 +8,20 @@ const developers = [
   {
     id: 'dev-1',
     name: 'Mohit Kumar Soni',
-    photo: 'developers/dev-1.jpg',
-    email: 'developer.one@example.com',
-    linkedin: 'https://www.linkedin.com/in/your-profile-one',
+    photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792843313/Mohit.jpg',
+    email: 'mohitsoni12341234@gmail.com',
+    linkedin: 'https://www.linkedin.com/in/mohit-kumar-soni-8129b6388?',
+    github: 'https://github.com/Mohit102006',
     color: 'var(--sun)',
     accent: 'var(--sky)',
   },
   {
     id: 'dev-2',
     name: 'Kislay Gupta',
-    photo: 'developers/dev-2.jpg',
-    email: 'developer.two@example.com',
-    linkedin: 'https://www.linkedin.com/in/your-profile-two',
+    photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792851445/kislay.jpg',
+    email: 'kislayg1@gmail.com',
+    linkedin: 'https://www.linkedin.com/in/kislay-gupta-608711342?',
+    github: 'https://github.com/Kislay-Gupta766',
     color: 'var(--rose)',
     accent: 'var(--sage)',
   },
@@ -87,7 +89,7 @@ function DeveloperCard({ developer, index }) {
             <div className="dev-photo">
               {developer.photo && !photoFailed ? (
                 <img
-                  src={`${import.meta.env.BASE_URL}${developer.photo}`}
+                  src={developer.photo}
                   alt={`Portrait of ${developer.name}`}
                   onError={() => setPhotoFailed(true)}
                 />
@@ -114,6 +116,18 @@ function DeveloperCard({ developer, index }) {
               <Linkedin size={16} aria-hidden="true" />
               <ArrowUpRight size={15} className="dev-arrow" aria-hidden="true" />
             </a>
+            {developer.github && (
+              <a
+                className="dev-btn ghost"
+                href={developer.github}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${developer.name} on GitHub (opens in a new tab)`}
+              >
+                <Github size={16} aria-hidden="true" />
+                <ArrowUpRight size={15} className="dev-arrow" aria-hidden="true" />
+              </a>
+            )}
           </div>
         </div>
       </div>
@@ -133,10 +147,16 @@ const backBtn = {
   textDecoration: 'none',
   background: 'transparent', color: '#f2eedc',border: '1px solid rgba(242, 238, 220, .55)',
   position:'absolute',
-  left:'30px'
+  left:'9px',
+  top:'9px',
 };
 
 export default function Developers() {
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, []);
+
   return (
     <section className="devs" aria-labelledby="devs-title">
       <div className="dev-stars" aria-hidden="true">

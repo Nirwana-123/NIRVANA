@@ -8,9 +8,6 @@ import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter
 import { ArrowRight, ArrowUp, BookOpen, Facebook, Heart, Instagram, Lightbulb, Mail, MapPin, Menu, MessageCircle, Sprout, Twitter, Users, X, Youtube } from 'lucide-react';
 import anime from 'animejs/lib/anime.es.js';
 import { stepAvatars } from './step-avatars';
-import kunalPhoto from '@/components/Kunal.png';
-import abhishekPhoto from '@/components/Abhishek.png';
-import aryanPhoto from '@/components/aryan.png';
 import './about-heavy.css';
 import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
@@ -60,6 +57,11 @@ function SiteFrame({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location]);
+
+  useEffect(() => {
     setMenuOpen(false);
   }, [location]);
 
@@ -78,7 +80,7 @@ function SiteFrame({ children }) {
       <a className="skip-link" href="#main-content">Skip to page content</a>
       <aside className="side-rail" aria-label="Main navigation">
         <Link href="/" className="brand-mark" aria-label="NIRVANA home">
-         <BrandLogo />
+          <BrandLogo />
           <div className="brand-name">NIRVANA</div>
           <div className="brand-note">A Reason To Smile</div>
         </Link>
@@ -130,23 +132,23 @@ function SiteFrame({ children }) {
       <div className="board-frame">
         <main className={`board${location === '/about' ? ' board-about' : ''}`} id="main-content" aria-label={`${pageName} page`}>
           <div className="board-content" key={location}>
-            
+
             {children}
-           
+
           </div>
         </main>
       </div>
-       <Footer />
+      <Footer />
     </div>
   );
 }
 
 const socials = [
-  { label: 'Instagram', href: 'https://instagram.com/', Icon: Instagram },
+  { label: 'Instagram', href: 'https://www.instagram.com/nirvana_areason_to_smile?vrfl=ZzQzM3NvMXp3YTRi/', Icon: Instagram },
   { label: 'Facebook', href: 'https://facebook.com/', Icon: Facebook },
   { label: 'Twitter', href: 'https://twitter.com/', Icon: Twitter },
   { label: 'YouTube', href: 'https://youtube.com/', Icon: Youtube },
-  { label: 'Email', href: 'mailto:hello@example.com', Icon: Mail },
+  { label: 'CONTACT', href: '/contact', Icon: Mail },
 ];
 
 function Footer() {
@@ -179,9 +181,15 @@ function Footer() {
           </nav>
           <div className="footer-socials">
             {socials.map(({ label, href, Icon }) => (
-              <a key={label} href={href} aria-label={label} target="_blank" rel="noreferrer">
-                <Icon size={30} />
-              </a>
+              href.startsWith('/') ? (
+                <Link key={label} href={href} aria-label={label}>
+                  <Icon size={30} />
+                </Link>
+              ) : (
+                <a key={label} href={href} aria-label={label} target="_blank" rel="noreferrer">
+                  <Icon size={30} />
+                </a>
+              )
             ))}
           </div>
         </div>
@@ -417,39 +425,92 @@ function ChalkboardHero() {
       replay?.removeEventListener('click', play);
     };
   }, []);
+  const bannerRef = useRef(null);
+  const bgRef = useRef(null);
+  useEffect(() => {
+    const banner = bannerRef.current;
+    const bg = bgRef.current;
+    if (!banner || !bg || prefersReducedMotion()) return undefined;
+
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      // move the image by exactly the banner's offset, so it stays fixed on screen
+      const { top } = banner.getBoundingClientRect();
+      bg.style.transform = `translate3d(0, ${(-top).toFixed(1)}px, 0)`;
+    };
+    const onScroll = () => { if (!frame) frame = window.requestAnimationFrame(update); };
+
+    update();
+    window.addEventListener('scroll', onScroll, { passive: true, capture: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll, { capture: true });
+      window.removeEventListener('resize', onScroll);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
 
   return (
     <>
-    <section
-    className="hero-banner"
-    style={{ '--hero-image': `url(${import.meta.env.BASE_URL}hero.png)` }}
-  >
-      <svg className="chalk-filter" aria-hidden="true" focusable="false">
-        <filter id="chalk-rough" x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" />
-        </filter>
-      </svg>
-     
-      <section className="home-hero chalk-hero" ref={boardRef} aria-label="Learn. Grow. Shine.">
-        <p className="chalk-hero-tag" data-write>pull up a chair, there's room to grow</p>
-        <h1 className="chalk-hero-line" data-write>NIRVANA</h1>
-        {/* <h1 className="chalk-hero-line" data-write>Grow.</h1> */}
-        <h2 className="chalk-hero-line chalk-hero-subtitle chalk-yellow" data-write>A Reason to Smile</h2>
-        <svg className="chalk-underline" ref={underlineRef} viewBox="0 0 420 20" aria-hidden="true">
-          <path d="M4 12 C110 4 300 4 416 9" />
+      <section
+        className="hero-banner"
+        ref={bannerRef}
+        style={{
+          '--hero-image': `url(${import.meta.env.BASE_URL}hero.png)`,
+          position: 'relative',
+          overflow: 'clip',
+          isolation: 'isolate',
+          position: 'relative',
+    overflow: 'clip',
+    isolation: 'isolate',
+    minHeight: '100svh',
+        }}
+      >
+        <div
+          ref={bgRef}
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            left: 0,
+            right: 0,
+            top: 0,
+            height: '100vh',
+            zIndex: -1,
+            pointerEvents: 'none',
+            backgroundImage: 'var(--hero-image)',
+            backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), var(--hero-image)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            willChange: 'transform',
+          }}
+        />
+        <svg className="chalk-filter" aria-hidden="true" focusable="false">
+          <filter id="chalk-rough" x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
+            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" />
+          </filter>
         </svg>
-        <p className="chalk-hero-copy" data-write>
-          A caring learning club for underprivileged children, where every child feels valued and inspired to learn and grow.
-        </p>
-        <div className="chalk-stick" ref={stickRef} aria-hidden="true" />
-        <div className="chalk-actions">
-          <Link href="/events" className="chalk-button">See what we do <ArrowRight size={14} /></Link>
-          <Link href="/about" className="chalk-button outline">Our little story</Link>
-          <button type="button" className="chalk-replay">Write again</button>
-        </div>
+
+        <section className="home-hero chalk-hero" ref={boardRef} aria-label="Learn. Grow. Shine.">
+          <p className="chalk-hero-tag" data-write>pull up a chair, there's room to grow</p>
+          <h1 className="chalk-hero-line" data-write>NIRVANA</h1>
+          {/* <h1 className="chalk-hero-line" data-write>Grow.</h1> */}
+          <h2 className="chalk-hero-line chalk-hero-subtitle chalk-yellow" data-write>A Reason to Smile</h2>
+          <svg className="chalk-underline" ref={underlineRef} viewBox="0 0 420 20" aria-hidden="true">
+            <path d="M4 12 C110 4 300 4 416 9" />
+          </svg>
+          <p className="chalk-hero-copy" data-write>
+            A caring learning club for underprivileged children, where every child feels valued and inspired to learn and grow.
+          </p>
+          <div className="chalk-stick" ref={stickRef} aria-hidden="true" />
+          <div className="chalk-actions">
+            <Link href="/events" className="chalk-button">See what we do <ArrowRight size={14} /></Link>
+            <Link href="/about" className="chalk-button outline">Our little story</Link>
+            <button type="button" className="chalk-replay">Write again</button>
+          </div>
+        </section>
       </section>
-       </section>
     </>
   );
 }
@@ -462,9 +523,9 @@ function HomePage() {
 
       <div className="home-rest">
         <Valuesgarden />
-        <Diyaboard/>
+        <Diyaboard />
       </div>
-      
+
     </>
   );
 }
@@ -848,7 +909,7 @@ function AboutPage() {
             <div className="ah-hint"></div>
           </section>
 
-          
+
 
           <section className="ah-wrap">
             <AboutLetters as="h2" className="ah-rv" text="More than homework help" />
@@ -912,10 +973,10 @@ function TeamPage() {
   return (
     <>
       {/* <PageMeta title="Team" description="Meet the mentors, organizers, and volunteers who make The Learning Nook a welcoming place to learn and grow." /> */}
-      
+
       <FacultySection />
 
-      <Meettheteam  />
+      <Meettheteam />
     </>
   );
 }
@@ -969,7 +1030,7 @@ function GalleryPage() {
 function ContactPage() {
   return (
     <>
-       <PageMeta title="Contact" description="Get in touch with The Learning Nook to ask about joining, volunteering, or learning more." />
+      <PageMeta title="Contact" description="Get in touch with The Learning Nook to ask about joining, volunteering, or learning more." />
       <header className="subpage-head">
         <p className="eyebrow">WE’RE GLAD YOU’RE HERE</p>
         <h1 className="page-heading">Get In Touch.</h1>
@@ -1049,10 +1110,10 @@ function Router() {
         <Route path="/events"><PageShell><EventsPage /></PageShell></Route>
         <Route path="/gallery"><PageShell><GalleryPage /></PageShell></Route>
         <Route path="/contact"><PageShell><ContactPage /></PageShell></Route>
-        <Route path="/developers"><Developers/></Route>
+        <Route path="/developers"><Developers /></Route>
         <Route path="/admin"><Suspense fallback={<main className="adm-login"><p>Loading…</p></main>}><Admin /></Suspense></Route>
         <Route path="/verify"><PageShell><Verify /></PageShell></Route>
-<Route path="/verify/:id"><PageShell><Verify/></PageShell></Route>
+        <Route path="/verify/:id"><PageShell><Verify /></PageShell></Route>
         <Route><NotFound /></Route>
       </Switch>
     </RoutedErrorBoundary>

@@ -34,7 +34,7 @@ export const centres = [
     name: 'SVNIT',
     image: 'centres/centre-4.jpg',
     description: 'SVNIT Campus Base is the central command and administrative headquarters for Nirvana SVNIT. Sprawled within the main institute grounds, this center functions as the brain of the entire student chapter.',
-    head: 'Head Name',
+    head: 'Ankit Bhadu',
     location: 'Sardar Vallabhbhai National Institute of Technology, Ichchhanath Surat-Dumas Road, Keval Chowk, Piplod, Surat, Gujarat - 395007, India',
     color: 'var(--sage)',
     tilt: '-1.2deg',

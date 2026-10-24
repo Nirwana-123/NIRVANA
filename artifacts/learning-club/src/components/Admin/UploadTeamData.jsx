@@ -32,7 +32,11 @@ export default function TeamDataPage({ onAuthError, onNote }) {
   };
 
   const handleError = (err, setLocalError) => {
-    if (err.code === 'permission-denied') onAuthError?.({ status: 403, message: err.message });
+    if (err.code === 'permission-denied') {
+      const message = 'Firestore denied access to the "teamData" collection. Check the deployed Firestore rules for this admin account.';
+      if (setLocalError) setLocalError(message);
+      else onNote?.(message);
+    }
     else if (setLocalError) setLocalError(err.message || 'An unknown error occurred');
     else onNote?.(err.message || 'Something went wrong');
   };
@@ -140,7 +144,7 @@ export default function TeamDataPage({ onAuthError, onNote }) {
         <p>This will upload all team data from TeamData.js to Firebase Firestore in a structured format.</p>
         <p className="td-muted">
           Each team category (Sir, ProgramCoordinators, Founder, CoFounder, Team2019, Team2020, etc.)
-          will be saved in the "volunteers" collection with its category name.
+          will be saved in the "teamData" collection with its category name.
         </p>
 
         {loading && (

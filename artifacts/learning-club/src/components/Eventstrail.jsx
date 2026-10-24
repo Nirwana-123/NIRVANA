@@ -118,10 +118,11 @@ export default function EventsTrail() {
         if (cancelled) return;
         const list = snap.docs.map(toStop).sort(byDate);
         const today = new Date().toISOString().slice(0, 10);
-        const next = list.findIndex((item) => item.iso && item.iso >= today);
-        if (next >= 0) {
-          list[next].live = true;                                    // pulsing pin on the next upcoming event
-          list[next].cta = { label: 'Images', href: '/gallery' };
+        const upcoming = list.findIndex((item) => item.iso && item.iso >= today);
+        const imageStop = upcoming >= 0 ? upcoming : list.length - 1;
+        if (imageStop >= 0) {
+          if (upcoming >= 0) list[imageStop].live = true;
+          list[imageStop].cta = { label: 'Images', href: '/gallery' };
         }
         setEvents(list);
         setStatus('ready');
