@@ -1,42 +1,43 @@
-// Utilities to upload TeamData.js to Firestore and to check what is stored there.
-import {
-  collection,
-  doc,
-  getDocs,
-  writeBatch,
-} from 'firebase/firestore';
-// Adjust these two imports to your project:
-//  - `firestore` must be exported from your firebase file (next to `auth`)
-//  - the TeamData path must point to your TeamData.js
+// Uploads TeamData.js to Firestore: ONE DOCUMENT PER EXPORT, named like the export.
+//   teamData/ProgramCoordinators   { category, count, members: [...] }
+//   teamData/Head                  { ... }
+//   teamData/Team2026              { ... }
+// Every array exported from TeamData.js is picked up automatically (add Team2027 and it just works).
+import { collection, doc, getDocs, serverTimestamp, setDoc } from 'firebase/firestore';
+// Adjust these two imports to your project
 import { firestore as db } from '@/lib/firebase';
-import * as TeamData from '../src/components/Team/TeamData';
+import * as TeamData from '@/components/Pages/Team/TeamData';
 
-const COLLECTION = 'volunteers';
-const BATCH_SIZE = 400; // Firestore allows 500 writes per batch
+const COLLECTION = 'teamData';
 
-// Core groups + every export that starts with "Team" (Team2019, Team2020, ...)
+// Trim strings and drop empty keys (Firestore rejects `undefined`)
+const clean = (member) =>
+  Object.fromEntries(
+    Object.entries(member)
+      .filter(([, v]) => v !== undefined && v !== null)
+      .map(([k, v]) => [k, typeof v === 'string' ? v.trim() : v]),
+  );
+
 export function getAllCategories() {
-  const core = Object.fromEntries(
-    ['Sir', 'ProgramCoordinators', 'Founder', 'CoFounder']
-      .filter((key) => Array.isArray(TeamData[key]))
-      .map((key) => [key, TeamData[key]]),
+  return Object.fromEntries(
+    Object.entries(TeamData)
+      .filter(([name, value]) => name !== 'default' && Array.isArray(value))
+      .map(([name, list]) => [name, list.map(clean)]),
   );
-  const years = Object.fromEntries(
-    Object.entries(TeamData).filter(([key, value]) => key.startsWith('Team') && Array.isArray(value)),
-  );
-  const all = { ...core, ...years };
-  // drop anything that is missing or not a list
-  return Object.fromEntries(Object.entries(all).filter(([, v]) => Array.isArray(v)));
 }
 
-// Stable id => running the upload twice updates documents instead of duplicating them
-const docId = (category, index) => `${category}_${String(index + 1).padStart(3, '0')}`;
+// Firestore does not keep key order, so compare with sorted keys
+const stable = (value) =>
+  JSON.stringify(value, (_, v) =>
+    v && typeof v === 'object' && !Array.isArray(v)
+      ? Object.fromEntries(Object.entries(v).sort(([a], [b]) => (a < b ? -1 : 1)))
+      : v,
+  );
 
 /**
- * Uploads every team member to the "volunteers" collection.
- * @param {object} currentUser  the signed-in Firebase user (auth.currentUser)
- * @param {(done:number,total:number)=>void} [onProgress]
- * @returns {Promise<{total:number, successful:number, failed:number, byCategory:object}>}
+ * Writes each category as one document (replacing the old version of that document).
+ * @param {object} currentUser  auth.currentUser
+ * @param {(done:number,total:number)=>void} [onProgress]  counts members
  */
 export async function uploadAllTeamData(currentUser, onProgress) {
   if (!currentUser) throw new Error('You must be logged in to upload team data.');
@@ -44,79 +45,68 @@ export async function uploadAllTeamData(currentUser, onProgress) {
   const categories = getAllCategories();
   const total = Object.values(categories).reduce((n, list) => n + list.length, 0);
   const stats = { total, successful: 0, failed: 0, byCategory: {} };
-
-  // Flat list of writes
-  const writes = [];
-  for (const [category, members] of Object.entries(categories)) {
-    stats.byCategory[category] = { total: members.length, successful: 0, failed: 0 };
-    members.forEach((member, i) => {
-      writes.push({
-        category,
-        ref: doc(db, COLLECTION, docId(category, i)),
-        data: { ...member, category, approved: true }, // static data is pre-approved
-      });
-    });
-  }
-
-  // Commit in chunks; if a chunk fails, only that chunk is marked failed
   let done = 0;
-  for (let start = 0; start < writes.length; start += BATCH_SIZE) {
-    const chunk = writes.slice(start, start + BATCH_SIZE);
-    const batch = writeBatch(db);
-    chunk.forEach(({ ref, data }) => batch.set(ref, data));
+
+  for (const [name, members] of Object.entries(categories)) {
+    stats.byCategory[name] = { total: members.length, successful: 0, failed: 0 };
     try {
-      await batch.commit();
-      chunk.forEach(({ category }) => {
-        stats.successful++;
-        stats.byCategory[category].successful++;
+      await setDoc(doc(db, COLLECTION, name), {
+        category: name,
+        count: members.length,
+        members,
+        updatedAt: serverTimestamp(),
       });
+      stats.successful += members.length;
+      stats.byCategory[name].successful = members.length;
     } catch (error) {
-      console.error('Team data chunk failed:', error);
-      chunk.forEach(({ category }) => {
-        stats.failed++;
-        stats.byCategory[category].failed++;
-      });
+      console.error(`Failed to upload ${name}:`, error);
+      if (error.code === 'permission-denied') throw error; // lets the page handle it
+      stats.failed += members.length;
+      stats.byCategory[name].failed = members.length;
     }
-    done += chunk.length;
-    onProgress?.(done, writes.length);
+    done += members.length;
+    onProgress?.(done, total);
   }
 
   return stats;
 }
 
 /**
- * Compares what is in Firestore with TeamData.js.
+ * Compares the documents in Firestore with TeamData.js.
  * @returns {Promise<{inFile:number, inFirestore:number, byCategory:object, issues:string[]}>}
  */
 export async function validateTeamData() {
-  const categories = getAllCategories();
+  const local = getAllCategories();
   const snapshot = await getDocs(collection(db, COLLECTION));
 
-  const stored = {};   // category -> count in Firestore
+  const stored = {};
+  snapshot.forEach((d) => { stored[d.id] = d.data(); });
+
   const issues = [];
-  let inFirestore = 0;
-
-  snapshot.forEach((d) => {
-    const data = d.data();
-    inFirestore++;
-    stored[data.category] = (stored[data.category] ?? 0) + 1;
-    if (!data.name) issues.push(`${d.id}: missing "name"`);
-    if (!data.category) issues.push(`${d.id}: missing "category"`);
-  });
-
   const byCategory = {};
   let inFile = 0;
-  for (const [category, members] of Object.entries(categories)) {
+  let inFirestore = 0;
+
+  for (const [name, members] of Object.entries(local)) {
     inFile += members.length;
-    const inDb = stored[category] ?? 0;
-    byCategory[category] = { inFile: members.length, inFirestore: inDb };
-    if (inDb === 0) issues.push(`${category}: not uploaded yet`);
-    else if (inDb < members.length) issues.push(`${category}: ${members.length - inDb} missing`);
-    else if (inDb > members.length) issues.push(`${category}: ${inDb - members.length} extra (possible duplicates)`);
+    const remote = stored[name];
+    const remoteMembers = Array.isArray(remote?.members) ? remote.members : [];
+    inFirestore += remoteMembers.length;
+    byCategory[name] = { inFile: members.length, inFirestore: remoteMembers.length };
+
+    if (!remote) issues.push(`${name}: document not uploaded yet`);
+    else if (remoteMembers.length !== members.length) {
+      issues.push(`${name}: ${remoteMembers.length} in Firestore, ${members.length} in TeamData.js`);
+    } else if (stable(remoteMembers) !== stable(members)) {
+      issues.push(`${name}: content differs from TeamData.js, upload again`);
+    }
+    members.forEach((m, i) => {
+      if (!m.name) issues.push(`${name} #${i + 1}: missing "name"`);
+    });
   }
-  // categories in Firestore that no longer exist in TeamData.js
-  Object.keys(stored).forEach((c) => {
-    if (!categories[c]) issues.push(`${c}: in Firestore but not in TeamData.js`);
+
+  Object.keys(stored).forEach((name) => {
+    if (!local[name]) issues.push(`${name}: in Firestore but not in TeamData.js`);
   });
 
   return { inFile, inFirestore, byCategory, issues };
