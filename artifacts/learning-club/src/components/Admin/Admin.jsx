@@ -6,6 +6,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from 'firebase/auth';
+import { ArrowLeft } from 'lucide-react';
+import { Link } from 'wouter';
 import { auth } from '@/lib/firebase';
 import DashBoard from './DashBoard';
 import SignIn from './SignIn';
@@ -60,7 +62,15 @@ export default function Admin() {
     return <main className="adm-login"><p>Loading…</p></main>;
   }
 
-  return currentUser
-    ? <DashBoard handleSignOut={handleSignOut} />
-    : <SignIn handleSignIn={handleSignIn} message={message} />;
+  return currentUser ? (
+    <DashBoard handleSignOut={handleSignOut} />
+  ) : (
+    <>
+      <Link href="/" className="adm-back">
+        <ArrowLeft size={16} aria-hidden="true" />
+        Back to site
+      </Link>
+      <SignIn handleSignIn={handleSignIn} message={message} />
+    </>
+  );
 }

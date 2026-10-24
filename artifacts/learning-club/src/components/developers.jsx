@@ -21,7 +21,7 @@ const developers = [
     photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792851445/kislay.jpg',
     email: 'kislayg1@gmail.com',
     linkedin: 'https://www.linkedin.com/in/kislay-gupta-608711342?',
-    github: 'https://Kislay-Gupta766',
+    github: 'https://github.com/Kislay-Gupta766',
     color: 'var(--rose)',
     accent: 'var(--sage)',
   },
@@ -114,10 +114,20 @@ function DeveloperCard({ developer, index }) {
               aria-label={`${developer.name} on LinkedIn (opens in a new tab)`}
             >
               <Linkedin size={16} aria-hidden="true" />
-              
               <ArrowUpRight size={15} className="dev-arrow" aria-hidden="true" />
-              
             </a>
+            {developer.github && (
+              <a
+                className="dev-btn ghost"
+                href={developer.github}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`${developer.name} on GitHub (opens in a new tab)`}
+              >
+                <Github size={16} aria-hidden="true" />
+                <ArrowUpRight size={15} className="dev-arrow" aria-hidden="true" />
+              </a>
+            )}
           </div>
         </div>
       </div>
