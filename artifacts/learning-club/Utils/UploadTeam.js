@@ -6,9 +6,9 @@
 import { collection, doc, getDocs, serverTimestamp, setDoc } from 'firebase/firestore';
 // Adjust these two imports to your project
 import { firestore as db } from '@/lib/firebase';
-import * as TeamData from '@/components/Pages/Team/TeamData';
+import * as TeamData from '../src/components/Team/TeamData';
 
-const COLLECTION = 'teamData';
+const COLLECTION = 'Team';
 
 // Trim strings and drop empty keys (Firestore rejects `undefined`)
 const clean = (member) =>
