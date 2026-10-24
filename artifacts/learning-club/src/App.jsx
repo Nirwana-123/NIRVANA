@@ -57,6 +57,11 @@ function SiteFrame({ children }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, [location]);
+
+  useEffect(() => {
     setMenuOpen(false);
   }, [location]);
 
@@ -456,6 +461,10 @@ function ChalkboardHero() {
           position: 'relative',
           overflow: 'clip',
           isolation: 'isolate',
+          position: 'relative',
+    overflow: 'clip',
+    isolation: 'isolate',
+    minHeight: '100svh',
         }}
       >
         <div

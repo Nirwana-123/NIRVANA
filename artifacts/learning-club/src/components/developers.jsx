@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowUpRight, Linkedin, Mail } from 'lucide-react';
+import { ArrowUpRight, Linkedin, Mail,Github } from 'lucide-react';
 import './developers.css';
 
 // Edit these two developers. Photos go in public/developers/ (optional:
@@ -11,6 +11,7 @@ const developers = [
     photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792843313/Mohit.jpg',
     email: 'mohitsoni12341234@gmail.com',
     linkedin: 'https://www.linkedin.com/in/mohit-kumar-soni-8129b6388?',
+    github: 'https://github.com/Mohit102006',
     color: 'var(--sun)',
     accent: 'var(--sky)',
   },
@@ -20,6 +21,7 @@ const developers = [
     photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792851445/kislay.jpg',
     email: 'kislayg1@gmail.com',
     linkedin: 'https://www.linkedin.com/in/kislay-gupta-608711342?',
+    github: 'https://Kislay-Gupta766',
     color: 'var(--rose)',
     accent: 'var(--sage)',
   },
@@ -112,7 +114,9 @@ function DeveloperCard({ developer, index }) {
               aria-label={`${developer.name} on LinkedIn (opens in a new tab)`}
             >
               <Linkedin size={16} aria-hidden="true" />
+              
               <ArrowUpRight size={15} className="dev-arrow" aria-hidden="true" />
+              
             </a>
           </div>
         </div>
