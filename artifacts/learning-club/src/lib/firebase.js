@@ -9,7 +9,7 @@ const firebaseConfig = {
   storageBucket: 'nirvana-67ef0.firebasestorage.app',
   messagingSenderId: '183075201806',
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: 'G-NPL3QZHZP9',
+  
 };
 
 const requiredConfig = ['apiKey', 'authDomain', 'projectId', 'appId'];
