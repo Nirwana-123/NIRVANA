@@ -1,10 +1,26 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import '../Team/Team.css';
-import { Head } from './TeamData';
+import { Head, Team2026 } from './TeamData';
 
 const ACCENTS = ['#c62839', '#1f5f8b', '#2e7d52', '#b7791f', '#7a3b8f', '#0f766e'];
 const str = (v) => (typeof v === 'string' ? v.trim() : '');
-const url = (v, base) => { const s = str(v); if (!s) return ''; return /^https?:\/\//i.test(s) ? s : base + s.replace(/^[@/]+/, ''); };
+
+// Full links stay as they are, "www.linkedin.com/in/..." gets https://, plain handles get the base address
+const url = (v, base) => {
+  const s = str(v);
+  if (!s) return '';
+  if (/^https?:\/\//i.test(s)) return s;
+  if (/^www\./i.test(s) || /^[a-z0-9-]+(\.[a-z0-9-]+)+\//i.test(s)) return `https://${s}`;
+  return base + s.replace(/^[@/]+/, '');
+};
+
+// Cloudinary can crop and shrink a photo for us (portrait, centred on the face)
+const portrait = (v) => {
+  const s = str(v);
+  return s.includes('res.cloudinary.com') && s.includes('/upload/')
+    ? s.replace('/upload/', '/upload/c_fill,g_face,w_520,h_660,q_auto,f_auto/')
+    : s;
+};
 
 // Accepts both data shapes: Head { name, post, email, linkdin }
 // and ProgramCoordinators { name, position, gmail, description, photo }.
@@ -67,16 +83,60 @@ const ICONS = {
 };
 const LABELS = { instagram: 'Instagram', linkedin: 'LinkedIn', email: 'Email' };
 
+/* ---------- Team 2026: one row of photo cards ---------- */
+function MemberPhoto({ member }) {
+  const [failed, setFailed] = useState(false);
+  if (!member.photo || failed) return <Silhouette />;
+  return <img src={portrait(member.photo)} alt={member.name} loading="lazy" draggable="false" onError={() => setFailed(true)} />;
+}
+
+function TeamRow({ members, title, eyebrow }) {
+  if (!members.length) return null;
+  return (
+    <section className="t26" aria-labelledby="t26-title">
+      <p className="t26-eyebrow">{eyebrow}</p>
+      <h2 className="t26-title" id="t26-title">{title}</h2>
+
+      <ul className="t26-row">
+        {members.map((m) => {
+          const socials = ['instagram', 'linkedin', 'email'].filter((k) => m.links[k]);
+          return (
+            <li className="t26-card" key={m.id} style={{ '--accent': m.accent }}>
+              <div className="t26-photo"><MemberPhoto member={m} /></div>
+              <h3>{m.name}</h3>
+              {m.post && <p className="t26-role">{m.post}</p>}
+              {socials.length > 0 && (
+                <div className="t26-soc">
+                  {socials.map((k) => (
+                    <a key={k} href={m.links[k]} aria-label={`${m.name} on ${LABELS[k]}`}
+                      {...(k === 'email' ? {} : { target: '_blank', rel: 'noreferrer noopener' })}>
+                      {ICONS[k]}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
 export default function MeetTheTeam({
   members: rawMembers = Head, // defaults to the Head list from TeamData
   watermark = 'NIRVANA',
   crumb = 'Members',
   perMember = '90vh', // scroll length per member
+  rowMembers = Team2026, // the "Team 2026" row under the scrolling cards
+  rowTitle = 'Team 2026',
+  rowEyebrow = 'MEET THE TUTORS',
 }) {
   const rootRef = useRef(null);
   const goToRef = useRef(() => {});
   const [active, setActive] = useState(0);
   const members = useMemo(() => unique(rawMembers).map(normalize), [rawMembers]);
+  const row = useMemo(() => unique(rowMembers).map(normalize), [rowMembers]);
   const n = members.length;
 
   useEffect(() => {
@@ -184,67 +244,73 @@ export default function MeetTheTeam({
     };
   }, [members, n]);
 
-  if (!n) return null;
-  const current = members[Math.min(active, n - 1)];
-  const socials = ['instagram', 'linkedin', 'email'].filter((k) => current.links[k]);
+  if (!n && !row.length) return null;
+  const current = members[Math.min(active, Math.max(n - 1, 0))];
+  const socials = current ? ['instagram', 'linkedin', 'email'].filter((k) => current.links[k]) : [];
 
   return (
-    <section className="team" ref={rootRef} style={{ '--n': n, '--team-per': perMember }} aria-label="Meet the club members">
-      <div className="tm-stage">
-        <div className="mc" style={{ '--accent': members[0].accent }}>
-          <div className="mc-in">
-            <div className="mc-wm" aria-hidden="true">{watermark}</div>
-            <div className="mc-slab" />
-            <div className="mc-band" />
+    <>
+      {n > 0 && (
+        <section className="team" ref={rootRef} style={{ '--n': n, '--team-per': perMember }} aria-label="Meet the club members">
+          <div className="tm-stage">
+            <div className="mc" style={{ '--accent': members[0].accent }}>
+              <div className="mc-in">
+                <div className="mc-wm" aria-hidden="true">{watermark}</div>
+                <div className="mc-slab" />
+                <div className="mc-band" />
 
-            <div className="mc-figs">
-              {members.map((m) => (
-                <div className="mc-fig" key={m.id}>
-                  {m.photo ? <img src={m.photo} alt="" draggable="false" /> : <Silhouette />}
+                <div className="mc-figs">
+                  {members.map((m) => (
+                    <div className="mc-fig" key={m.id}>
+                      {m.photo ? <img src={m.photo} alt="" draggable="false" /> : <Silhouette />}
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <div className="mc-copy">
-              <div className="mc-crumb">Home / <b>{crumb}</b></div>
-              <div className="mc-tmask">
-                {members.map((m, i) => (i === active
-                  ? <h2 className="mc-t" key={m.id}>{m.name}</h2>
-                  : <h2 className="mc-t" key={m.id} aria-hidden="true">{m.name}</h2>))}
-              </div>
-              <div className="mc-dmask">
-                {members.map((m) => (
-                  <div className="mc-d" key={m.id}>
-                    {m.post && <span className="mc-role">{m.post}</span>}
-                    {m.bio && <p>{m.bio}</p>}
+                <div className="mc-copy">
+                  <div className="mc-crumb">Home / <b>{crumb}</b></div>
+                  <div className="mc-tmask">
+                    {members.map((m, i) => (i === active
+                      ? <h2 className="mc-t" key={m.id}>{m.name}</h2>
+                      : <h2 className="mc-t" key={m.id} aria-hidden="true">{m.name}</h2>))}
                   </div>
-                ))}
+                  <div className="mc-dmask">
+                    {members.map((m) => (
+                      <div className="mc-d" key={m.id}>
+                        {m.post && <span className="mc-role">{m.post}</span>}
+                        {m.bio && <p>{m.bio}</p>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mc-soc">
+                  {socials.map((k) => (
+                    <a key={k} href={current.links[k]} aria-label={`${current.name} on ${LABELS[k]}`}
+                      {...(k === 'email' ? {} : { target: '_blank', rel: 'noreferrer noopener' })}>
+                      {ICONS[k]}
+                    </a>
+                  ))}
+                </div>
+
+                <div className="mc-dash" aria-hidden="true">
+                  {members.map((m, i) => <i key={m.id} className={i === 0 ? 'is-on' : ''} />)}
+                </div>
+
+                <button className="mc-btn mc-prev" type="button" aria-label="Previous member" onClick={() => goToRef.current(active - 1)}>
+                  <svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </button>
+                <button className="mc-btn mc-next" type="button" aria-label="Next member" onClick={() => goToRef.current(active + 1)}>
+                  <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                </button>
               </div>
             </div>
-
-            <div className="mc-soc">
-              {socials.map((k) => (
-                <a key={k} href={current.links[k]} aria-label={`${current.name} on ${LABELS[k]}`}
-                  {...(k === 'email' ? {} : { target: '_blank', rel: 'noreferrer noopener' })}>
-                  {ICONS[k]}
-                </a>
-              ))}
-            </div>
-
-            <div className="mc-dash" aria-hidden="true">
-              {members.map((m, i) => <i key={m.id} className={i === 0 ? 'is-on' : ''} />)}
-            </div>
-
-            <button className="mc-btn mc-prev" type="button" aria-label="Previous member" onClick={() => goToRef.current(active - 1)}>
-              <svg viewBox="0 0 24 24"><path d="M19 12H5M11 6l-6 6 6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </button>
-            <button className="mc-btn mc-next" type="button" aria-label="Next member" onClick={() => goToRef.current(active + 1)}>
-              <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-            </button>
+            <div className="tm-hint">Scroll or use the arrows</div>
           </div>
-        </div>
-        <div className="tm-hint">Scroll or use the arrows</div>
-      </div>
-    </section>
+        </section>
+      )}
+
+      <TeamRow members={row} title={rowTitle} eyebrow={rowEyebrow} />
+    </>
   );
 }

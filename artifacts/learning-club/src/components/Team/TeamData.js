@@ -84,23 +84,26 @@ export const Team2026 = [
         name: 'Indrajeet Singh',
         post: 'Tutor',
         email: ' indrajeetivs9506@gmail.com',
-        linkdin: 'https://www.linkedin.com/in/indrajeetsingh9506?trk=contact-info'
-
+        linkdin: 'https://www.linkedin.com/in/indrajeetsingh9506?trk=contact-info',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792833039/t1.jpg',
     },
     {
         name: 'Srijan Mishra',
         post: 'Tutor',
         email: 'srijanmishra070306@gmail.com',
-        linkdin: 'https://www.linkedin.com/in/srijanmishra2006'
+        linkdin: 'https://www.linkedin.com/in/srijanmishra2006',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792833039/t4.jpg'
     },
     {
         name: 'HASTINKUMAR H. SUTHAR',
         post: 'Tutor',
         email: 'hastinsuthar5@gmail.com',
-        linkdin: 'www.linkedin.com/in/hastin-suthar-b96528342'
+        linkdin: 'www.linkedin.com/in/hastin-suthar-b96528342',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792833039/t3.jpg',
     },
     {
         name: 'Aditya Kapadiya',
-        post: 'Tutor'
+        post: 'Tutor',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792833039/t2.jpg'
     },
 ]
