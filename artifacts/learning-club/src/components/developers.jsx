@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowUpRight, Linkedin, Mail,Github } from 'lucide-react';
 import './developers.css';
 
@@ -152,6 +152,11 @@ const backBtn = {
 };
 
 export default function Developers() {
+  useEffect(() => {
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+  }, []);
+
   return (
     <section className="devs" aria-labelledby="devs-title">
       <div className="dev-stars" aria-hidden="true">
