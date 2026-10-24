@@ -54,7 +54,7 @@ export const Head = [
         post: 'Technical Head',
         email: 'kislayg1@gmail.com',
         linkdin: 'https://www.linkedin.com/in/kislay-gupta-608711342',
-        photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792440575/kislay.png'
+        photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792855637/kislay.png'
     },
     {
         name: 'Abhishek',

@@ -18,7 +18,7 @@ const developers = [
   {
     id: 'dev-2',
     name: 'Kislay Gupta',
-    photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792851445/kislay.jpg',
+    photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792855696/kislayDev.jpg',
     email: 'kislayg1@gmail.com',
     linkedin: 'https://www.linkedin.com/in/kislay-gupta-608711342?',
     github: 'https://github.com/Kislay-Gupta766',
