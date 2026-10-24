@@ -142,11 +142,11 @@ function SiteFrame({ children }) {
 }
 
 const socials = [
-  { label: 'Instagram', href: 'https://instagram.com/', Icon: Instagram },
+  { label: 'Instagram', href: 'https://www.instagram.com/nirvana_areason_to_smile?vrfl=ZzQzM3NvMXp3YTRi/', Icon: Instagram },
   { label: 'Facebook', href: 'https://facebook.com/', Icon: Facebook },
   { label: 'Twitter', href: 'https://twitter.com/', Icon: Twitter },
   { label: 'YouTube', href: 'https://youtube.com/', Icon: Youtube },
-  { label: 'Email', href: 'mailto:hello@example.com', Icon: Mail },
+  { label: 'CONTACT', href: '/contact', Icon: Mail },
 ];
 
 function Footer() {
@@ -179,9 +179,15 @@ function Footer() {
           </nav>
           <div className="footer-socials">
             {socials.map(({ label, href, Icon }) => (
-              <a key={label} href={href} aria-label={label} target="_blank" rel="noreferrer">
-                <Icon size={30} />
-              </a>
+              href.startsWith('/') ? (
+                <Link key={label} href={href} aria-label={label}>
+                  <Icon size={30} />
+                </Link>
+              ) : (
+                <a key={label} href={href} aria-label={label} target="_blank" rel="noreferrer">
+                  <Icon size={30} />
+                </a>
+              )
             ))}
           </div>
         </div>
