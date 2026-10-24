@@ -35,7 +35,7 @@ export const Head = [
         post: 'Co.Convenor',
         email: 'aryanghosaliya@gmail.com',
         linkdin: 'https://in.linkedin.com/in/aryan-ghosaliya-b86019378',
-        photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792438449/Aryan.png'
+        photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792851245/Aryan.png'
     },
     {
         name: 'Kunal',
@@ -74,7 +74,8 @@ export const Head = [
     {
         name: 'Rushikesh',
         post: 'Tutor Coordinator ',
-        email: 'rushikeshsabe129@gmail.com'
+        email: 'rushikeshsabe129@gmail.com',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792851262/rushikesh.png'
     },
 ]
 

@@ -17,7 +17,7 @@ const developers = [
   {
     id: 'dev-2',
     name: 'Kislay Gupta',
-    photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792440575/kislay.png',
+    photo: 'https://res.cloudinary.com/itwrf1cc/image/upload/v1792851445/kislay.jpg',
     email: 'kislayg1@gmail.com',
     linkedin: 'https://www.linkedin.com/in/kislay-gupta-608711342?',
     color: 'var(--rose)',
@@ -133,7 +133,8 @@ const backBtn = {
   textDecoration: 'none',
   background: 'transparent', color: '#f2eedc',border: '1px solid rgba(242, 238, 220, .55)',
   position:'absolute',
-  left:'30px'
+  left:'9px',
+  top:'9px',
 };
 
 export default function Developers() {
