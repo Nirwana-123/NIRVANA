@@ -6,7 +6,7 @@ const DEFAULT_ITEMS = [
   { q: 'Why does the moon change shape?', a: 'We only ever see the part the sun is lighting.' },
   { q: 'How do you spell “friend”?', a: 'f-r-i-e-n-d. A friend is there till the end.' },
   { q: 'What is a half plus a quarter?', a: 'Three quarters. Fold a roti and see.' },
-  { q: 'Why do we light a diya at Diwali?', a: 'To welcome light, hope, and a fresh start.' },
+  { q: 'Why do we light a diyas at Diwali?', a: 'To welcome light, hope, and a fresh start.' },
   { q: 'Is it okay to get it wrong?', a: 'Yes. That’s where we start figuring it out together.' },
 ];
 
