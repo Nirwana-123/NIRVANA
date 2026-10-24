@@ -87,7 +87,7 @@ function DeveloperCard({ developer, index }) {
             <div className="dev-photo">
               {developer.photo && !photoFailed ? (
                 <img
-                  src={`${import.meta.env.BASE_URL}${developer.photo}`}
+                  src={developer.photo}
                   alt={`Portrait of ${developer.name}`}
                   onError={() => setPhotoFailed(true)}
                 />
