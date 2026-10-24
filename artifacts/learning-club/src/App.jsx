@@ -16,11 +16,11 @@ import LocationMap from '@/components/Location';
 import Centres from '@/components/centres/Centres';
 import Developers from './components/developers';
 import ContactForm from '@/components/LetterForm';
-import EventsTrail from '@/components/EventsTrail';
+import EventsTrail from '@/components/Eventstrail';
 import SwingGallery from '@/components/SwingGallery';
-import FacultySection from '@/components//FacultySection';
-import Admin from './components/Admin/Admin';
-import Verify from './components/Verification/Verify';
+import FacultySection from '@/components/Facultysection';
+const Admin = lazy(() => import('./components/Admin/Admin'));
+import Verify from '@/components/Verification/Verify';
 const queryClient = new QueryClient();
 const navigation = [
   { label: 'HOME', href: '/', title: 'Home' },
