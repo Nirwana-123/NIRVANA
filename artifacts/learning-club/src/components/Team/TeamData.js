@@ -107,4 +107,9 @@ export const Team2026 = [
         post: 'Tutor',
         photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792833039/t2.jpg'
     },
+    {
+        name:'Bharat Singh',
+        post:'Tutor',
+        photo:'https://res.cloudinary.com/itwrf1cc/image/upload/v1792854532/t5.jpg'
+    }
 ]
