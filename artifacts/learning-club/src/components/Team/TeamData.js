@@ -77,3 +77,28 @@ export const Head = [
         email:'rushikeshsabe129@gmail.com'
     },
 ]
+
+export const Team2026 = [
+    {
+        name:'Srijan Mishra',
+        post:'Tutor',
+        email:'srijanmishra070306@gmail.com',
+        linkdin:'https://www.linkedin.com/in/srijanmishra2006'
+    },
+    {
+        name:'HASTINKUMAR H. SUTHAR',
+        post:'Tutor',
+        email:'hastinsuthar5@gmail.com',
+        linkdin:'www.linkedin.com/in/hastin-suthar-b96528342'
+    },
+    {
+        name:'Aditya Kapadiya',
+        post:'Tutor'
+    },
+    {
+        name:'Indrajeet Singh',
+        post:'Tutor',
+        email:' indrajeetivs9506@gmail.com',
+        linkdin:'https://www.linkedin.com/in/indrajeetsingh9506?trk=contact-info'
+    }
+]
