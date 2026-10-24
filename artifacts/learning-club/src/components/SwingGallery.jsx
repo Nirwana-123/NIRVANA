@@ -1,19 +1,38 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { collection, getDocs, limit, orderBy, query } from 'firebase/firestore';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
+import { firestore } from '@/lib/firebase';
 import './gallery-swing.css';
 
-const BASE = import.meta.env.BASE_URL;
-// Place these images in public/gallery; the first photo is each album's cover.
-const ALBUMS = [
-  { title: 'A story shared aloud', color: '#d2dfd0', symbol: 'READ', photos: ['story-1.jpg', 'story-2.jpg', 'story-3.jpg'] },
-  { title: 'Number games & big ideas', color: '#eadcb8', symbol: '1 + 1', photos: ['numbers-1.jpg', 'numbers-2.jpg', 'numbers-3.jpg', 'numbers-4.jpg'] },
-  { title: 'Making something new', color: '#dfcdd7', symbol: 'MAKE', photos: ['make-1.jpg', 'make-2.jpg', 'make-3.jpg'] },
-  { title: 'A question worth chasing', color: '#c8dce0', symbol: '?', photos: ['question-1.jpg', 'question-2.jpg'] },
-  { title: 'Learning side by side', color: '#e8d3c0', symbol: 'TOGETHER', photos: ['together-1.jpg', 'together-2.jpg', 'together-3.jpg', 'together-4.jpg', 'together-5.jpg'] },
-  { title: 'A proud little moment', color: '#d5dfbd', symbol: 'I DID IT', photos: ['proud-1.jpg', 'proud-2.jpg', 'proud-3.jpg'] },
-];
-const src = (file) => `${BASE}gallery/${file}`;
+// Each event that has photos becomes one hanging album.
+// The photos come from Firestore (collection "photos"), saved by the admin Upload page.
+const PALETTE = ['#d2dfd0', '#eadcb8', '#dfcdd7', '#c8dce0', '#e8d3c0', '#d5dfbd'];
+
+// Cloudinary can resize on the fly: we add the size right after /upload/
+const cdn = (url, transform) => (url.includes('/upload/') ? url.replace('/upload/', `/upload/${transform}/`) : url);
+const coverUrl = (url) => cdn(url, 'c_fill,w_700,h_525,q_auto,f_auto');
+const thumbUrl = (url) => cdn(url, 'c_fill,w_160,h_120,q_auto,f_auto');
+const fullUrl = (url) => cdn(url, 'c_limit,w_1800,q_auto,f_auto');
+
+const initials = (title) =>
+  title.replace(/\(.*?\)/g, '').trim().split(/\s+/).map((word) => word[0]).join('').slice(0, 3).toUpperCase() || '\u2605';
+
+// photos (newest first) -> albums, newest event first, photos oldest first inside each album
+function groupByEvent(photos) {
+  const map = new Map();
+  photos.forEach((photo) => {
+    if (!photo.event || !photo.url) return;
+    if (!map.has(photo.event)) map.set(photo.event, []);
+    map.get(photo.event).push({ id: photo.id, url: photo.url });
+  });
+  return [...map.entries()].map(([title, list], index) => ({
+    title,
+    color: PALETTE[index % PALETTE.length],
+    symbol: initials(title),
+    photos: list.reverse(),
+  }));
+}
 
 const SWING = [
   { len: 52, dur: 7, delay: 0, amp: 2.6, tilt: -2 },
@@ -26,9 +45,9 @@ const SWING = [
 
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-function Pic({ file, album, className = '', alt }) {
+function Pic({ url, album, className = '', alt }) {
   const [failed, setFailed] = useState(false);
-  useEffect(() => setFailed(false), [file]);
+  useEffect(() => setFailed(false), [url]);
 
   if (failed) {
     return (
@@ -37,7 +56,7 @@ function Pic({ file, album, className = '', alt }) {
       </div>
     );
   }
-  return <img className={className} src={src(file)} alt={alt} draggable="false" onError={() => setFailed(true)} />;
+  return <img className={className} src={url} alt={alt} draggable="false" loading="lazy" onError={() => setFailed(true)} />;
 }
 
 function HangingAlbum({ album, index, breeze, onOpen }) {
@@ -118,11 +137,11 @@ function HangingAlbum({ album, index, breeze, onOpen }) {
           <figure className="gl-frame">
             <span className="gl-tape" />
             <div className="gl-cover">
-              <Pic file={album.photos[0]} album={album} alt="" />
+              <Pic url={coverUrl(album.photos[0].url)} album={album} alt="" />
             </div>
             <figcaption className="gl-cap">
               {album.title}
-              <small>{album.photos.length} photos</small>
+              <small>{album.photos.length} {album.photos.length === 1 ? 'photo' : 'photos'}</small>
             </figcaption>
           </figure>
         </div>
@@ -177,7 +196,7 @@ function Lightbox({ album, onClose }) {
     stripRef.current?.children[index]?.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
     [index + 1, index - 1].forEach((n) => {
       const image = new Image();
-      image.src = src(album.photos[(n + total) % total]);
+      image.src = fullUrl(album.photos[(n + total) % total].url);
     });
   }, [index, album, total]);
 
@@ -219,7 +238,7 @@ function Lightbox({ album, onClose }) {
         onTouchStart={(event) => { touchStart.current = event.touches[0].clientX; }}
         onTouchEnd={onTouchEnd}
       >
-        <Pic key={index} className="gl-lb-img" file={album.photos[index]} album={album} alt={`${album.title}, photo ${index + 1} of ${total}`} />
+        <Pic key={album.photos[index].id} className="gl-lb-img" url={fullUrl(album.photos[index].url)} album={album} alt={`${album.title}, photo ${index + 1} of ${total}`} />
       </div>
 
       {total > 1 && (
@@ -229,16 +248,16 @@ function Lightbox({ album, onClose }) {
       )}
 
       <div className="gl-lb-strip" ref={stripRef}>
-        {album.photos.map((file, i) => (
+        {album.photos.map((photo, i) => (
           <button
             type="button"
-            key={file}
+            key={photo.id}
             className={`gl-thumb${i === index ? ' is-active' : ''}`}
             aria-label={`Show photo ${i + 1}`}
             aria-current={i === index ? 'true' : undefined}
             onClick={() => setIndex(i)}
           >
-            <Pic file={file} album={album} alt="" />
+            <Pic url={thumbUrl(photo.url)} album={album} alt="" />
           </button>
         ))}
       </div>
@@ -248,9 +267,28 @@ function Lightbox({ album, onClose }) {
 }
 
 export default function SwingGallery() {
+  const [albums, setAlbums] = useState([]);
+  const [status, setStatus] = useState('loading'); // loading | ready | error
   const [openIndex, setOpenIndex] = useState(null);
   const [breeze, setBreeze] = useState(0);
   const close = useCallback(() => setOpenIndex(null), []);
+
+  // load the photos that the admin uploaded
+  useEffect(() => {
+    let cancelled = false;
+    getDocs(query(collection(firestore, 'photos'), orderBy('createdAt', 'desc'), limit(500)))
+      .then((snap) => {
+        if (cancelled) return;
+        setAlbums(groupByEvent(snap.docs.map((d) => ({ id: d.id, ...d.data() }))));
+        setStatus('ready');
+      })
+      .catch((error) => {
+        if (cancelled) return;
+        console.error('Could not load gallery photos:', error);
+        setStatus('error');
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <>
@@ -262,15 +300,24 @@ export default function SwingGallery() {
 
       <section className="content-section">
         <h2 className="section-heading">A few things we love to do</h2>
-        <div className="gl-tools">
-          <button type="button" className="gl-breeze" onClick={() => setBreeze((n) => n + 1)}>Blow a gentle breeze</button>
-        </div>
-        <div className="gl-wall">
-          {ALBUMS.map((album, index) => (
-            <HangingAlbum key={album.title} album={album} index={index} breeze={breeze} onOpen={setOpenIndex} />
-          ))}
-        </div>
-        <p className="gallery-footnote">Tap a photo to open the album.</p>
+
+        {status === 'loading' && <p className="gallery-footnote" role="status">Loading photos…</p>}
+        {status === 'error' && <p className="gallery-footnote" role="alert">We couldn’t load the photos right now. Please try again later.</p>}
+        {status === 'ready' && albums.length === 0 && <p className="gallery-footnote">Photos from our events will appear here soon.</p>}
+
+        {albums.length > 0 && (
+          <>
+            <div className="gl-tools">
+              <button type="button" className="gl-breeze" onClick={() => setBreeze((n) => n + 1)}>Blow a gentle breeze</button>
+            </div>
+            <div className="gl-wall">
+              {albums.map((album, index) => (
+                <HangingAlbum key={album.title} album={album} index={index} breeze={breeze} onOpen={setOpenIndex} />
+              ))}
+            </div>
+            <p className="gallery-footnote">Tap a photo to open the album.</p>
+          </>
+        )}
       </section>
 
       <section className="content-section two-col">
@@ -281,7 +328,7 @@ export default function SwingGallery() {
         <div className="quote-card"><blockquote>“Look what I figured out!”</blockquote><p>That’s the kind of moment worth keeping close.</p></div>
       </section>
 
-      {openIndex !== null && <Lightbox album={ALBUMS[openIndex]} onClose={close} />}
+      {openIndex !== null && albums[openIndex] && <Lightbox album={albums[openIndex]} onClose={close} />}
     </>
   );
 }

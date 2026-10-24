@@ -5,18 +5,20 @@ import { firestore } from '@/lib/firebase';
 
 const MAX_MB = 10;
 
-// From your Cloudinary dashboard (see .env): VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET
+// From your Cloudinary dashboard (see .env):  VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-// The event selected when the page opens. Must match the Cloudinary folder name exactly.
+// The event that is selected when the page opens. Must match the Cloudinary folder name exactly:
+// Media Library > Events > Dushera(2026)
 const DEFAULT_EVENT = 'Dushera(2026)';
-// Add more event folder names here. Events with existing photos are added automatically.
+// Add more events here (exact folder names). Events that already have photos are added automatically.
 const EVENT_FOLDERS = [];
 
 const EVENT_NAME = /^[A-Za-z0-9 _()-]{1,60}$/;
 const thumbOf = (url) => url.replace('/upload/', '/upload/c_fill,w_420,h_300,q_auto,f_auto/');
 
+// Sends one file straight to Cloudinary, into the folder  Events/<event>
 function sendToCloudinary(file, event, onProgress) {
   return new Promise((resolve, reject) => {
     const form = new FormData();
@@ -63,7 +65,7 @@ export default function ImagesPage({ onNote }) {
   useEffect(() => { refresh(); }, [refresh]);
   useEffect(() => () => queueRef.current.forEach((i) => URL.revokeObjectURL(i.preview)), []);
 
-  // Dropdown options: default event, configured folders, and every event that already has photos.
+  // dropdown options: default event, your own list, and every event that already has photos
   const libraryEvents = [...new Set(photos.map((p) => p.event).filter(Boolean))];
   const eventOptions = [...new Set([DEFAULT_EVENT, ...EVENT_FOLDERS, ...libraryEvents])];
 
@@ -81,8 +83,15 @@ export default function ImagesPage({ onNote }) {
   const removeFromQueue = (id) => setQueue((q) => { q.filter((i) => i.id === id).forEach((i) => URL.revokeObjectURL(i.preview)); return q.filter((i) => i.id !== id); });
 
   const uploadOne = async (item, event) => {
-    patch(item.id, { status: 'uploading', progress: 0 });
-    const result = await sendToCloudinary(item.file, event, (progress) => patch(item.id, { progress }));
+    patch(item.id, { status: 'uploading', progress: 0, error: '' });
+    // 1) the photo goes to Cloudinary, folder Events/<event>
+    //    (if an earlier try already got it there, it is not uploaded a second time)
+    let result = item.uploaded;
+    if (!result) {
+      result = await sendToCloudinary(item.file, event, (progress) => patch(item.id, { progress }));
+      patch(item.id, { uploaded: result });
+    }
+    // 2) its link is saved in Firestore, so the website (and this list) can find it
     await addDoc(collection(firestore, 'photos'), {
       event,
       url: result.secure_url,
@@ -101,10 +110,11 @@ export default function ImagesPage({ onNote }) {
       try {
         await uploadOne(item, eventName);
       } catch (err) {
-        patch(item.id, { status: 'error' });
-        onNote(err.code === 'permission-denied'
-          ? 'The photo reached Cloudinary, but Firestore refused to save its link. Check the "photos" rules and your "executives" entry.'
-          : err.message);
+        const message = err.code === 'permission-denied'
+          ? 'Photo is in Cloudinary, but Firestore refused to save its link. Check the "photos" rules and your "executives" entry, then press Upload again.'
+          : err.message;
+        patch(item.id, { status: 'error', error: message });
+        onNote(message);
       }
     }
     setUploading(false);
@@ -184,7 +194,7 @@ export default function ImagesPage({ onNote }) {
                   <div>
                     <span className="adm-fname">{item.file.name}</span>
                     <div className="adm-bar"><i style={{ width: `${item.progress}%` }} /></div>
-                    <small>{item.status === 'done' ? 'Uploaded' : item.status === 'error' ? 'Failed' : item.status === 'uploading' ? `${item.progress}%` : 'Ready'}</small>
+                    <small>{item.status === 'done' ? 'Uploaded' : item.status === 'error' ? (item.error || 'Failed') : item.status === 'uploading' ? `${item.progress}%` : 'Ready'}</small>
                   </div>
                   <button className="adm-icon-btn" onClick={() => removeFromQueue(item.id)} disabled={item.status === 'uploading'} aria-label={`Remove ${item.file.name}`}><Trash2 size={16} /></button>
                 </li>
