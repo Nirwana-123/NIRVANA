@@ -8,9 +8,6 @@ import { Link, Route, Switch, useLocation, Router as WouterRouter } from 'wouter
 import { ArrowRight, ArrowUp, BookOpen, Facebook, Heart, Instagram, Lightbulb, Mail, MapPin, Menu, MessageCircle, Sprout, Twitter, Users, X, Youtube } from 'lucide-react';
 import anime from 'animejs/lib/anime.es.js';
 import { stepAvatars } from './step-avatars';
-import kunalPhoto from '@/components/Kunal.png';
-import abhishekPhoto from '@/components/Abhishek.png';
-import aryanPhoto from '@/components/aryan.png';
 import './about-heavy.css';
 import Valuesgarden from '@/components/Valuesgarden';
 import Diyaboard from '@/components/Diyaboard';
@@ -423,39 +420,65 @@ function ChalkboardHero() {
       replay?.removeEventListener('click', play);
     };
   }, []);
-
+  const bannerRef = useRef(null);
+const bgRef = useRef(null);
   return (
     <>
     <section
-    className="hero-banner"
-    style={{ '--hero-image': `url(${import.meta.env.BASE_URL}hero.png)` }}
-  >
-      <svg className="chalk-filter" aria-hidden="true" focusable="false">
-        <filter id="chalk-rough" x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" />
-        </filter>
-      </svg>
-     
-      <section className="home-hero chalk-hero" ref={boardRef} aria-label="Learn. Grow. Shine.">
-        <p className="chalk-hero-tag" data-write>pull up a chair, there's room to grow</p>
-        <h1 className="chalk-hero-line" data-write>NIRVANA</h1>
-        {/* <h1 className="chalk-hero-line" data-write>Grow.</h1> */}
-        <h2 className="chalk-hero-line chalk-hero-subtitle chalk-yellow" data-write>A Reason to Smile</h2>
-        <svg className="chalk-underline" ref={underlineRef} viewBox="0 0 420 20" aria-hidden="true">
-          <path d="M4 12 C110 4 300 4 416 9" />
-        </svg>
-        <p className="chalk-hero-copy" data-write>
-          A caring learning club for underprivileged children, where every child feels valued and inspired to learn and grow.
-        </p>
-        <div className="chalk-stick" ref={stickRef} aria-hidden="true" />
-        <div className="chalk-actions">
-          <Link href="/events" className="chalk-button">See what we do <ArrowRight size={14} /></Link>
-          <Link href="/about" className="chalk-button outline">Our little story</Link>
-          <button type="button" className="chalk-replay">Write again</button>
-        </div>
-      </section>
-       </section>
+  className="hero-banner"
+  ref={bannerRef}
+  style={{
+    '--hero-image': `url(${import.meta.env.BASE_URL}hero.png)`,
+    position: 'relative',
+    overflow: 'clip',
+    isolation: 'isolate',
+  }}
+>
+  <div
+    className="hero-parallax"
+    ref={bgRef}
+    aria-hidden="true"
+    style={{
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      top: '-30%',
+      bottom: '-5%',
+      zIndex: -1,
+      pointerEvents: 'none',
+      backgroundImage: 'var(--hero-image)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      willChange: 'transform',
+    }}
+  />
+
+  <svg className="chalk-filter" aria-hidden="true" focusable="false">
+    <filter id="chalk-rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3.5" />
+    </filter>
+  </svg>
+
+  <section className="home-hero chalk-hero" ref={boardRef} aria-label="Learn. Grow. Shine.">
+    <p className="chalk-hero-tag" data-write>pull up a chair, there's room to grow</p>
+    <h1 className="chalk-hero-line" data-write>NIRVANA</h1>
+    {/* <h1 className="chalk-hero-line" data-write>Grow.</h1> */}
+    <h2 className="chalk-hero-line chalk-hero-subtitle chalk-yellow" data-write>A Reason to Smile</h2>
+    <svg className="chalk-underline" ref={underlineRef} viewBox="0 0 420 20" aria-hidden="true">
+      <path d="M4 12 C110 4 300 4 416 9" />
+    </svg>
+    <p className="chalk-hero-copy" data-write>
+      A caring learning club for underprivileged children, where every child feels valued and inspired to learn and grow.
+    </p>
+    <div className="chalk-stick" ref={stickRef} aria-hidden="true" />
+    <div className="chalk-actions">
+      <Link href="/events" className="chalk-button">See what we do <ArrowRight size={14} /></Link>
+      <Link href="/about" className="chalk-button outline">Our little story</Link>
+      <button type="button" className="chalk-replay">Write again</button>
+    </div>
+  </section>
+</section>
     </>
   );
 }
