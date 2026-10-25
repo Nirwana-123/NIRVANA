@@ -475,7 +475,6 @@ function ChalkboardHero() {
             height: '100vh',
             zIndex: -1,
             pointerEvents: 'none',
-            backgroundImage: 'var(--hero-image)',
             backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0.75)), var(--hero-image)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
