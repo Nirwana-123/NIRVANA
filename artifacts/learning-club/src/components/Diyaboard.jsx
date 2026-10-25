@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import './diya-board.css';
+import './Diya-board.css';
 
 const DEFAULT_ITEMS = [
   { q: 'What is 12 × 7?', a: '84. Try 10 × 7 first, then add 2 × 7.' },
