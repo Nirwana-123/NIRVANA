@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import './values-garden.css';
+import './Values-garden.css';
 
 const NS = 'http://www.w3.org/2000/svg';
 const GY = 372;
