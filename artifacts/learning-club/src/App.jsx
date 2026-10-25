@@ -461,9 +461,6 @@ function ChalkboardHero() {
           position: 'relative',
           overflow: 'clip',
           isolation: 'isolate',
-          position: 'relative',
-    overflow: 'clip',
-    isolation: 'isolate',
     minHeight: '100svh',
         }}
       >
