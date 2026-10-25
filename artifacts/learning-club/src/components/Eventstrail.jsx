@@ -2,7 +2,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Link } from 'wouter';
 import { collection, getDocs } from 'firebase/firestore';
 import { firestore } from '@/lib/firebase';
-import './EventsTrail.css';
+import './Eventstrail.css';
 
 // Which Firestore collection the trail reads (the admin page saves to "events")
 const EVENTS_COLLECTION = 'EventData';
